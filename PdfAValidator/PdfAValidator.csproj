@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/Codeuctivity/PdfAValidatorApi</RepositoryUrl>
+    <PackageTags>Pdf PdfA VerPdf</PackageTags>
+    <PackageLicenseUrl>https://github.com/Codeuctivity/PdfAValidatorApi/blob/master/LICENSE</PackageLicenseUrl>
+    <Authors>Stefan Seeland</Authors>
+    <Company>Codeuctivity</Company>
   </PropertyGroup>
 
   <ItemGroup>
