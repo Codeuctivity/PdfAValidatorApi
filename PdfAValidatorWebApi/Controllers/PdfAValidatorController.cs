@@ -31,7 +31,7 @@ namespace PdfAValidatorWebApi.Controllers
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
-        public ActionResult<bool> Validate(byte[] pdfBlob)
+        public ActionResult<bool> Validate([FromBody]byte[] pdfBlob)
         {
             using (var pdfAValidator = new PdfAValidator.PdfAValidator())
             {
@@ -70,7 +70,7 @@ namespace PdfAValidatorWebApi.Controllers
         [Route("DetailedReport")]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
-        public ActionResult<report> ValidateWithDetailedReport(byte[] pdfBlob)
+        public ActionResult<report> ValidateWithDetailedReport([FromBody]byte[] pdfBlob)
         {
             using (var pdfAValidator = new PdfAValidator.PdfAValidator())
             {
