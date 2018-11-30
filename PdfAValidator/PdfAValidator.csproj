@@ -8,8 +8,9 @@
     <PackageLicenseUrl>https://github.com/Codeuctivity/PdfAValidatorApi/blob/master/LICENSE</PackageLicenseUrl>
     <Authors>Stefan Seeland</Authors>
     <Company>Codeuctivity</Company>
-    <AssemblyVersion>1.0.0.10</AssemblyVersion>
-    <FileVersion>1.0.0.10</FileVersion>
+    <AssemblyVersion>1.0.0.11</AssemblyVersion>
+    <FileVersion>1.0.0.11</FileVersion>
+    <Version>1.0.11</Version>
   </PropertyGroup>
 
   <ItemGroup>

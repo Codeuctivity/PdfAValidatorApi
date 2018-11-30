@@ -19,6 +19,16 @@ namespace PdfAValidator
             Directory.Delete(_pathDirectoryVeraPdf, true);
         }
 
+        /// <summary>
+        /// Use this constructor to use your own installation of VeraPdf, e.g.: c:\somePath\verapdf.bat
+        /// </summary>
+        /// <param name="pathToVeraPdfBin"></param>
+        public PdfAValidator(string pathToVeraPdfBin)
+        { _pathVeraPdfBat = pathToVeraPdfBin; }
+
+        /// <summary>
+        /// Use this constructor to use the embedded veraPdf binaries
+        /// </summary>
         public PdfAValidator()
         { _pathVeraPdfBat = getPathToVeraPdfBin(); }
 
