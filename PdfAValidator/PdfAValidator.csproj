@@ -10,7 +10,7 @@
     <Company>Codeuctivity</Company>
     <AssemblyVersion>1.0.0.15</AssemblyVersion>
     <FileVersion>1.0.0.15</FileVersion>
-    <Version>1.0.13</Version>
+    <Version>1.0.15</Version>
     <PackageIconUrl>https://avatars3.githubusercontent.com/u/8453155?v=2&amp;s=200</PackageIconUrl>
     <PackageProjectUrl>https://github.com/Codeuctivity/PdfAValidatorApi</PackageProjectUrl>
     <Description>PdfAValidator is based on VeraPdf and is an open source conformance checker for PDF/A files. It is designed to help archives and libraries check that their PDF/A collections conform to the appropriate ISO 19005 archiving standard specification.</Description>
