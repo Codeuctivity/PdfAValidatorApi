@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/hwa0obfdvoxy9wkw?svg=true)](https://ci.appveyor.com/project/stesee/pdfavalidatorapi) ![Nuget](https://img.shields.io/nuget/v/:PdfAValidator.svg)  
+[![Build status](https://ci.appveyor.com/api/projects/status/hwa0obfdvoxy9wkw?svg=true)](https://ci.appveyor.com/project/stesee/pdfavalidatorapi) ![Nuget](https://img.shields.io/nuget/v/PdfaValidator.svg)  
 
 # PdfAValidatorApi
 PdfAValidatorApi wraps calls to [VeraPdf](http://www.preforma-project.eu/pdfa-conformance-checker.html) in a .net Core Assembly and as WebApi. Access VeraPdf from your unit tests or integrate it into your micro architecture.
