@@ -17,22 +17,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="VeraPdf.zip" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="VeraPdf.zip" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
   </ItemGroup>
 
+  
   <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
+    <Folder Include="Properties\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
 </Project>
