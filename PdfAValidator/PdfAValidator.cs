@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 // TODOS:
-// Performance - now every call causes verapdf to be unpacked
-// Codestyle - make this code great again
 // Fix the generated casing in report.cs
 
 namespace PdfAValidator
@@ -40,7 +38,6 @@ namespace PdfAValidator
 
         private string _pathVeraPdfDirectory;
         public string PathJava { private set; get; }
-        private string _pathZipVeraPdf;
         public string VeraPdfStarterScript { private set; get; }
 
         public bool Validate(string pathToPdfFile)
@@ -131,19 +128,19 @@ namespace PdfAValidator
         {
             _pathVeraPdfDirectory = Path.Combine(Path.GetTempPath(), "VeraPdf" + Guid.NewGuid());
             Directory.CreateDirectory(_pathVeraPdfDirectory);
-            _pathZipVeraPdf = Path.Combine(_pathVeraPdfDirectory, "VeraPdf.zip");
+            var pathZipVeraPdf = Path.Combine(_pathVeraPdfDirectory, "VeraPdf.zip");
 
             var assembly = Assembly.GetExecutingAssembly();
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 using (var stream = assembly.GetManifestResourceStream("PdfAValidator.VeraPdf.Windows.zip"))
-                using (var fileStream = File.Create(_pathZipVeraPdf))
+                using (var fileStream = File.Create(pathZipVeraPdf))
                 {
                     stream.Seek(0, SeekOrigin.Begin);
                     stream.CopyTo(fileStream);
                 }
-                ZipFile.ExtractToDirectory(_pathZipVeraPdf, _pathVeraPdfDirectory);
+                ZipFile.ExtractToDirectory(pathZipVeraPdf, _pathVeraPdfDirectory);
                 VeraPdfStarterScript = Path.Combine(_pathVeraPdfDirectory, "verapdf", "verapdf.bat");
                 // took from https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot#x64_win
                 PathJava = Path.Combine(_pathVeraPdfDirectory, "verapdf", "jdk8u202-b08-jre", "bin", "java");
@@ -151,12 +148,12 @@ namespace PdfAValidator
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 using (var stream = assembly.GetManifestResourceStream("PdfAValidator.VeraPdf.Linux.zip"))
-                using (var fileStream = File.Create(_pathZipVeraPdf))
+                using (var fileStream = File.Create(pathZipVeraPdf))
                 {
                     stream.Seek(0, SeekOrigin.Begin);
                     stream.CopyTo(fileStream);
                 }
-                ZipFile.ExtractToDirectory(_pathZipVeraPdf, _pathVeraPdfDirectory);
+                ZipFile.ExtractToDirectory(pathZipVeraPdf, _pathVeraPdfDirectory);
 
                 VeraPdfStarterScript = Path.Combine(_pathVeraPdfDirectory, "verapdf", "verapdf");
                 SetLinuxFileExecuteable(VeraPdfStarterScript);
