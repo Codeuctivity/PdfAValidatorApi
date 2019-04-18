@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace PdfAValidator
 {
     [Serializable]
-    internal class VeraPdfException : Exception
+    public class VeraPdfException : Exception
     {
         public VeraPdfException()
         {

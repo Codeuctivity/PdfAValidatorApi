@@ -67,9 +67,11 @@ namespace PdfAValidator
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.CreateNoWindow = true;
                 if (!String.IsNullOrEmpty(PathJava))
+                {
                     process.StartInfo.EnvironmentVariables["JAVACMD"] = PathJava;
-                ProcessStartInfo startInfo = process.StartInfo;
-                string[] arguments = new string[] { "\"", pathToPdfFile, "\" " };
+                }
+                var startInfo = process.StartInfo;
+                var arguments = new string[] { "\"", pathToPdfFile, "\" " };
                 startInfo.Arguments = string.Concat(arguments);
                 process.Start();
 
@@ -88,7 +90,7 @@ namespace PdfAValidator
             }
         }
 
-        private string GetStreamOutput(StreamReader stream)
+        private static string GetStreamOutput(StreamReader stream)
         {
             //Read output in separate task to avoid deadlocks
             var outputReadTask = Task.Run(() => stream.ReadToEnd());
@@ -106,7 +108,7 @@ namespace PdfAValidator
             return result;
         }
 
-        public void SetLinuxFileExecuteable(string filePath)
+        public static void SetLinuxFileExecuteable(string filePath)
         {
             var chmodCmd = "chmod 700 " + filePath;
             var escapedArgs = chmodCmd.Replace("\"", "\\\"");
@@ -150,8 +152,6 @@ namespace PdfAValidator
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                var names = assembly.GetManifestResourceNames();
-
                 using (var stream = assembly.GetManifestResourceStream("PdfAValidator.VeraPdf.Linux.zip"))
                 using (var fileStream = File.Create(_pathZipVeraPdf))
                 {
@@ -164,7 +164,9 @@ namespace PdfAValidator
                 SetLinuxFileExecuteable(VeraPdfStarterScript);
             }
             else
+            {
                 throw new NotImplementedException("Sorry, only supporting linux and windows.");
+            }
         }
     }
 }

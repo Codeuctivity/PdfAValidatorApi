@@ -8,7 +8,7 @@ namespace PDfAValidatorTest
     public class PdfAValidatorTest
     {
         [Fact]
-        public void ShouldUnpackNewDirectoryInTempdirectory()
+        public static void ShouldUnpackNewDirectoryInTempdirectory()
         {
             var listOfDirectoriesInTempWithoutVeraPdf = Directory.GetDirectories(Path.GetTempPath());
             using (var pdfAValidator = new PdfAValidator.PdfAValidator())
@@ -19,11 +19,13 @@ namespace PDfAValidatorTest
                 Assert.Equal(1, newDirectories.Count());
                 var scriptPath = pdfAValidator.VeraPdfStarterScript;
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
                     Assert.Equal(".bat", scriptPath.Substring(scriptPath.Length - 4));
-
+                }
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
                     Assert.Equal("verapdf", scriptPath.Substring(scriptPath.Length - 7));
-
+                }
                 Assert.True(File.Exists(scriptPath), scriptPath + " does not exist.");
             }
             var listOfDirectoriesInTempAfterVeraPdf = Directory.GetDirectories(Path.GetTempPath());
@@ -32,7 +34,7 @@ namespace PDfAValidatorTest
         }
 
         [Fact]
-        public void ShouldDetectCompliantPdfA()
+        public static void ShouldDetectCompliantPdfA()
         {
             using (var pdfAValidator = new PdfAValidator.PdfAValidator())
             {
@@ -43,7 +45,7 @@ namespace PDfAValidatorTest
         }
 
         [Fact]
-        public void ShouldGetDetailedReportFromPdfA()
+        public static void ShouldGetDetailedReportFromPdfA()
         {
             using (var pdfAValidator = new PdfAValidator.PdfAValidator())
             {
@@ -55,7 +57,7 @@ namespace PDfAValidatorTest
         }
 
         [Fact]
-        public void ShouldDetectNonCompliantPdfA()
+        public static void ShouldDetectNonCompliantPdfA()
         {
             using (var pdfAValidator = new PdfAValidator.PdfAValidator())
             {
@@ -66,7 +68,7 @@ namespace PDfAValidatorTest
         }
 
         [Fact]
-        public void ShouldGetDetailedReportFromNonCompliantPdfA()
+        public static void ShouldGetDetailedReportFromNonCompliantPdfA()
         {
             using (var pdfAValidator = new PdfAValidator.PdfAValidator())
             {
