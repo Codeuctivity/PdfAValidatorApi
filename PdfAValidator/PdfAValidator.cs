@@ -50,17 +50,15 @@ namespace PdfAValidator
 
         public report ValidateWithDetailedReport(string pathToPdfFile)
         {
-            pathToPdfFile = System.IO.Path.GetFullPath(pathToPdfFile);
+            var absolutePathToPdfFile = System.IO.Path.GetFullPath(pathToPdfFile);
 
-            if (!File.Exists(pathToPdfFile))
+            if (!File.Exists(absolutePathToPdfFile))
             {
-                throw new FileNotFoundException(pathToPdfFile + " not found");
+                throw new FileNotFoundException(absolutePathToPdfFile + " not found");
             }
 
             using (var process = new Process())
             {
-                string concatedVeraPdfOutput = string.Empty;
-
                 process.StartInfo.FileName = VeraPdfStarterScript;
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.RedirectStandardError = true;
@@ -71,7 +69,7 @@ namespace PdfAValidator
                     process.StartInfo.EnvironmentVariables["JAVACMD"] = PathJava;
                 }
                 var startInfo = process.StartInfo;
-                var arguments = new string[] { "\"", pathToPdfFile, "\" " };
+                var arguments = new[] { "\"", absolutePathToPdfFile, "\" " };
                 startInfo.Arguments = string.Concat(arguments);
                 process.Start();
 
