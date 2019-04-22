@@ -16,7 +16,9 @@ namespace PdfAValidator
         public void Dispose()
         {
             if (!_customVerapdfAndJavaLocations)
+            {
                 Directory.Delete(_pathVeraPdfDirectory, true);
+            }
         }
 
         /// <summary>
@@ -25,7 +27,7 @@ namespace PdfAValidator
         /// <param name="pathToVeraPdfBin"></param>
         public PdfAValidator(string pathToVeraPdfBin, string pathToJava)
         {
-            VeraPdfStarterScript = pathToVeraPdfBin;
+            VeraPdfStartScript = pathToVeraPdfBin;
             PathJava = pathToJava;
             _customVerapdfAndJavaLocations = true;
         }
@@ -40,9 +42,9 @@ namespace PdfAValidator
         private string _pathVeraPdfDirectory;
         public string PathJava { private set; get; }
 
-        private bool _customVerapdfAndJavaLocations;
+        private readonly bool _customVerapdfAndJavaLocations;
 
-        public string VeraPdfStarterScript { private set; get; }
+        public string VeraPdfStartScript { private set; get; }
 
         public bool Validate(string pathToPdfFile)
         {
@@ -60,7 +62,7 @@ namespace PdfAValidator
 
             using (var process = new Process())
             {
-                process.StartInfo.FileName = VeraPdfStarterScript;
+                process.StartInfo.FileName = VeraPdfStartScript;
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.RedirectStandardError = true;
                 process.StartInfo.UseShellExecute = false;
@@ -135,38 +137,36 @@ namespace PdfAValidator
             Directory.CreateDirectory(_pathVeraPdfDirectory);
             var pathZipVeraPdf = Path.Combine(_pathVeraPdfDirectory, "VeraPdf.zip");
 
-            var assembly = Assembly.GetExecutingAssembly();
-
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                using (var stream = assembly.GetManifestResourceStream("PdfAValidator.VeraPdf.Windows.zip"))
-                using (var fileStream = File.Create(pathZipVeraPdf))
-                {
-                    stream.Seek(0, SeekOrigin.Begin);
-                    stream.CopyTo(fileStream);
-                }
-                ZipFile.ExtractToDirectory(pathZipVeraPdf, _pathVeraPdfDirectory);
-                VeraPdfStarterScript = Path.Combine(_pathVeraPdfDirectory, "verapdf", "verapdf.bat");
+                ExtractBinaryFromManifest("PdfAValidator.VeraPdf.Windows.zip");
+                VeraPdfStartScript = Path.Combine(_pathVeraPdfDirectory, "verapdf", "verapdf.bat");
                 // took from https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot#x64_win
                 PathJava = Path.Combine(_pathVeraPdfDirectory, "verapdf", "jdk8u202-b08-jre", "bin", "java");
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                using (var stream = assembly.GetManifestResourceStream("PdfAValidator.VeraPdf.Linux.zip"))
-                using (var fileStream = File.Create(pathZipVeraPdf))
-                {
-                    stream.Seek(0, SeekOrigin.Begin);
-                    stream.CopyTo(fileStream);
-                }
-                ZipFile.ExtractToDirectory(pathZipVeraPdf, _pathVeraPdfDirectory);
-
-                VeraPdfStarterScript = Path.Combine(_pathVeraPdfDirectory, "verapdf", "verapdf");
-                SetLinuxFileExecuteable(VeraPdfStarterScript);
+                ExtractBinaryFromManifest("PdfAValidator.VeraPdf.Linux.zip");
+                VeraPdfStartScript = Path.Combine(_pathVeraPdfDirectory, "verapdf", "verapdf");
+                SetLinuxFileExecuteable(VeraPdfStartScript);
             }
             else
             {
                 throw new NotImplementedException("Sorry, only supporting linux and windows.");
             }
+        }
+
+        private void ExtractBinaryFromManifest(string resourceName)
+        {
+            var pathZipVeraPdf = Path.Combine(_pathVeraPdfDirectory, "VeraPdf.zip");
+            var assembly = Assembly.GetExecutingAssembly();
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
+            using (var fileStream = File.Create(pathZipVeraPdf))
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+                stream.CopyTo(fileStream);
+            }
+            ZipFile.ExtractToDirectory(pathZipVeraPdf, _pathVeraPdfDirectory);
         }
     }
 }

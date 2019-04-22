@@ -72,7 +72,7 @@ namespace PDfAValidatorTest
             var listOfDirectoriesInTempWithoutVeraPdf = Directory.GetDirectories(Path.GetTempPath());
             using (var pdfAValidatorPrepareBins = new PdfAValidator.PdfAValidator())
             {
-                using (var pdfAValidator = new PdfAValidator.PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStarterScript, pdfAValidatorPrepareBins.PathJava))
+                using (var pdfAValidator = new PdfAValidator.PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStartScript, pdfAValidatorPrepareBins.PathJava))
                 {
                     AssertVeraPdfBinCreation(listOfDirectoriesInTempWithoutVeraPdf, pdfAValidator);
                     Assert.True(File.Exists(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
@@ -90,7 +90,7 @@ namespace PDfAValidatorTest
             var newDirectories = listOfDirectoriesInTempWithVeraPdf.Except(listOfDirectoriesInTempWithoutVeraPdf);
 
             Assert.Single(newDirectories);
-            var scriptPath = pdfAValidator.VeraPdfStarterScript;
+            var scriptPath = pdfAValidator.VeraPdfStartScript;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 Assert.Equal(".bat", scriptPath.Substring(scriptPath.Length - 4));
