@@ -135,7 +135,6 @@ namespace PdfAValidator
         {
             _pathVeraPdfDirectory = Path.Combine(Path.GetTempPath(), "VeraPdf" + Guid.NewGuid());
             Directory.CreateDirectory(_pathVeraPdfDirectory);
-            var pathZipVeraPdf = Path.Combine(_pathVeraPdfDirectory, "VeraPdf.zip");
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
