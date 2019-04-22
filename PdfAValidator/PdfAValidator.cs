@@ -7,8 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-// TODOS:
-// Fix the generated casing in report.cs
+// TODO Fix the generated casing in report.cs
 
 namespace PdfAValidator
 {
@@ -16,7 +15,8 @@ namespace PdfAValidator
     {
         public void Dispose()
         {
-            Directory.Delete(_pathVeraPdfDirectory, true);
+            if (!_customVerapdfAndJavaLocations)
+                Directory.Delete(_pathVeraPdfDirectory, true);
         }
 
         /// <summary>
@@ -25,9 +25,9 @@ namespace PdfAValidator
         /// <param name="pathToVeraPdfBin"></param>
         public PdfAValidator(string pathToVeraPdfBin, string pathToJava)
         {
-            // TODO Test
             VeraPdfStarterScript = pathToVeraPdfBin;
             PathJava = pathToJava;
+            _customVerapdfAndJavaLocations = true;
         }
 
         /// <summary>
@@ -36,8 +36,12 @@ namespace PdfAValidator
         public PdfAValidator()
         { intiPathToVeraPdfBinAndJava(); }
 
+        private const string maskedQuote = "\"";
         private string _pathVeraPdfDirectory;
         public string PathJava { private set; get; }
+
+        private bool _customVerapdfAndJavaLocations;
+
         public string VeraPdfStarterScript { private set; get; }
 
         public bool Validate(string pathToPdfFile)
@@ -47,7 +51,7 @@ namespace PdfAValidator
 
         public report ValidateWithDetailedReport(string pathToPdfFile)
         {
-            var absolutePathToPdfFile = System.IO.Path.GetFullPath(pathToPdfFile);
+            var absolutePathToPdfFile = Path.GetFullPath(pathToPdfFile);
 
             if (!File.Exists(absolutePathToPdfFile))
             {
@@ -66,7 +70,8 @@ namespace PdfAValidator
                     process.StartInfo.EnvironmentVariables["JAVACMD"] = PathJava;
                 }
                 var startInfo = process.StartInfo;
-                var arguments = new[] { "\"", absolutePathToPdfFile, "\" " };
+                // http://docs.verapdf.org/cli/terminal/
+                var arguments = new[] { maskedQuote, absolutePathToPdfFile, maskedQuote };
                 startInfo.Arguments = string.Concat(arguments);
                 process.Start();
 
@@ -93,7 +98,7 @@ namespace PdfAValidator
             return outputReadTask.Result;
         }
 
-        static T DeserializeXml<T>(string sourceXML) where T : class
+        private static T DeserializeXml<T>(string sourceXML) where T : class
         {
             var serializer = new XmlSerializer(typeof(T));
             T result = null;
@@ -106,7 +111,7 @@ namespace PdfAValidator
         public static void SetLinuxFileExecuteable(string filePath)
         {
             var chmodCmd = "chmod 700 " + filePath;
-            var escapedArgs = chmodCmd.Replace("\"", "\\\"");
+            var escapedArgs = chmodCmd.Replace(maskedQuote, "\\\"");
 
             var process = new Process
             {

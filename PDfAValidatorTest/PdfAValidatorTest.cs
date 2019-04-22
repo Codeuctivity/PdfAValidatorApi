@@ -13,24 +13,10 @@ namespace PDfAValidatorTest
             var listOfDirectoriesInTempWithoutVeraPdf = Directory.GetDirectories(Path.GetTempPath());
             using (var pdfAValidator = new PdfAValidator.PdfAValidator())
             {
-                var listOfDirectoriesInTempWithVeraPdf = Directory.GetDirectories(Path.GetTempPath());
-                var newDirectories = listOfDirectoriesInTempWithVeraPdf.Except(listOfDirectoriesInTempWithoutVeraPdf);
-
-                Assert.Equal(1, newDirectories.Count());
-                var scriptPath = pdfAValidator.VeraPdfStarterScript;
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    Assert.Equal(".bat", scriptPath.Substring(scriptPath.Length - 4));
-                }
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    Assert.Equal("verapdf", scriptPath.Substring(scriptPath.Length - 7));
-                }
-                Assert.True(File.Exists(scriptPath), scriptPath + " does not exist.");
+                AssertVeraPdfBinCreation(listOfDirectoriesInTempWithoutVeraPdf, pdfAValidator);
             }
             var listOfDirectoriesInTempAfterVeraPdf = Directory.GetDirectories(Path.GetTempPath());
             Assert.Equal(listOfDirectoriesInTempAfterVeraPdf.Length, listOfDirectoriesInTempWithoutVeraPdf.Length);
-
         }
 
         [Fact]
@@ -77,6 +63,43 @@ namespace PDfAValidatorTest
                 Assert.False(result.jobs.job.validationReport.isCompliant);
                 Assert.True(result.jobs.job.validationReport.profileName == "PDF/A-1B validation profile");
             }
+        }
+
+        [Fact]
+        public static void ShouldWorkWithCustomJavaAndVeraPdfLocation()
+        {
+            // Using default ctor to get verapdf and java bins for the test
+            var listOfDirectoriesInTempWithoutVeraPdf = Directory.GetDirectories(Path.GetTempPath());
+            using (var pdfAValidatorPrepareBins = new PdfAValidator.PdfAValidator())
+            {
+                using (var pdfAValidator = new PdfAValidator.PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStarterScript, pdfAValidatorPrepareBins.PathJava))
+                {
+                    AssertVeraPdfBinCreation(listOfDirectoriesInTempWithoutVeraPdf, pdfAValidator);
+                    Assert.True(File.Exists(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
+                    var result = pdfAValidator.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                    Assert.False(result);
+                }
+            }
+            var listOfDirectoriesInTempAfterVeraPdf = Directory.GetDirectories(Path.GetTempPath());
+            Assert.Equal(listOfDirectoriesInTempAfterVeraPdf.Length, listOfDirectoriesInTempWithoutVeraPdf.Length);
+        }
+
+        private static void AssertVeraPdfBinCreation(string[] listOfDirectoriesInTempWithoutVeraPdf, PdfAValidator.PdfAValidator pdfAValidator)
+        {
+            var listOfDirectoriesInTempWithVeraPdf = Directory.GetDirectories(Path.GetTempPath());
+            var newDirectories = listOfDirectoriesInTempWithVeraPdf.Except(listOfDirectoriesInTempWithoutVeraPdf);
+
+            Assert.Single(newDirectories);
+            var scriptPath = pdfAValidator.VeraPdfStarterScript;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Assert.Equal(".bat", scriptPath.Substring(scriptPath.Length - 4));
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                Assert.Equal("verapdf", scriptPath.Substring(scriptPath.Length - 7));
+            }
+            Assert.True(File.Exists(scriptPath), scriptPath + " does not exist.");
         }
     }
 }
