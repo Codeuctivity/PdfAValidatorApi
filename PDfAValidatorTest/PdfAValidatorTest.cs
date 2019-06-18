@@ -5,7 +5,7 @@ using Xunit;
 
 namespace PDfAValidatorTest
 {
-    public class PdfAValidatorTest
+    public static class PdfAValidatorTest
     {
         [Fact]
         public static void ShouldUnpackNewDirectoryInTempdirectory()
