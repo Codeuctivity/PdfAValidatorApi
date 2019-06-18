@@ -190,7 +190,7 @@ public partial class reportJobsJobItem
 {
     private string nameField;
 
-    private ushort sizeField;
+    private string sizeField;
 
     /// <remarks/>
     public string name
@@ -207,7 +207,7 @@ public partial class reportJobsJobItem
 
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public ushort size
+    public string size
     {
         get
         {
@@ -296,17 +296,17 @@ public partial class reportJobsJobValidationReport
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
 public partial class reportJobsJobValidationReportDetails
 {
-    private byte passedRulesField;
+    private string passedRulesField;
 
-    private byte failedRulesField;
+    private string failedRulesField;
 
-    private ushort passedChecksField;
+    private string passedChecksField;
 
-    private byte failedChecksField;
+    private string failedChecksField;
 
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte passedRules
+    public string passedRules
     {
         get
         {
@@ -320,7 +320,7 @@ public partial class reportJobsJobValidationReportDetails
 
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte failedRules
+    public string failedRules
     {
         get
         {
@@ -334,7 +334,7 @@ public partial class reportJobsJobValidationReportDetails
 
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public ushort passedChecks
+    public string passedChecks
     {
         get
         {
@@ -348,7 +348,7 @@ public partial class reportJobsJobValidationReportDetails
 
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte failedChecks
+    public string failedChecks
     {
         get
         {
@@ -430,11 +430,11 @@ public partial class reportBatchSummary
 
     private reportBatchSummaryDuration durationField;
 
-    private byte totalJobsField;
+    private string totalJobsField;
 
-    private byte failedToParseField;
+    private string failedToParseField;
 
-    private byte encryptedField;
+    private string encryptedField;
 
     /// <remarks/>
     public reportBatchSummaryValidationReports validationReports
@@ -490,7 +490,7 @@ public partial class reportBatchSummary
 
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte totalJobs
+    public string totalJobs
     {
         get
         {
@@ -504,7 +504,7 @@ public partial class reportBatchSummary
 
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte failedToParse
+    public string failedToParse
     {
         get
         {
@@ -518,7 +518,7 @@ public partial class reportBatchSummary
 
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte encrypted
+    public string encrypted
     {
         get
         {
@@ -537,17 +537,17 @@ public partial class reportBatchSummary
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
 public partial class reportBatchSummaryValidationReports
 {
-    private byte compliantField;
+    private string compliantField;
 
-    private byte nonCompliantField;
+    private string nonCompliantField;
 
-    private byte failedJobsField;
+    private string failedJobsField;
 
-    private byte valueField;
+    private string valueField;
 
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte compliant
+    public string compliant
     {
         get
         {
@@ -561,7 +561,7 @@ public partial class reportBatchSummaryValidationReports
 
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte nonCompliant
+    public string nonCompliant
     {
         get
         {
@@ -575,7 +575,7 @@ public partial class reportBatchSummaryValidationReports
 
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte failedJobs
+    public string failedJobs
     {
         get
         {
@@ -589,7 +589,7 @@ public partial class reportBatchSummaryValidationReports
 
     /// <remarks/>
     [System.Xml.Serialization.XmlTextAttribute()]
-    public byte Value
+    public string Value
     {
         get
         {
@@ -608,13 +608,13 @@ public partial class reportBatchSummaryValidationReports
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
 public partial class reportBatchSummaryFeatureReports
 {
-    private byte failedJobsField;
+    private string failedJobsField;
 
-    private byte valueField;
+    private string valueField;
 
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte failedJobs
+    public string failedJobs
     {
         get
         {
@@ -628,7 +628,7 @@ public partial class reportBatchSummaryFeatureReports
 
     /// <remarks/>
     [System.Xml.Serialization.XmlTextAttribute()]
-    public byte Value
+    public string Value
     {
         get
         {
@@ -647,13 +647,13 @@ public partial class reportBatchSummaryFeatureReports
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
 public partial class reportBatchSummaryRepairReports
 {
-    private byte failedJobsField;
+    private string failedJobsField;
 
-    private byte valueField;
+    private string valueField;
 
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte failedJobs
+    public string failedJobs
     {
         get
         {
@@ -667,7 +667,7 @@ public partial class reportBatchSummaryRepairReports
 
     /// <remarks/>
     [System.Xml.Serialization.XmlTextAttribute()]
-    public byte Value
+    public string Value
     {
         get
         {

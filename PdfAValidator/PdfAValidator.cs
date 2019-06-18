@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 // TODO Fix the generated casing in report.cs
+// TODO Move stuff out of ctor
 
 namespace PdfAValidator
 {
@@ -48,7 +49,7 @@ namespace PdfAValidator
 
         public bool Validate(string pathToPdfFile)
         {
-            return ValidateWithDetailedReport(pathToPdfFile).batchSummary.validationReports.compliant == 1;
+            return ValidateWithDetailedReport(pathToPdfFile).batchSummary.validationReports.compliant == "1";
         }
 
         public report ValidateWithDetailedReport(string pathToPdfFile)
@@ -110,26 +111,6 @@ namespace PdfAValidator
             return result;
         }
 
-        public static void SetLinuxFileExecuteable(string filePath)
-        {
-            var chmodCmd = "chmod 700 " + filePath;
-            var escapedArgs = chmodCmd.Replace(maskedQuote, "\\\"");
-
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    FileName = "/bin/bash",
-                    Arguments = $"-c \"{escapedArgs}\""
-                }
-            };
-            process.Start();
-            process.WaitForExit();
-        }
 
         private void intiPathToVeraPdfBinAndJava()
         {
@@ -153,6 +134,27 @@ namespace PdfAValidator
             {
                 throw new NotImplementedException("Sorry, only supporting linux and windows.");
             }
+        }
+
+        public static void SetLinuxFileExecuteable(string filePath)
+        {
+            var chmodCmd = "chmod 700 " + filePath;
+            var escapedArgs = chmodCmd.Replace(maskedQuote, "\\\"");
+
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{escapedArgs}\""
+                }
+            };
+            process.Start();
+            process.WaitForExit();
         }
 
         private void ExtractBinaryFromManifest(string resourceName)
