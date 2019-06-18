@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace PdfAValidatorWebApi.Controllers
 {
     /// <summary>
-    /// test
+    /// PdfAValidatorController
     /// </summary>
     [Produces("application/json")]
     [Route("api/[controller]")]
@@ -53,7 +53,7 @@ namespace PdfAValidatorWebApi.Controllers
         /// </summary>
         /// <param name="pdfFile"></param>
         /// <returns>Compliance</returns>
-        /// <response code="200">Returns a report about the analyzed pdf, e.g. pdfa substandard and complince violations</response>
+        /// <response code="200">Returns a report about the analyzed pdf, e.g. pdfa substandard and compliance violations</response>
         /// <response code="400">If the item is null, not base64, or you missed the quotes arround it</response>
         [HttpPost]
         [Route("DetailedReport")]
