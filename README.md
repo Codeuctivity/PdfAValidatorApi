@@ -12,21 +12,22 @@ Install it using nuget package [PdfAValidatorApi](https://www.nuget.org/packages
 
 Sample - e.g. use it in your unit test to check compliance of some pdf:
 
-    ```C#
-  [Fact]
-  public void ShouldDetectCompliantPdfA()
-  {
-      using (var pdfAValidator = new PdfAValidator.PdfAValidator())
-      {
-          var result = pdfAValidator.Validate(@"./TestPdfFiles/FromLibreOffice.pdf");
-          Assert.True(result);
-      }
-  }
-    ```
+
+```C#
+[Fact]
+public void ShouldDetectCompliantPdfA()
+{
+    using (var pdfAValidator = new  PdfAValidator.PdfAValidator())
+    {
+        var result = pdfAValidator.Validate(@"./ TestPdfFiles/FromLibreOffice.pdf");
+        Assert.True(result);
+    }
+}
+```
 
 Sample - e.g. use it in your unit test to check the used sub standard of some pdf:
 
-    ```C#
+  ```C#
   [Fact]
   public void ShouldGetDetailedReportFromPdfA()
   {
@@ -37,7 +38,7 @@ Sample - e.g. use it in your unit test to check the used sub standard of some pd
           Assert.True(result.jobs.job.validationReport.profileName == "PDF/A-1A validation profile");
       }
   }
-    ```
+  ```
 
 [![NuGet Status](http://nugetstatus.com/PdfAValidator.png)](http://nugetstatus.com/packages/PdfAValidator)
 
