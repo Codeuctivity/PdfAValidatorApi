@@ -9,10 +9,16 @@ using System.Reflection;
 
 namespace PdfAValidatorWebApi
 {
+    /// <summary>
+    /// Startup Things comes in here
+    /// </summary>
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        ///For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -20,7 +26,7 @@ namespace PdfAValidatorWebApi
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                  c.OperationFilter<FormFileSwaggerFilter> ();
+                c.OperationFilter<FormFileSwaggerFilter>();
                 c.SwaggerDoc("v1", new Info
                 {
                     Title = "PdfAValidator",
@@ -47,7 +53,11 @@ namespace PdfAValidatorWebApi
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace PdfAValidatorWebApi.Controllers
 {
     /// <summary>
-    /// PdfAValidatorController
+    /// <see cref="PdfAValidatorController"/>
     /// </summary>
     [Produces("application/json")]
     [Route("api/[controller]")]
