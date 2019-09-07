@@ -13,6 +13,7 @@ namespace PDfAValidatorTest
             var listOfDirectoriesInTempWithoutVeraPdf = Directory.GetDirectories(Path.GetTempPath());
             using (var pdfAValidator = new PdfAValidator.PdfAValidator())
             {
+                pdfAValidator.Validate(@"./TestPdfFiles/FromLibreOffice.pdf");
                 AssertVeraPdfBinCreation(listOfDirectoriesInTempWithoutVeraPdf, pdfAValidator);
             }
             var listOfDirectoriesInTempAfterVeraPdf = Directory.GetDirectories(Path.GetTempPath());
@@ -72,12 +73,15 @@ namespace PDfAValidatorTest
             var listOfDirectoriesInTempWithoutVeraPdf = Directory.GetDirectories(Path.GetTempPath());
             using (var pdfAValidatorPrepareBins = new PdfAValidator.PdfAValidator())
             {
-                using (var pdfAValidator = new PdfAValidator.PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStartScript, pdfAValidatorPrepareBins.PathJava))
                 {
-                    AssertVeraPdfBinCreation(listOfDirectoriesInTempWithoutVeraPdf, pdfAValidator);
-                    Assert.True(File.Exists(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
-                    var result = pdfAValidator.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
-                    Assert.False(result);
+                    pdfAValidatorPrepareBins.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                    using (var pdfAValidator = new PdfAValidator.PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStartScript, pdfAValidatorPrepareBins.PathJava))
+                    {
+                        AssertVeraPdfBinCreation(listOfDirectoriesInTempWithoutVeraPdf, pdfAValidator);
+                        Assert.True(File.Exists(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
+                        var result = pdfAValidator.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                        Assert.False(result);
+                    }
                 }
             }
             var listOfDirectoriesInTempAfterVeraPdf = Directory.GetDirectories(Path.GetTempPath());
