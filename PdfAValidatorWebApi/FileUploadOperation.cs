@@ -80,12 +80,14 @@ namespace PdfAValidatorWebApi
             }
 
             foreach (var formFileParameter in formFileParameterNames)
+            {
                 parameters.Add(new NonBodyParameter()
                 {
                     Name = formFileParameter,
                     Type = "file",
                     In = "formData"
                 });
+            }
         }
     }
 }
