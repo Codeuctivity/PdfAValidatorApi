@@ -7,16 +7,22 @@ namespace PdfAValidatorTest
     [TestClass]
     public class PdfAValidatorTest
     {
+        private string tempPath;
+
+        [TestInitialize]
+        public void InitialThings()
+        { tempPath = Path.GetTempPath(); }
+
         [TestMethod]
         public void ShouldUnpackNewDirectoryInTempdirectoryFramework()
         {
-            var listOfDirectoriesInTempWithoutVeraPdf = Directory.GetDirectories(Path.GetTempPath());
+            var listOfDirectoriesInTempWithoutVeraPdf = Directory.GetDirectories(tempPath);
             using (var pdfAValidator = new PdfAValidator.PdfAValidator())
             {
                 pdfAValidator.Validate(@"./TestPdfFiles/FromLibreOffice.pdf");
-                AssertVeraPdfBinCreation(listOfDirectoriesInTempWithoutVeraPdf, pdfAValidator);
+                AssertVeraPdfBinCreation(listOfDirectoriesInTempWithoutVeraPdf, pdfAValidator, tempPath);
             }
-            var listOfDirectoriesInTempAfterVeraPdf = Directory.GetDirectories(Path.GetTempPath());
+            var listOfDirectoriesInTempAfterVeraPdf = Directory.GetDirectories(tempPath);
             Assert.AreEqual(listOfDirectoriesInTempAfterVeraPdf.Length, listOfDirectoriesInTempWithoutVeraPdf.Length);
         }
 
@@ -70,27 +76,27 @@ namespace PdfAValidatorTest
         public void ShouldWorkWithCustomJavaAndVeraPdfLocation()
         {
             // Using default ctor to get verapdf and java bins for the test
-            var listOfDirectoriesInTempWithoutVeraPdf = Directory.GetDirectories(Path.GetTempPath());
+            var listOfDirectoriesInTempWithoutVeraPdf = Directory.GetDirectories(tempPath);
             using (var pdfAValidatorPrepareBins = new PdfAValidator.PdfAValidator())
             {
                 {
                     pdfAValidatorPrepareBins.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
                     using (var pdfAValidator = new PdfAValidator.PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStartScript, pdfAValidatorPrepareBins.PathJava))
                     {
-                        AssertVeraPdfBinCreation(listOfDirectoriesInTempWithoutVeraPdf, pdfAValidator);
+                        AssertVeraPdfBinCreation(listOfDirectoriesInTempWithoutVeraPdf, pdfAValidator, tempPath);
                         Assert.IsTrue(File.Exists(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
                         var result = pdfAValidator.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
                         Assert.IsFalse(result);
                     }
                 }
             }
-            var listOfDirectoriesInTempAfterVeraPdf = Directory.GetDirectories(Path.GetTempPath());
+            var listOfDirectoriesInTempAfterVeraPdf = Directory.GetDirectories(tempPath);
             Assert.AreEqual(listOfDirectoriesInTempAfterVeraPdf.Length, listOfDirectoriesInTempWithoutVeraPdf.Length);
         }
 
-        private static void AssertVeraPdfBinCreation(string[] listOfDirectoriesInTempWithoutVeraPdf, PdfAValidator.PdfAValidator pdfAValidator)
+        private static void AssertVeraPdfBinCreation(string[] listOfDirectoriesInTempWithoutVeraPdf, PdfAValidator.PdfAValidator pdfAValidator, string path)
         {
-            var listOfDirectoriesInTempWithVeraPdf = Directory.GetDirectories(Path.GetTempPath());
+            var listOfDirectoriesInTempWithVeraPdf = Directory.GetDirectories(path);
             var newDirectories = listOfDirectoriesInTempWithVeraPdf.Except(listOfDirectoriesInTempWithoutVeraPdf);
 
             Assert.AreEqual(newDirectories.Count(), 1);
