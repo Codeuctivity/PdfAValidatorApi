@@ -1,10 +1,11 @@
-﻿// HINWEIS: Für den generierten Code ist möglicherweise mindestens .NET Framework 4.5 oder .NET Core/Standard 2.0 erforderlich.
-/// <remarks/>
-[System.SerializableAttribute()]
+﻿/// <summary>
+/// Deserialized verapdf report
+/// </summary>
+[System.SerializableAttribute]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
 [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-public partial class report
+public class report
 {
     private reportReleaseDetails[] buildInformationField;
 
@@ -54,10 +55,10 @@ public partial class report
 }
 
 /// <remarks/>
-[System.SerializableAttribute()]
+[System.SerializableAttribute]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-public partial class reportReleaseDetails
+public class reportReleaseDetails
 {
     private string idField;
 
@@ -66,7 +67,7 @@ public partial class reportReleaseDetails
     private System.DateTime buildDateField;
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string id
     {
         get
@@ -80,7 +81,7 @@ public partial class reportReleaseDetails
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string version
     {
         get
@@ -94,7 +95,7 @@ public partial class reportReleaseDetails
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public System.DateTime buildDate
     {
         get
@@ -109,10 +110,10 @@ public partial class reportReleaseDetails
 }
 
 /// <remarks/>
-[System.SerializableAttribute()]
+[System.SerializableAttribute]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-public partial class reportJobs
+public class reportJobs
 {
     private reportJobsJob jobField;
 
@@ -131,10 +132,10 @@ public partial class reportJobs
 }
 
 /// <remarks/>
-[System.SerializableAttribute()]
+[System.SerializableAttribute]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-public partial class reportJobsJob
+public class reportJobsJob
 {
     private reportJobsJobItem itemField;
 
@@ -183,10 +184,10 @@ public partial class reportJobsJob
 }
 
 /// <remarks/>
-[System.SerializableAttribute()]
+[System.SerializableAttribute]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-public partial class reportJobsJobItem
+public class reportJobsJobItem
 {
     private string nameField;
 
@@ -206,7 +207,7 @@ public partial class reportJobsJobItem
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string size
     {
         get
@@ -221,10 +222,10 @@ public partial class reportJobsJobItem
 }
 
 /// <remarks/>
-[System.SerializableAttribute()]
+[System.SerializableAttribute]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-public partial class reportJobsJobValidationReport
+public class reportJobsJobValidationReport
 {
     private reportJobsJobValidationReportDetails detailsField;
 
@@ -248,7 +249,7 @@ public partial class reportJobsJobValidationReport
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string profileName
     {
         get
@@ -262,7 +263,7 @@ public partial class reportJobsJobValidationReport
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string statement
     {
         get
@@ -276,7 +277,7 @@ public partial class reportJobsJobValidationReport
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public bool isCompliant
     {
         get
@@ -291,10 +292,10 @@ public partial class reportJobsJobValidationReport
 }
 
 /// <remarks/>
-[System.SerializableAttribute()]
+[System.SerializableAttribute]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-public partial class reportJobsJobValidationReportDetails
+public class reportJobsJobValidationReportDetails
 {
     private string passedRulesField;
 
@@ -305,7 +306,7 @@ public partial class reportJobsJobValidationReportDetails
     private string failedChecksField;
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string passedRules
     {
         get
@@ -319,7 +320,7 @@ public partial class reportJobsJobValidationReportDetails
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string failedRules
     {
         get
@@ -333,7 +334,7 @@ public partial class reportJobsJobValidationReportDetails
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string passedChecks
     {
         get
@@ -347,7 +348,7 @@ public partial class reportJobsJobValidationReportDetails
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string failedChecks
     {
         get
@@ -362,10 +363,10 @@ public partial class reportJobsJobValidationReportDetails
 }
 
 /// <remarks/>
-[System.SerializableAttribute()]
+[System.SerializableAttribute]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-public partial class reportJobsJobDuration
+public class reportJobsJobDuration
 {
     private ulong startField;
 
@@ -374,7 +375,7 @@ public partial class reportJobsJobDuration
     private System.DateTime valueField;
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public ulong start
     {
         get
@@ -388,7 +389,7 @@ public partial class reportJobsJobDuration
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public ulong finish
     {
         get
@@ -417,10 +418,10 @@ public partial class reportJobsJobDuration
 }
 
 /// <remarks/>
-[System.SerializableAttribute()]
+[System.SerializableAttribute]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-public partial class reportBatchSummary
+public class reportBatchSummary
 {
     private reportBatchSummaryValidationReports validationReportsField;
 
@@ -489,7 +490,7 @@ public partial class reportBatchSummary
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string totalJobs
     {
         get
@@ -503,7 +504,7 @@ public partial class reportBatchSummary
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string failedToParse
     {
         get
@@ -517,7 +518,7 @@ public partial class reportBatchSummary
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string encrypted
     {
         get
@@ -532,10 +533,10 @@ public partial class reportBatchSummary
 }
 
 /// <remarks/>
-[System.SerializableAttribute()]
+[System.SerializableAttribute]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-public partial class reportBatchSummaryValidationReports
+public class reportBatchSummaryValidationReports
 {
     private string compliantField;
 
@@ -546,7 +547,7 @@ public partial class reportBatchSummaryValidationReports
     private string valueField;
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string compliant
     {
         get
@@ -560,7 +561,7 @@ public partial class reportBatchSummaryValidationReports
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string nonCompliant
     {
         get
@@ -574,7 +575,7 @@ public partial class reportBatchSummaryValidationReports
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string failedJobs
     {
         get
@@ -588,7 +589,7 @@ public partial class reportBatchSummaryValidationReports
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTextAttribute()]
+    [System.Xml.Serialization.XmlTextAttribute]
     public string Value
     {
         get
@@ -603,17 +604,17 @@ public partial class reportBatchSummaryValidationReports
 }
 
 /// <remarks/>
-[System.SerializableAttribute()]
+[System.SerializableAttribute]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-public partial class reportBatchSummaryFeatureReports
+public class reportBatchSummaryFeatureReports
 {
     private string failedJobsField;
 
     private string valueField;
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string failedJobs
     {
         get
@@ -627,7 +628,7 @@ public partial class reportBatchSummaryFeatureReports
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTextAttribute()]
+    [System.Xml.Serialization.XmlTextAttribute]
     public string Value
     {
         get
@@ -642,17 +643,17 @@ public partial class reportBatchSummaryFeatureReports
 }
 
 /// <remarks/>
-[System.SerializableAttribute()]
+[System.SerializableAttribute]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-public partial class reportBatchSummaryRepairReports
+public class reportBatchSummaryRepairReports
 {
     private string failedJobsField;
 
     private string valueField;
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public string failedJobs
     {
         get
@@ -666,7 +667,7 @@ public partial class reportBatchSummaryRepairReports
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTextAttribute()]
+    [System.Xml.Serialization.XmlTextAttribute]
     public string Value
     {
         get
@@ -681,10 +682,10 @@ public partial class reportBatchSummaryRepairReports
 }
 
 /// <remarks/>
-[System.SerializableAttribute()]
+[System.SerializableAttribute]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-public partial class reportBatchSummaryDuration
+public class reportBatchSummaryDuration
 {
     private ulong startField;
 
@@ -693,7 +694,7 @@ public partial class reportBatchSummaryDuration
     private System.DateTime valueField;
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public ulong start
     {
         get
@@ -707,7 +708,7 @@ public partial class reportBatchSummaryDuration
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
+    [System.Xml.Serialization.XmlAttributeAttribute]
     public ulong finish
     {
         get

@@ -8,12 +8,34 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 // TODO Fix the generated casing in report.cs
-// TODO Move stuff out of ctor
 
 namespace PdfAValidator
 {
+    /// <summary>
+    /// PdfAValidator is a VeraPdf wrapper
+    /// </summary>
     public class PdfAValidator : IDisposable
     {
+        private const string maskedQuote = "\"";
+        private string _pathVeraPdfDirectory;
+        /// <summary>
+        /// Path to java jre used by windows
+        /// </summary>
+        /// <value></value>
+        public string PathJava { private set; get; }
+
+        private readonly bool _customVerapdfAndJavaLocations;
+
+        private bool isInitilized { get; set; }
+
+        /// <summary>
+        /// Command that is used to invoke VeraPdf 
+        /// </summary>
+        /// <value>Command with arguments</value>
+        public string VeraPdfStartScript { private set; get; }
+        /// <summary>
+        /// Disposing verapdf bins
+        /// </summary>
         public void Dispose()
         {
             if (!_customVerapdfAndJavaLocations)
@@ -21,39 +43,43 @@ namespace PdfAValidator
                 Directory.Delete(_pathVeraPdfDirectory, true);
             }
         }
-
         /// <summary>
         /// Use this constructor to use your own installation of VeraPdf and Java, e.g.: c:\somePath\verapdf.bat
         /// </summary>
         /// <param name="pathToVeraPdfBin"></param>
+        /// <param name="pathToJava"></param>
         public PdfAValidator(string pathToVeraPdfBin, string pathToJava)
         {
             VeraPdfStartScript = pathToVeraPdfBin;
             PathJava = pathToJava;
             _customVerapdfAndJavaLocations = true;
+            isInitilized = true;
         }
 
         /// <summary>
         /// Use this constructor to use the embedded veraPdf binaries
         /// </summary>
         public PdfAValidator()
-        { intiPathToVeraPdfBinAndJava(); }
+        { }
 
-        private const string maskedQuote = "\"";
-        private string _pathVeraPdfDirectory;
-        public string PathJava { private set; get; }
 
-        private readonly bool _customVerapdfAndJavaLocations;
-
-        public string VeraPdfStartScript { private set; get; }
-
+        /// <summary>
+        /// Validates a pdf to be compliant with the pdfa standard claimed by its meta data
+        /// </summary>
+        /// <param name="pathToPdfFile"></param>
+        /// <returns>True for compliant PdfA Files</returns>
         public bool Validate(string pathToPdfFile)
         {
             return ValidateWithDetailedReport(pathToPdfFile).batchSummary.validationReports.compliant == "1";
         }
-
+        /// <summary>
+        /// Validates a pdf and returns a detailed compliance report
+        /// </summary>
+        /// <param name="pathToPdfFile"></param>
+        /// <returns></returns>
         public report ValidateWithDetailedReport(string pathToPdfFile)
         {
+            intiPathToVeraPdfBinAndJava();
             var absolutePathToPdfFile = Path.GetFullPath(pathToPdfFile);
 
             if (!File.Exists(absolutePathToPdfFile))
@@ -88,7 +114,6 @@ namespace PdfAValidator
                     var veraPdfReport = DeserializeXml<report>(outputResult);
                     return veraPdfReport;
                 }
-
                 throw new VeraPdfException("Calling VearPdf caused an error: " + errorResult);
             }
         }
@@ -110,10 +135,13 @@ namespace PdfAValidator
                 result = (T)serializer.Deserialize(reader);
             return result;
         }
-
-
         private void intiPathToVeraPdfBinAndJava()
         {
+            if (isInitilized)
+            {
+                return;
+            }
+
             _pathVeraPdfDirectory = Path.Combine(Path.GetTempPath(), "VeraPdf" + Guid.NewGuid());
             Directory.CreateDirectory(_pathVeraPdfDirectory);
 
@@ -134,9 +162,10 @@ namespace PdfAValidator
             {
                 throw new NotImplementedException("Sorry, only supporting linux and windows.");
             }
+            isInitilized = true;
         }
 
-        public static void SetLinuxFileExecuteable(string filePath)
+        private static void SetLinuxFileExecuteable(string filePath)
         {
             var chmodCmd = "chmod 700 " + filePath;
             var escapedArgs = chmodCmd.Replace(maskedQuote, "\\\"");

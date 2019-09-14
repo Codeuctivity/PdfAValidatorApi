@@ -9,7 +9,7 @@ namespace PdfAValidatorWebApi
 {
 
     /// <summary>
-    /// Filter to enable handling file upload botton in swagger
+    /// Filter to enable handling file upload button in swagger
     /// </summary>
     public class FormFileSwaggerFilter : IOperationFilter
     {
@@ -80,12 +80,14 @@ namespace PdfAValidatorWebApi
             }
 
             foreach (var formFileParameter in formFileParameterNames)
-                parameters.Add(new NonBodyParameter()
+            {
+                parameters.Add(new NonBodyParameter
                 {
                     Name = formFileParameter,
                     Type = "file",
                     In = "formData"
                 });
+            }
         }
     }
 }
