@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfAValidatorWebApi", "PdfA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfAValidatorTestFramework", "PdfAValidatorFrameworkTest\PdfAValidatorTestFramework.csproj", "{F1D60FEF-DF9D-48EB-B94D-1CB1293A0E82}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfAValidatorTestCore2.2", "PdfAValidatorTestCore2.2\PdfAValidatorTestCore2.2.csproj", "{8A1F6818-3854-418B-9ECD-F35EC3558AAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{F1D60FEF-DF9D-48EB-B94D-1CB1293A0E82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1D60FEF-DF9D-48EB-B94D-1CB1293A0E82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1D60FEF-DF9D-48EB-B94D-1CB1293A0E82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A1F6818-3854-418B-9ECD-F35EC3558AAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A1F6818-3854-418B-9ECD-F35EC3558AAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A1F6818-3854-418B-9ECD-F35EC3558AAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A1F6818-3854-418B-9ECD-F35EC3558AAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
