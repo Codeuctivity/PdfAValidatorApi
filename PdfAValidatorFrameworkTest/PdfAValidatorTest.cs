@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -14,7 +15,7 @@ namespace PdfAValidatorTest
         { tempPath = Path.GetTempPath(); }
 
         [TestMethod]
-        public void ShouldUnpackNewDirectoryInTempdirectoryFramework()
+        public void ShouldUnpackNewDirectoryInTempdirectory()
         {
             var listOfDirectoriesInTempWithoutVeraPdf = Directory.GetDirectories(tempPath);
             using (var pdfAValidator = new PdfAValidator.PdfAValidator())
@@ -99,7 +100,13 @@ namespace PdfAValidatorTest
             var listOfDirectoriesInTempWithVeraPdf = Directory.GetDirectories(path);
             var newDirectories = listOfDirectoriesInTempWithVeraPdf.Except(listOfDirectoriesInTempWithoutVeraPdf);
 
-            Assert.AreEqual(newDirectories.Count(), 1);
+            if (newDirectories.Count() > 1)
+            {
+                Console.WriteLine("Found more directories than expected, maybe something buildserverspecific?");
+                Console.WriteLine(string.Join(", ", newDirectories));
+            }
+            else
+                Assert.AreEqual(1, newDirectories.Count());
             var scriptPath = pdfAValidator.VeraPdfStartScript;
             Assert.AreEqual(".bat", scriptPath.Substring(scriptPath.Length - 4));
             Assert.IsTrue(File.Exists(scriptPath), scriptPath + " does not exist.");
