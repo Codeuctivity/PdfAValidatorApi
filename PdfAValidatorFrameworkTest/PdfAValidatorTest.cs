@@ -114,7 +114,7 @@ namespace PdfAValidatorTest
 
         private string[] GetListOfDirectoriesInTempExceptDirectoriesCreatedByAppVeyor()
         {
-            return Directory.GetDirectories(tempPath).Where(_ => _.Contains("appveyor"))?.ToArray();
+            return Directory.GetDirectories(tempPath).Where(_ => !_.Contains("appveyor"))?.ToArray();
         }
     }
 }
