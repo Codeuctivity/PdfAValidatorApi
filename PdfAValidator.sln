@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2016
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfAValidator", "PdfAValidator\PdfAValidator.csproj", "{28A809F4-F816-434C-9D5A-3DCC1EA55D40}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDfAValidatorTest", "PDfAValidatorTest\PDfAValidatorTest.csproj", "{C37599F8-FCB2-4159-B84D-6738A00494CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfAValidatorTest", "PDfAValidatorTest\PdfAValidatorTest.csproj", "{C37599F8-FCB2-4159-B84D-6738A00494CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfAValidatorWebApi", "PdfAValidatorWebApi\PdfAValidatorWebApi.csproj", "{E4512783-7E2E-454B-B4E2-3291344A8581}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfAValidatorWebApi", "PdfAValidatorWebApi\PdfAValidatorWebApi.csproj", "{E4512783-7E2E-454B-B4E2-3291344A8581}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfAValidatorTestFramework", "PdfAValidatorFrameworkTest\PdfAValidatorTestFramework.csproj", "{F1D60FEF-DF9D-48EB-B94D-1CB1293A0E82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{E4512783-7E2E-454B-B4E2-3291344A8581}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4512783-7E2E-454B-B4E2-3291344A8581}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4512783-7E2E-454B-B4E2-3291344A8581}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1D60FEF-DF9D-48EB-B94D-1CB1293A0E82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1D60FEF-DF9D-48EB-B94D-1CB1293A0E82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1D60FEF-DF9D-48EB-B94D-1CB1293A0E82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1D60FEF-DF9D-48EB-B94D-1CB1293A0E82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
