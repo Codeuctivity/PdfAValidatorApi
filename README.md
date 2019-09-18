@@ -27,14 +27,14 @@ Sample - e.g. use it in your unit test to check compliance of some pdf:
 Sample - e.g. use it in your unit test to check the used sub standard of some pdf:
 
   ```C#
-  [Fact]
   public void ShouldGetDetailedReportFromPdfA()
   {
-      using (var pdfAValidator = new  PdfAValidator.PdfAValidator())
+      using (var pdfAValidator = new PdfAValidator.PdfAValidator())
       {
-          var result =  pdfAValidator.ValidateWithDetailedRepor  (@"./TestPdfFileFromLibreOffice.pdf");
-          Assert.True(result.jobs.job.validationReport  isCompliant);
-          Assert.True(result.jobs.job.validationReport  profileName == "PDF/A-1A validation  profile");
+          Assert.IsTrue(File.Exists(@"./TestPdfFiles/FromLibreOffice.pdf"));
+          var result = pdfAValidator.ValidateWithDetailedReport(@"./TestPdfFiles/FromLibreOffice.pdf");
+          Assert.IsTrue(result.jobs.job.validationReport.isCompliant);
+          Assert.IsTrue(result.jobs.job.validationReport.profileName == "PDF/A-1A validation profile");
       }
   }
   ```
