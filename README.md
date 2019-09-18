@@ -33,8 +33,8 @@ Sample - e.g. use it in your unit test to check the used sub standard of some pd
       using (var pdfAValidator = new  PdfAValidator.PdfAValidator())
       {
           var result =  pdfAValidator.ValidateWithDetailedRepor  (@"./TestPdfFileFromLibreOffice.pdf");
-          Assert.Tru  (result.jobs.job.validationReport  isCompliant);
-          Assert.Tru  (result.jobs.job.validationReport  profileName == "PDF/A-1A validation  profile");
+          Assert.True(result.jobs.job.validationReport  isCompliant);
+          Assert.True(result.jobs.job.validationReport  profileName == "PDF/A-1A validation  profile");
       }
   }
   ```
