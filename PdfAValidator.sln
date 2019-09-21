@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfAValidator", "PdfAValidator\PdfAValidator.csproj", "{28A809F4-F816-434C-9D5A-3DCC1EA55D40}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfAValidatorTest", "PDfAValidatorTest\PdfAValidatorTest.csproj", "{C37599F8-FCB2-4159-B84D-6738A00494CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfAValidatorTest", "PdfAValidatorTest\PdfAValidatorTest.csproj", "{C37599F8-FCB2-4159-B84D-6738A00494CD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfAValidatorWebApi", "PdfAValidatorWebApi\PdfAValidatorWebApi.csproj", "{E4512783-7E2E-454B-B4E2-3291344A8581}"
 EndProject
