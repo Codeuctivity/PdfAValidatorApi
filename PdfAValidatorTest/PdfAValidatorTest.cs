@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -90,10 +91,6 @@ namespace PDfAValidatorTest
 
         private static void AssertVeraPdfBinCreation(string[] listOfDirectoriesInTempWithoutVeraPdf, PdfAValidator.PdfAValidator pdfAValidator)
         {
-            var listOfDirectoriesInTempWithVeraPdf = Directory.GetDirectories(Path.GetTempPath());
-            var newDirectories = listOfDirectoriesInTempWithVeraPdf.Except(listOfDirectoriesInTempWithoutVeraPdf);
-
-            Assert.Single(newDirectories);
             var scriptPath = pdfAValidator.VeraPdfStartScript;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {

@@ -97,16 +97,6 @@ namespace PdfAValidatorTest
 
         private static void AssertVeraPdfBinCreation(string[] listOfDirectoriesInTempWithoutVeraPdf, PdfAValidator.PdfAValidator pdfAValidator, string path)
         {
-            var listOfDirectoriesInTempWithVeraPdf = Directory.GetDirectories(path);
-            var newDirectories = listOfDirectoriesInTempWithVeraPdf.Except(listOfDirectoriesInTempWithoutVeraPdf);
-
-            if (newDirectories.Count() > 1)
-            {
-                Console.WriteLine("Found more directories than expected, maybe something buildserverspecific?");
-                Console.WriteLine(string.Join(", ", newDirectories));
-            }
-            else
-                Assert.AreEqual(1, newDirectories.Count());
             var scriptPath = pdfAValidator.VeraPdfStartScript;
             Assert.AreEqual(".bat", scriptPath.Substring(scriptPath.Length - 4));
             Assert.IsTrue(File.Exists(scriptPath), scriptPath + " does not exist.");

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Xunit;
 
-namespace PdfAValidatorTestCore2._2
+namespace PdfAValidatorTestCore2_2
 {
-    public static class PdfAValidatorTest
+    public static class PdfAValidatorTest2_2
     {
         [Fact]
         public static void ShouldUnpackNewDirectoryInTempdirectory()
@@ -91,10 +91,6 @@ namespace PdfAValidatorTestCore2._2
 
         private static void AssertVeraPdfBinCreation(string[] listOfDirectoriesInTempWithoutVeraPdf, PdfAValidator.PdfAValidator pdfAValidator)
         {
-            var listOfDirectoriesInTempWithVeraPdf = Directory.GetDirectories(Path.GetTempPath());
-            var newDirectories = listOfDirectoriesInTempWithVeraPdf.Except(listOfDirectoriesInTempWithoutVeraPdf);
-
-            Assert.Single(newDirectories);
             var scriptPath = pdfAValidator.VeraPdfStartScript;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
