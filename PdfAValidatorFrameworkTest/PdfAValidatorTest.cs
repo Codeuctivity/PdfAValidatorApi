@@ -21,7 +21,7 @@ namespace PdfAValidatorTest
             using (var pdfAValidator = new PdfAValidator.PdfAValidator())
             {
                 pdfAValidator.Validate(@"./TestPdfFiles/FromLibreOffice.pdf");
-                AssertVeraPdfBinCreation(listOfDirectoriesInTempWithoutVeraPdf, pdfAValidator, tempPath);
+                AssertVeraPdfBinCreation(pdfAValidator.VeraPdfStartScript);
             }
             var listOfDirectoriesInTempAfterVeraPdf = GetListOfDirectoriesInTempExceptDirectoriesCreatedByAppVeyor();
             Assert.AreEqual(listOfDirectoriesInTempAfterVeraPdf.Length, listOfDirectoriesInTempWithoutVeraPdf.Length);
@@ -84,7 +84,7 @@ namespace PdfAValidatorTest
                     pdfAValidatorPrepareBins.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
                     using (var pdfAValidator = new PdfAValidator.PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStartScript, pdfAValidatorPrepareBins.PathJava))
                     {
-                        AssertVeraPdfBinCreation(listOfDirectoriesInTempWithoutVeraPdf, pdfAValidator, tempPath);
+                        AssertVeraPdfBinCreation(pdfAValidator.VeraPdfStartScript);
                         Assert.IsTrue(File.Exists(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
                         var result = pdfAValidator.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
                         Assert.IsFalse(result);
@@ -95,9 +95,8 @@ namespace PdfAValidatorTest
             Assert.AreEqual(listOfDirectoriesInTempAfterVeraPdf.Length, listOfDirectoriesInTempWithoutVeraPdf.Length);
         }
 
-        private static void AssertVeraPdfBinCreation(string[] listOfDirectoriesInTempWithoutVeraPdf, PdfAValidator.PdfAValidator pdfAValidator, string path)
+        private static void AssertVeraPdfBinCreation(string scriptPath)
         {
-            var scriptPath = pdfAValidator.VeraPdfStartScript;
             Assert.AreEqual(".bat", scriptPath.Substring(scriptPath.Length - 4));
             Assert.IsTrue(File.Exists(scriptPath), scriptPath + " does not exist.");
         }
