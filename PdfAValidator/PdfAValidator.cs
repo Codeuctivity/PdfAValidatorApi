@@ -18,6 +18,8 @@ namespace PdfAValidator
     {
         private const string maskedQuote = "\"";
         private string _pathVeraPdfDirectory;
+        private bool disposed;
+
         /// <summary>
         /// Path to java jre used by windows
         /// </summary>
@@ -36,12 +38,29 @@ namespace PdfAValidator
         /// <summary>
         /// Disposing verapdf bins
         /// </summary>
+
         public void Dispose()
         {
-            if (!_customVerapdfAndJavaLocations)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposing ghostscript bins
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
             {
-                Directory.Delete(_pathVeraPdfDirectory, true);
+                if (!_customVerapdfAndJavaLocations)
+                {
+                    Directory.Delete(_pathVeraPdfDirectory, true);
+                }
             }
+            disposed = true;
         }
         /// <summary>
         /// Use this constructor to use your own installation of VeraPdf and Java, e.g.: c:\somePath\verapdf.bat

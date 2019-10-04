@@ -102,5 +102,13 @@ namespace PdfAValidatorTestCore2_2
             }
             Assert.True(File.Exists(scriptPath), scriptPath + " does not exist.");
         }
+        [Fact]
+        public static void ShouldNotFailOnMultipleDisposeCalls()
+        {
+            var postscriptValidator = new PdfAValidator.PdfAValidator();
+            postscriptValidator.Validate(@"./TestPdfFiles/FromLibreOffice.pdf");
+            postscriptValidator.Dispose();
+            postscriptValidator.Dispose();
+        }
     }
 }

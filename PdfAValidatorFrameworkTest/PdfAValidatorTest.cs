@@ -95,6 +95,16 @@ namespace PdfAValidatorTest
             Assert.AreEqual(listOfDirectoriesInTempAfterVeraPdf.Length, listOfDirectoriesInTempWithoutVeraPdf.Length);
         }
 
+        [TestMethod]
+        public void ShouldNotFailOnMultipleDisposeCallse()
+        {
+            var pdfAValidatorPrepareBins = new PdfAValidator.PdfAValidator();
+            pdfAValidatorPrepareBins.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+            pdfAValidatorPrepareBins.Dispose();
+            pdfAValidatorPrepareBins.Dispose();
+        }
+
+
         private static void AssertVeraPdfBinCreation(string scriptPath)
         {
             Assert.AreEqual(".bat", scriptPath.Substring(scriptPath.Length - 4));
