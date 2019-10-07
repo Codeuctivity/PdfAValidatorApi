@@ -230,6 +230,8 @@ namespace PdfAValidator
                 stream.Seek(0, SeekOrigin.Begin);
                 stream.CopyTo(fileStream);
             }
+            File.WriteAllText(Path.Combine(pathVeraPdfDirectory, "someFilename.txt"), "testWriteAccess");
+
             ZipFile.ExtractToDirectory(pathZipVeraPdf, pathVeraPdfDirectory);
         }
     }
