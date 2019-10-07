@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.IO;
 using System.Linq;
 
@@ -96,7 +95,7 @@ namespace PdfAValidatorTest
         }
 
         [TestMethod]
-        public void ShouldNotFailOnMultipleDisposeCallse()
+        public void ShouldNotFailOnMultipleDisposeCalls()
         {
             var pdfAValidatorPrepareBins = new PdfAValidator.PdfAValidator();
             pdfAValidatorPrepareBins.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
@@ -104,6 +103,13 @@ namespace PdfAValidatorTest
             pdfAValidatorPrepareBins.Dispose();
         }
 
+        [TestMethod]
+        public void ShouldNotFailOnMultipleDisposeCallseWithoutInitialization()
+        {
+            var pdfAValidatorPrepareBins = new PdfAValidator.PdfAValidator();
+            pdfAValidatorPrepareBins.Dispose();
+            pdfAValidatorPrepareBins.Dispose();
+        }
 
         private static void AssertVeraPdfBinCreation(string scriptPath)
         {

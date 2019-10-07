@@ -28,13 +28,14 @@ namespace PdfAValidator
 
         private readonly bool _customVerapdfAndJavaLocations;
 
-        private bool isInitilized { get; set; }
+        private bool IsInitilized { get; set; }
 
         /// <summary>
-        /// Command that is used to invoke VeraPdf 
+        /// Command that is used to invoke VeraPdf
         /// </summary>
         /// <value>Command with arguments</value>
         public string VeraPdfStartScript { private set; get; }
+
         /// <summary>
         /// Disposing verapdf bins
         /// </summary>
@@ -51,17 +52,20 @@ namespace PdfAValidator
         protected virtual void Dispose(bool disposing)
         {
             if (disposed)
+            {
                 return;
+            }
 
             if (disposing)
             {
-                if (!_customVerapdfAndJavaLocations)
+                if (!_customVerapdfAndJavaLocations && Directory.Exists(_pathVeraPdfDirectory))
                 {
                     Directory.Delete(_pathVeraPdfDirectory, true);
                 }
             }
             disposed = true;
         }
+
         /// <summary>
         /// Use this constructor to use your own installation of VeraPdf and Java, e.g.: c:\somePath\verapdf.bat
         /// </summary>
@@ -72,7 +76,7 @@ namespace PdfAValidator
             VeraPdfStartScript = pathToVeraPdfBin;
             PathJava = pathToJava;
             _customVerapdfAndJavaLocations = true;
-            isInitilized = true;
+            IsInitilized = true;
         }
 
         /// <summary>
@@ -80,7 +84,6 @@ namespace PdfAValidator
         /// </summary>
         public PdfAValidator()
         { }
-
 
         /// <summary>
         /// Validates a pdf to be compliant with the pdfa standard claimed by its meta data
@@ -91,6 +94,7 @@ namespace PdfAValidator
         {
             return ValidateWithDetailedReport(pathToPdfFile).batchSummary.validationReports.compliant == "1";
         }
+
         /// <summary>
         /// Validates a pdf and returns a detailed compliance report
         /// </summary>
@@ -98,7 +102,7 @@ namespace PdfAValidator
         /// <returns></returns>
         public report ValidateWithDetailedReport(string pathToPdfFile)
         {
-            intiPathToVeraPdfBinAndJava();
+            IntiPathToVeraPdfBinAndJava();
             var absolutePathToPdfFile = Path.GetFullPath(pathToPdfFile);
 
             if (!File.Exists(absolutePathToPdfFile))
@@ -113,7 +117,7 @@ namespace PdfAValidator
                 process.StartInfo.RedirectStandardError = true;
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.CreateNoWindow = true;
-                if (!String.IsNullOrEmpty(PathJava))
+                if (!string.IsNullOrEmpty(PathJava))
                 {
                     process.StartInfo.EnvironmentVariables["JAVACMD"] = PathJava;
                 }
@@ -151,12 +155,16 @@ namespace PdfAValidator
             T result = null;
 
             using (TextReader reader = new StringReader(sourceXML))
+            {
                 result = (T)serializer.Deserialize(reader);
+            }
+
             return result;
         }
-        private void intiPathToVeraPdfBinAndJava()
+
+        private void IntiPathToVeraPdfBinAndJava()
         {
-            if (isInitilized)
+            if (IsInitilized)
             {
                 return;
             }
@@ -181,7 +189,7 @@ namespace PdfAValidator
             {
                 throw new NotImplementedException("Sorry, only supporting linux and windows.");
             }
-            isInitilized = true;
+            IsInitilized = true;
         }
 
         private static void SetLinuxFileExecuteable(string filePath)
@@ -189,7 +197,7 @@ namespace PdfAValidator
             var chmodCmd = "chmod 700 " + filePath;
             var escapedArgs = chmodCmd.Replace(maskedQuote, "\\\"");
 
-            var process = new Process
+            using (var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
@@ -200,9 +208,11 @@ namespace PdfAValidator
                     FileName = "/bin/bash",
                     Arguments = $"-c \"{escapedArgs}\""
                 }
-            };
-            process.Start();
-            process.WaitForExit();
+            })
+            {
+                process.Start();
+                process.WaitForExit();
+            }
         }
 
         private void ExtractBinaryFromManifest(string resourceName)
