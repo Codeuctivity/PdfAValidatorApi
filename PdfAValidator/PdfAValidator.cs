@@ -17,6 +17,7 @@ namespace PdfAValidator
     public class PdfAValidator : IDisposable
     {
         private const string maskedQuote = "\"";
+        private const int maxLenghtTempdirectoryThatVeraPdfFitsIn = 206;
         private readonly object lockObject = new object();
         private string pathVeraPdfDirectory;
         private bool disposed;
@@ -172,7 +173,12 @@ namespace PdfAValidator
                     return;
                 }
 
-                pathVeraPdfDirectory = Path.Combine(Path.GetTempPath(), "VeraPdf" + Guid.NewGuid());
+                pathVeraPdfDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                if (pathVeraPdfDirectory.Length > maxLenghtTempdirectoryThatVeraPdfFitsIn)
+                {
+                    throw new PathTooLongException(pathVeraPdfDirectory);
+                }
+
                 Directory.CreateDirectory(pathVeraPdfDirectory);
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -230,6 +236,7 @@ namespace PdfAValidator
                 stream.Seek(0, SeekOrigin.Begin);
                 stream.CopyTo(fileStream);
             }
+
             ZipFile.ExtractToDirectory(pathZipVeraPdf, pathVeraPdfDirectory);
         }
     }

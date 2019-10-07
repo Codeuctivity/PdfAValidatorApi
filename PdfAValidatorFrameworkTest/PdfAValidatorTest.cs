@@ -1,29 +1,23 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
-using System.Linq;
 
 namespace PdfAValidatorTest
 {
     [TestClass]
     public class PdfAValidatorTest
     {
-        private string tempPath;
-
-        [TestInitialize]
-        public void InitialThings()
-        { tempPath = Path.GetTempPath(); }
+        private string veraPdfStartScript;
 
         [TestMethod]
         public void ShouldUnpackNewDirectoryInTempdirectory()
         {
-            var listOfDirectoriesInTempWithoutVeraPdf = GetListOfDirectoriesInTempExceptDirectoriesCreatedByAppVeyor();
             using (var pdfAValidator = new PdfAValidator.PdfAValidator())
             {
                 pdfAValidator.Validate(@"./TestPdfFiles/FromLibreOffice.pdf");
-                AssertVeraPdfBinCreation(pdfAValidator.VeraPdfStartScript);
+                veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
+                AssertVeraPdfBinCreation(veraPdfStartScript);
             }
-            var listOfDirectoriesInTempAfterVeraPdf = GetListOfDirectoriesInTempExceptDirectoriesCreatedByAppVeyor();
-            Assert.AreEqual(listOfDirectoriesInTempAfterVeraPdf.Length, listOfDirectoriesInTempWithoutVeraPdf.Length);
+            AssertVeraPdfGotDisposed();
         }
 
         [TestMethod]
@@ -76,22 +70,18 @@ namespace PdfAValidatorTest
         public void ShouldWorkWithCustomJavaAndVeraPdfLocation()
         {
             // Using default ctor to get verapdf and java bins for the test
-            var listOfDirectoriesInTempWithoutVeraPdf = GetListOfDirectoriesInTempExceptDirectoriesCreatedByAppVeyor();
             using (var pdfAValidatorPrepareBins = new PdfAValidator.PdfAValidator())
             {
+                pdfAValidatorPrepareBins.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                using (var pdfAValidator = new PdfAValidator.PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStartScript, pdfAValidatorPrepareBins.PathJava))
                 {
-                    pdfAValidatorPrepareBins.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
-                    using (var pdfAValidator = new PdfAValidator.PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStartScript, pdfAValidatorPrepareBins.PathJava))
-                    {
-                        AssertVeraPdfBinCreation(pdfAValidator.VeraPdfStartScript);
-                        Assert.IsTrue(File.Exists(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
-                        var result = pdfAValidator.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
-                        Assert.IsFalse(result);
-                    }
+                    AssertVeraPdfBinCreation(pdfAValidator.VeraPdfStartScript);
+                    Assert.IsTrue(File.Exists(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
+                    var result = pdfAValidator.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                    Assert.IsFalse(result);
                 }
+                AssertVeraPdfGotDisposed();
             }
-            var listOfDirectoriesInTempAfterVeraPdf = GetListOfDirectoriesInTempExceptDirectoriesCreatedByAppVeyor();
-            Assert.AreEqual(listOfDirectoriesInTempAfterVeraPdf.Length, listOfDirectoriesInTempWithoutVeraPdf.Length);
         }
 
         [TestMethod]
@@ -99,8 +89,15 @@ namespace PdfAValidatorTest
         {
             var pdfAValidatorPrepareBins = new PdfAValidator.PdfAValidator();
             pdfAValidatorPrepareBins.Validate(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+            veraPdfStartScript = pdfAValidatorPrepareBins.VeraPdfStartScript;
             pdfAValidatorPrepareBins.Dispose();
+            AssertVeraPdfGotDisposed();
             pdfAValidatorPrepareBins.Dispose();
+        }
+
+        private void AssertVeraPdfGotDisposed()
+        {
+            Assert.IsFalse(Directory.Exists(veraPdfStartScript));
         }
 
         [TestMethod]
@@ -115,11 +112,6 @@ namespace PdfAValidatorTest
         {
             Assert.AreEqual(".bat", scriptPath.Substring(scriptPath.Length - 4));
             Assert.IsTrue(File.Exists(scriptPath), scriptPath + " does not exist.");
-        }
-
-        private string[] GetListOfDirectoriesInTempExceptDirectoriesCreatedByAppVeyor()
-        {
-            return Directory.GetDirectories(tempPath).Where(_ => !_.Contains("appveyor"))?.ToArray();
         }
     }
 }
