@@ -17,7 +17,8 @@ namespace PdfAValidator
     public class PdfAValidator : IDisposable
     {
         private const string maskedQuote = "\"";
-        private string _pathVeraPdfDirectory;
+        private readonly object lockObject = new object();
+        private string pathVeraPdfDirectory;
         private bool disposed;
 
         /// <summary>
@@ -26,7 +27,7 @@ namespace PdfAValidator
         /// <value></value>
         public string PathJava { private set; get; }
 
-        private readonly bool _customVerapdfAndJavaLocations;
+        private readonly bool customVerapdfAndJavaLocations;
 
         private bool IsInitilized { get; set; }
 
@@ -58,9 +59,9 @@ namespace PdfAValidator
 
             if (disposing)
             {
-                if (!_customVerapdfAndJavaLocations && Directory.Exists(_pathVeraPdfDirectory))
+                if (!customVerapdfAndJavaLocations && Directory.Exists(pathVeraPdfDirectory))
                 {
-                    Directory.Delete(_pathVeraPdfDirectory, true);
+                    Directory.Delete(pathVeraPdfDirectory, true);
                 }
             }
             disposed = true;
@@ -75,7 +76,7 @@ namespace PdfAValidator
         {
             VeraPdfStartScript = pathToVeraPdfBin;
             PathJava = pathToJava;
-            _customVerapdfAndJavaLocations = true;
+            customVerapdfAndJavaLocations = true;
             IsInitilized = true;
         }
 
@@ -164,32 +165,36 @@ namespace PdfAValidator
 
         private void IntiPathToVeraPdfBinAndJava()
         {
-            if (IsInitilized)
+            lock (lockObject)
             {
-                return;
-            }
+                if (IsInitilized)
+                {
+                    return;
+                }
 
-            _pathVeraPdfDirectory = Path.Combine(Path.GetTempPath(), "VeraPdf" + Guid.NewGuid());
-            Directory.CreateDirectory(_pathVeraPdfDirectory);
+                pathVeraPdfDirectory = Path.Combine(Path.GetTempPath(), "VeraPdf" + Guid.NewGuid());
+                Directory.CreateDirectory(pathVeraPdfDirectory);
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                ExtractBinaryFromManifest("PdfAValidator.VeraPdf.Windows.zip");
-                VeraPdfStartScript = Path.Combine(_pathVeraPdfDirectory, "verapdf", "verapdf.bat");
-                // took from https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot#x64_win
-                PathJava = Path.Combine(_pathVeraPdfDirectory, "verapdf", "jdk8u202-b08-jre", "bin", "java");
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    ExtractBinaryFromManifest("PdfAValidator.VeraPdf.Windows.zip");
+                    VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf", "verapdf.bat");
+                    // took from https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot#x64_win
+                    PathJava = Path.Combine(pathVeraPdfDirectory, "verapdf", "jdk8u202-b08-jre", "bin", "java");
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    ExtractBinaryFromManifest("PdfAValidator.VeraPdf.Linux.zip");
+                    VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf", "verapdf");
+                    SetLinuxFileExecuteable(VeraPdfStartScript);
+                }
+                else
+                {
+                    throw new NotImplementedException("Sorry, only supporting linux and windows.");
+                }
+
+                IsInitilized = true;
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                ExtractBinaryFromManifest("PdfAValidator.VeraPdf.Linux.zip");
-                VeraPdfStartScript = Path.Combine(_pathVeraPdfDirectory, "verapdf", "verapdf");
-                SetLinuxFileExecuteable(VeraPdfStartScript);
-            }
-            else
-            {
-                throw new NotImplementedException("Sorry, only supporting linux and windows.");
-            }
-            IsInitilized = true;
         }
 
         private static void SetLinuxFileExecuteable(string filePath)
@@ -217,7 +222,7 @@ namespace PdfAValidator
 
         private void ExtractBinaryFromManifest(string resourceName)
         {
-            var pathZipVeraPdf = Path.Combine(_pathVeraPdfDirectory, "VeraPdf.zip");
+            var pathZipVeraPdf = Path.Combine(pathVeraPdfDirectory, "VeraPdf.zip");
             var assembly = Assembly.GetExecutingAssembly();
             using (var stream = assembly.GetManifestResourceStream(resourceName))
             using (var fileStream = File.Create(pathZipVeraPdf))
@@ -225,7 +230,7 @@ namespace PdfAValidator
                 stream.Seek(0, SeekOrigin.Begin);
                 stream.CopyTo(fileStream);
             }
-            ZipFile.ExtractToDirectory(pathZipVeraPdf, _pathVeraPdfDirectory);
+            ZipFile.ExtractToDirectory(pathZipVeraPdf, pathVeraPdfDirectory);
         }
     }
 }

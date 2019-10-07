@@ -87,6 +87,7 @@ namespace PDfAValidatorTest
             }
             Assert.False(File.Exists(veraPdfStartScript));
         }
+
         private static void AssertVeraPdfBinCreation(string scriptPath)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -99,11 +100,20 @@ namespace PDfAValidatorTest
             }
             Assert.True(File.Exists(scriptPath), scriptPath + " does not exist.");
         }
+
         [Fact]
         public static void ShouldNotFailOnMultipleDisposeCalls()
         {
             var postscriptValidator = new PdfAValidator.PdfAValidator();
             postscriptValidator.Validate(@"./TestPdfFiles/FromLibreOffice.pdf");
+            postscriptValidator.Dispose();
+            postscriptValidator.Dispose();
+        }
+
+        [Fact]
+        public static void ShouldNotFailOnMultipleDisposeCallseWithoutInitialization()
+        {
+            var postscriptValidator = new PdfAValidator.PdfAValidator();
             postscriptValidator.Dispose();
             postscriptValidator.Dispose();
         }
