@@ -1,5 +1,6 @@
 version: 1.0.{build}
-image: Visual Studio 2017
+image: Visual Studio 2019
+skip_tags: true
 configuration: Release
 nuget:
   account_feed: true
@@ -13,6 +14,16 @@ build:
   project: PdfAValidator.sln
   publish_aspnet_core: true
   verbosity: minimal
+
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+
 artifacts:
 - path: '**\PdfAValidator.*.nupkg'
 deploy:
