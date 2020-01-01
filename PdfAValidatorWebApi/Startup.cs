@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
-using System;
-using System.IO;
-using System.Reflection;
+using Microsoft.OpenApi.Models;
 
 namespace PdfAValidatorWebApi
 {
@@ -21,28 +21,26 @@ namespace PdfAValidatorWebApi
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.OperationFilter<FormFileSwaggerFilter>();
-                c.SwaggerDoc("v1", new Info
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "PdfAValidator",
                     Version = "v1",
+                    Title = "PdfAValidator",
                     Description = "A simple ASP.NET Core Web API wrapping access to VeraPdf",
-                    TermsOfService = "This is just a showcase, this service comes without any warranty.",
-                    Contact = new Contact
+                    TermsOfService = new Uri("https://github.com/Codeuctivity/PdfAValidatorApi"),
+                    Contact = new OpenApiContact
                     {
                         Name = "Codeuctivity",
                         Email = string.Empty,
-                        Url = "https://github.com/Codeuctivity/PdfAValidatorApi"
+                        Url = new Uri("https://github.com/Codeuctivity/PdfAValidatorApi"),
                     },
-                    License = new License
+                    License = new OpenApiLicense
                     {
                         Name = "Use under AGPL",
-                        Url = "https://github.com/Codeuctivity/PdfAValidatorApi/blob/master/LICENSE"
+                        Url = new Uri("https://github.com/Codeuctivity/PdfAValidatorApi/blob/master/LICENSE"),
                     }
                 });
 
@@ -65,15 +63,22 @@ namespace PdfAValidatorWebApi
                 app.UseDeveloperExceptionPage();
             }
 
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "PdfAValidator V1");
                 c.RoutePrefix = string.Empty;
             });
 
-            app.UseMvc();
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
