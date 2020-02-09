@@ -21,7 +21,7 @@ namespace PdfAValidatorWebApi.Controllers
         /// <param name="pdfFile"></param>
         /// <returns>Compliance</returns>
         /// <response code="200">Returns the result</response>
-        /// <response code="400">If the item is null or not base64</response>
+        /// <response code="400">If the pdf is missing.</response>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -44,7 +44,8 @@ namespace PdfAValidatorWebApi.Controllers
             }
             finally
             {
-                System.IO.File.Delete(tempPdfFilePath);
+                if (System.IO.File.Exists(tempPdfFilePath))
+                    System.IO.File.Delete(tempPdfFilePath);
             }
         }
 
@@ -54,7 +55,7 @@ namespace PdfAValidatorWebApi.Controllers
         /// <param name="pdfFile"></param>
         /// <returns>Compliance</returns>
         /// <response code="200">Returns a report about the analyzed pdf, e.g. pdfa substandard and compliance violations</response>
-        /// <response code="400">If the item is null, not base64, or you missed the quotes arround it</response>
+        /// <response code="400">If the pdf is missing.</response>
         [HttpPost]
         [Route("DetailedReport")]
         [ProducesResponseType(200)]
@@ -78,7 +79,8 @@ namespace PdfAValidatorWebApi.Controllers
             }
             finally
             {
-                System.IO.File.Delete(tempPdfFilePath);
+                if (System.IO.File.Exists(tempPdfFilePath))
+                    System.IO.File.Delete(tempPdfFilePath);
             }
         }
     }

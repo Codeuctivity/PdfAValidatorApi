@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+
 namespace PdfAValidator
 {
     [XmlRoot(ElementName = "releaseDetails")]
