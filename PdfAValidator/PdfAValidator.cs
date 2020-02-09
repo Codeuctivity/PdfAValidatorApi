@@ -7,8 +7,6 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-// TODO Fix the generated casing in report.cs
-
 namespace PdfAValidator
 {
     /// <summary>
@@ -94,7 +92,7 @@ namespace PdfAValidator
         /// <returns>True for compliant PdfA Files</returns>
         public bool Validate(string pathToPdfFile)
         {
-            return ValidateWithDetailedReport(pathToPdfFile).batchSummary.validationReports.compliant == "1";
+            return ValidateWithDetailedReport(pathToPdfFile).BatchSummary.ValidationReports.Compliant == "1";
         }
 
         /// <summary>
@@ -102,7 +100,7 @@ namespace PdfAValidator
         /// </summary>
         /// <param name="pathToPdfFile"></param>
         /// <returns></returns>
-        public report ValidateWithDetailedReport(string pathToPdfFile)
+        public Report ValidateWithDetailedReport(string pathToPdfFile)
         {
             IntiPathToVeraPdfBinAndJava();
             var absolutePathToPdfFile = Path.GetFullPath(pathToPdfFile);
@@ -136,7 +134,7 @@ namespace PdfAValidator
 
                 if (string.IsNullOrEmpty(errorResult))
                 {
-                    var veraPdfReport = DeserializeXml<report>(outputResult);
+                    var veraPdfReport = DeserializeXml<Report>(outputResult);
                     return veraPdfReport;
                 }
                 throw new VeraPdfException("Calling VearPdf caused an error: " + errorResult);
