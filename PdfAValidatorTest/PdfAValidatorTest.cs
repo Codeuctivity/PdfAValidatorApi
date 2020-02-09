@@ -76,7 +76,7 @@ namespace PDfAValidatorTest
                 Assert.False(result.Jobs.Job.ValidationReport.IsCompliant);
                 Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1B validation profile");
                 Assert.InRange(result.Jobs.Job.ValidationReport.Details.FailedRules, 1, 20);
-                Assert.Equal(result.Jobs.Job.ValidationReport.Details.Rule[0].Clause, "6.7.3");
+                Assert.True(result.Jobs.Job.ValidationReport.Details.Rule.Any(_ => _.Clause == "6.7.3"));
             }
         }
 
