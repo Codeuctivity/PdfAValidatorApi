@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Xunit;
 
@@ -37,8 +38,20 @@ namespace PDfAValidatorTest
             {
                 Assert.True(File.Exists(@"./TestPdfFiles/FromLibreOffice.pdf"));
                 var result = pdfAValidator.ValidateWithDetailedReport(@"./TestPdfFiles/FromLibreOffice.pdf");
-                Assert.True(result.jobs.job.validationReport.isCompliant);
-                Assert.True(result.jobs.job.validationReport.profileName == "PDF/A-1A validation profile");
+                Assert.True(result.Jobs.Job.ValidationReport.IsCompliant);
+                Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1A validation profile");
+            }
+        }
+
+        [Fact]
+        public static void ShouldGetDetaileDetaileddReportFromPdfA()
+        {
+            using (var pdfAValidator = new PdfAValidator.PdfAValidator())
+            {
+                Assert.True(File.Exists(@"./TestPdfFiles/FromLibreOffice.pdf"));
+                var result = pdfAValidator.ValidateWithDetailedReport(@"./TestPdfFiles/FromLibreOffice.pdf");
+                Assert.True(result.Jobs.Job.ValidationReport.IsCompliant);
+                Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1A validation profile");
             }
         }
 
@@ -60,8 +73,23 @@ namespace PDfAValidatorTest
             {
                 Assert.True(File.Exists(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
                 var result = pdfAValidator.ValidateWithDetailedReport(@"./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
-                Assert.False(result.jobs.job.validationReport.isCompliant);
-                Assert.True(result.jobs.job.validationReport.profileName == "PDF/A-1B validation profile");
+                Assert.False(result.Jobs.Job.ValidationReport.IsCompliant);
+                Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1B validation profile");
+                Assert.True(result.Jobs.Job.ValidationReport.Details.FailedRules == 4);
+                Assert.True(result.Jobs.Job.ValidationReport.Details.Rule[0].Clause == "6.7.3");
+            }
+        }
+
+        [Fact]
+        public static void ShouldGetDetailedReportFromNonCompliantPdfAMissingFont()
+        {
+            using (var pdfAValidator = new PdfAValidator.PdfAValidator())
+            {
+                Assert.True(File.Exists(@"./TestPdfFiles/FontsNotEmbedded.pdf"));
+                var result = pdfAValidator.ValidateWithDetailedReport(@"./TestPdfFiles/FontsNotEmbedded.pdf");
+                Assert.False(result.Jobs.Job.ValidationReport.IsCompliant);
+                Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1B validation profile");
+                Assert.True(result.Jobs.Job.ValidationReport.Details.Rule.Any(_ => _.Clause == "6.3.5"));
             }
         }
 

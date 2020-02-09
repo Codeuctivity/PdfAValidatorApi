@@ -25,7 +25,7 @@ namespace PdfAValidatorWebApi.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Validate([FromForm]IFormFile pdfFile)
+        public async Task<ActionResult> Validate(IFormFile pdfFile)
         {
             var uploadedFile = Request.Form.Files.Single();
             var tempPdfFilePath = Path.Combine(Path.GetTempPath(), "VeraPdf" + Guid.NewGuid() + ".pdf");
@@ -59,7 +59,7 @@ namespace PdfAValidatorWebApi.Controllers
         [Route("DetailedReport")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> ValidateWithDetailedReport([FromForm]IFormFile pdfFile)
+        public async Task<ActionResult> ValidateWithDetailedReport(IFormFile pdfFile)
         {
             var uploadedFile = Request.Form.Files.Single();
             var tempPdfFilePath = Path.Combine(Path.GetTempPath(), "VeraPdf" + Guid.NewGuid() + ".pdf");
