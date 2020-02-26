@@ -9,7 +9,7 @@ PdfAValidatorApi wraps calls to [VeraPdf](http://www.preforma-project.eu/pdfa-co
 Install it using nuget package [PdfAValidatorApi](https://www.nuget.org/packages/PdfAValidator/):
 
 ```PowerShell
-Install-Package PdfAValidator
+dotnet add package PdfAValidator
 ```
 
 Sample - e.g. use it in your unit test to check compliance of some pdf:
@@ -28,19 +28,17 @@ public void ShouldDetectCompliantPdfA()
 Sample - e.g. use it in your unit test to check the used sub standard of some pdf:
 
 ```csharp
-public void ShouldGetDetailedReportFromPdfA()
+public static void ShouldGetDetailedReportFromPdfA()
 {
     using (var pdfAValidator = new PdfAValidator.PdfAValidator())
     {
-        Assert.IsTrue(File.Exists(@"./TestPdfFiles/FromLibreOffice.pdf"));
+        Assert.True(File.Exists(@"./TestPdfFiles/FromLibreOffice.pdf"));
         var result = pdfAValidator.ValidateWithDetailedReport(@"./TestPdfFiles/FromLibreOffice.pdf");
-        Assert.IsTrue(result.jobs.job.validationReport.isCompliant);
-        Assert.IsTrue(result.jobs.job.validationReport.profileName == "PDF/A-1A validation profile");
+        Assert.True(result.Jobs.Job.ValidationReport.IsCompliant);
+        Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1A validation profile");
     }
 }
 ```
-
-[![NuGet Status](http://nugetstatus.com/PdfAValidator.png)](http://nugetstatus.com/packages/PdfAValidator)
 
 ## Demo OpenApi - PdfAValidatorWebApi
 
