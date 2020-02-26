@@ -1,4 +1,3 @@
-using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,15 +13,7 @@ namespace PdfAValidatorWebApiTest
             builder.ConfigureServices(services =>
         {
             // Build the service provider.
-            var sp = services.BuildServiceProvider();
-
-            // Create a scope to obtain a reference to the database
-            // context (ApplicationDbContext).
-            using (var scope = sp.CreateScope())
-            {
-                var scopedServices = scope.ServiceProvider;
-
-            }
+            services.BuildServiceProvider();
         });
         }
     }
