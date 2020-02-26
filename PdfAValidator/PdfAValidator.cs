@@ -17,14 +17,14 @@ namespace PdfAValidator
         private const string maskedQuote = "\"";
         private const int maxLenghtTempdirectoryThatVeraPdfFitsIn = 206;
         private readonly object lockObject = new object();
-        private string pathVeraPdfDirectory;
+        private string? pathVeraPdfDirectory;
         private bool disposed;
 
         /// <summary>
         /// Path to java jre used by windows
         /// </summary>
         /// <value></value>
-        public string PathJava { private set; get; }
+        public string? PathJava { private set; get; }
 
         private readonly bool customVerapdfAndJavaLocations;
 
@@ -34,7 +34,7 @@ namespace PdfAValidator
         /// Command that is used to invoke VeraPdf
         /// </summary>
         /// <value>Command with arguments</value>
-        public string VeraPdfStartScript { private set; get; }
+        public string? VeraPdfStartScript { private set; get; }
 
         /// <summary>
         /// Disposing verapdf bins
@@ -152,14 +152,9 @@ namespace PdfAValidator
         private static T DeserializeXml<T>(string sourceXML) where T : class
         {
             var serializer = new XmlSerializer(typeof(T));
-            T result = null;
 
             using (TextReader reader = new StringReader(sourceXML))
-            {
-                result = (T)serializer.Deserialize(reader);
-            }
-
-            return result;
+                return (T)serializer.Deserialize(reader);
         }
 
         private void IntiPathToVeraPdfBinAndJava()

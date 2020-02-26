@@ -1,5 +1,4 @@
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using Xunit;
 
@@ -76,7 +75,7 @@ namespace PDfAValidatorTest
                 Assert.False(result.Jobs.Job.ValidationReport.IsCompliant);
                 Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1B validation profile");
                 Assert.InRange(result.Jobs.Job.ValidationReport.Details.FailedRules, 1, 20);
-                Assert.True(result.Jobs.Job.ValidationReport.Details.Rule.Any(_ => _.Clause == "6.7.3"));
+                Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Clause == "6.7.3");
             }
         }
 
@@ -89,7 +88,7 @@ namespace PDfAValidatorTest
                 var result = pdfAValidator.ValidateWithDetailedReport(@"./TestPdfFiles/FontsNotEmbedded.pdf");
                 Assert.False(result.Jobs.Job.ValidationReport.IsCompliant);
                 Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1B validation profile");
-                Assert.True(result.Jobs.Job.ValidationReport.Details.Rule.Any(_ => _.Clause == "6.3.5"));
+                Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Clause == "6.3.5");
             }
         }
 
