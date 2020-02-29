@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace PdfAValidator
@@ -15,7 +16,8 @@ namespace PdfAValidator
     public class PdfAValidator : IDisposable
     {
         private const string maskedQuote = "\"";
-        private const int maxLenghtTempdirectoryThatVeraPdfFitsIn = 206;
+        private const int maxLengthTempdirectoryThatVeraPdfFitsIn = 206;
+        private const string OsNotSupportedMessage = "Sorry, only supporting linux and windows.";
         private readonly object lockObject = new object();
         private string? pathVeraPdfDirectory;
         private bool disposed;
@@ -28,7 +30,7 @@ namespace PdfAValidator
 
         private readonly bool customVerapdfAndJavaLocations;
 
-        private bool IsInitilized { get; set; }
+        private bool IsInitialized { get; set; }
 
         /// <summary>
         /// Command that is used to invoke VeraPdf
@@ -76,7 +78,7 @@ namespace PdfAValidator
             VeraPdfStartScript = pathToVeraPdfBin;
             PathJava = pathToJava;
             customVerapdfAndJavaLocations = true;
-            IsInitilized = true;
+            IsInitialized = true;
         }
 
         /// <summary>
@@ -110,35 +112,33 @@ namespace PdfAValidator
                 throw new FileNotFoundException(absolutePathToPdfFile + " not found");
             }
 
-            using (var process = new Process())
+            using var process = new Process();
+            process.StartInfo.FileName = VeraPdfStartScript;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+            if (!string.IsNullOrEmpty(PathJava))
             {
-                process.StartInfo.FileName = VeraPdfStartScript;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.CreateNoWindow = true;
-                if (!string.IsNullOrEmpty(PathJava))
-                {
-                    process.StartInfo.EnvironmentVariables["JAVACMD"] = PathJava;
-                }
-                var startInfo = process.StartInfo;
-                // http://docs.verapdf.org/cli/terminal/
-                var arguments = new[] { maskedQuote, absolutePathToPdfFile, maskedQuote };
-                startInfo.Arguments = string.Concat(arguments);
-                process.Start();
-
-                var outputResult = GetStreamOutput(process.StandardOutput);
-                var errorResult = GetStreamOutput(process.StandardError);
-
-                process.WaitForExit();
-
-                if (string.IsNullOrEmpty(errorResult))
-                {
-                    var veraPdfReport = DeserializeXml<Report>(outputResult);
-                    return veraPdfReport;
-                }
-                throw new VeraPdfException("Calling VearPdf caused an error: " + errorResult);
+                process.StartInfo.EnvironmentVariables["JAVACMD"] = PathJava;
             }
+            var startInfo = process.StartInfo;
+            // http://docs.verapdf.org/cli/terminal/
+            var arguments = new[] { maskedQuote, absolutePathToPdfFile, maskedQuote };
+            startInfo.Arguments = string.Concat(arguments);
+            process.Start();
+
+            var outputResult = GetStreamOutput(process.StandardOutput);
+            var errorResult = GetStreamOutput(process.StandardError);
+
+            process.WaitForExit();
+
+            if (string.IsNullOrEmpty(errorResult))
+            {
+                var veraPdfReport = DeserializeXml<Report>(outputResult);
+                return veraPdfReport;
+            }
+            throw new VeraPdfException("Calling VeraPdf caused an error: " + errorResult);
         }
 
         private static string GetStreamOutput(StreamReader stream)
@@ -151,23 +151,25 @@ namespace PdfAValidator
 
         private static T DeserializeXml<T>(string sourceXML) where T : class
         {
+            var settings = new XmlReaderSettings();
             var serializer = new XmlSerializer(typeof(T));
 
-            using (TextReader reader = new StringReader(sourceXML))
-                return (T)serializer.Deserialize(reader);
+            using var reader = new StringReader(sourceXML);
+            using XmlReader xmlReader = XmlReader.Create(reader, settings);
+            return (T)serializer.Deserialize(xmlReader);
         }
 
         private void IntiPathToVeraPdfBinAndJava()
         {
             lock (lockObject)
             {
-                if (IsInitilized)
+                if (IsInitialized)
                 {
                     return;
                 }
 
                 pathVeraPdfDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                if (pathVeraPdfDirectory.Length > maxLenghtTempdirectoryThatVeraPdfFitsIn)
+                if (pathVeraPdfDirectory.Length > maxLengthTempdirectoryThatVeraPdfFitsIn)
                 {
                     throw new PathTooLongException(pathVeraPdfDirectory);
                 }
@@ -189,10 +191,10 @@ namespace PdfAValidator
                 }
                 else
                 {
-                    throw new NotImplementedException("Sorry, only supporting linux and windows.");
+                    throw new NotImplementedException(OsNotSupportedMessage);
                 }
 
-                IsInitilized = true;
+                IsInitialized = true;
             }
         }
 
@@ -201,7 +203,7 @@ namespace PdfAValidator
             var chmodCmd = "chmod 700 " + filePath;
             var escapedArgs = chmodCmd.Replace(maskedQuote, "\\\"");
 
-            using (var process = new Process
+            using var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
@@ -212,11 +214,9 @@ namespace PdfAValidator
                     FileName = "/bin/bash",
                     Arguments = $"-c \"{escapedArgs}\""
                 }
-            })
-            {
-                process.Start();
-                process.WaitForExit();
-            }
+            };
+            process.Start();
+            process.WaitForExit();
         }
 
         private void ExtractBinaryFromManifest(string resourceName)

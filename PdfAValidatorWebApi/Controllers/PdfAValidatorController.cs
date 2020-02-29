@@ -27,20 +27,21 @@ namespace PdfAValidatorWebApi.Controllers
         [ProducesResponseType(400)]
         public async Task<ActionResult> Validate(IFormFile pdfFile)
         {
+            if (pdfFile is null)
+            {
+                throw new ArgumentNullException(nameof(pdfFile));
+            }
+
             var uploadedFile = Request.Form.Files.Single();
             var tempPdfFilePath = Path.Combine(Path.GetTempPath(), "VeraPdf" + Guid.NewGuid() + ".pdf");
             try
             {
-                using (var fs = new FileStream(tempPdfFilePath, FileMode.CreateNew, FileAccess.Write))
-                {
-                    using (var pdfAValidator = new PdfAValidator.PdfAValidator())
-                    {
-                        await uploadedFile.CopyToAsync(fs);
+                using var fs = new FileStream(tempPdfFilePath, FileMode.CreateNew, FileAccess.Write);
+                using var pdfAValidator = new PdfAValidator.PdfAValidator();
+                await uploadedFile.CopyToAsync(fs).ConfigureAwait(false);
 
-                        var result = pdfAValidator.Validate(tempPdfFilePath);
-                        return Ok(result);
-                    }
-                }
+                var result = pdfAValidator.Validate(tempPdfFilePath);
+                return Ok(result);
             }
             finally
             {
@@ -66,16 +67,12 @@ namespace PdfAValidatorWebApi.Controllers
             var tempPdfFilePath = Path.Combine(Path.GetTempPath(), "VeraPdf" + Guid.NewGuid() + ".pdf");
             try
             {
-                using (var fs = new FileStream(tempPdfFilePath, FileMode.CreateNew, FileAccess.Write))
-                {
-                    using (var pdfAValidator = new PdfAValidator.PdfAValidator())
-                    {
-                        await uploadedFile.CopyToAsync(fs);
+                using var fs = new FileStream(tempPdfFilePath, FileMode.CreateNew, FileAccess.Write);
+                using var pdfAValidator = new PdfAValidator.PdfAValidator();
+                await uploadedFile.CopyToAsync(fs).ConfigureAwait(false);
 
-                        var result = pdfAValidator.ValidateWithDetailedReport(tempPdfFilePath);
-                        return Ok(result);
-                    }
-                }
+                var result = pdfAValidator.ValidateWithDetailedReport(tempPdfFilePath);
+                return Ok(result);
             }
             finally
             {

@@ -17,13 +17,14 @@ namespace PdfAValidatorWebApiTest
         [Theory]
         [InlineData("/", "text/html; charset=utf-8")]
         [InlineData("/swagger/v1/swagger.json", "application/json; charset=utf-8")]
-        public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url, string contentType)
+        public async Task ShouldAccessEndpointSuccessfull(string route, string contentType)
         {
             // Arrange
             var client = _factory.CreateClient();
+            var expectedUrl = new Uri($"https://localhost{route}");
 
             // Act
-            var response = await client.GetAsync(url);
+            var response = await client.GetAsync(expectedUrl).ConfigureAwait(false);
 
             // Assert
             response.EnsureSuccessStatusCode();
