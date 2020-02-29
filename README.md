@@ -19,7 +19,7 @@ public void ShouldDetectCompliantPdfA()
 {
     using (var pdfAValidator = new PdfAValidator.PdfAValidator())
     {
-        var result = pdfAValidator.Validate(@"./TestPdfFiles/FromLibreOffice.pdf");
+        var result = pdfAValidator.Validate("./TestPdfFiles/FromLibreOffice.pdf");
         Assert.True(result);
     }
 }
@@ -32,8 +32,8 @@ public static void ShouldGetDetailedReportFromPdfA()
 {
     using (var pdfAValidator = new PdfAValidator.PdfAValidator())
     {
-        Assert.True(File.Exists(@"./TestPdfFiles/FromLibreOffice.pdf"));
-        var result = pdfAValidator.ValidateWithDetailedReport(@"./TestPdfFiles/FromLibreOffice.pdf");
+        Assert.True(File.Exists("./TestPdfFiles/FromLibreOffice.pdf"));
+        var result = pdfAValidator.ValidateWithDetailedReport("./TestPdfFiles/FromLibreOffice.pdf");
         Assert.True(result.Jobs.Job.ValidationReport.IsCompliant);
         Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1A validation profile");
     }

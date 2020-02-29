@@ -10,11 +10,12 @@ namespace PdfAValidator
     public class VeraPdfException : Exception
     {
         /// <summary>
-        /// 
+        /// Default ctor
         /// </summary>
         public VeraPdfException()
         {
         }
+
         /// <summary>
         ///     Initializes a new instance of the PdfAValidator.VeraPdfException class with a specified
         ///     error message exception.
@@ -24,6 +25,7 @@ namespace PdfAValidator
         public VeraPdfException(string message) : base(message)
         {
         }
+
         /// <summary>
         ///     Initializes a new instance of the PdfAValidator.VeraPdfException class with a specified
         ///     error message and a reference to the inner exception that is the cause of this
@@ -34,6 +36,7 @@ namespace PdfAValidator
         public VeraPdfException(string message, Exception innerException) : base(message, innerException)
         {
         }
+
         /// <summary>
         ///     Initializes a new instance of the PdfAValidator.VeraPdfException class with a specified
         ///     error message and a reference to the inner exception that is the cause of this

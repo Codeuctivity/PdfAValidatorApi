@@ -23,7 +23,7 @@ namespace PdfAValidatorWebApiTest
             var client = _factory.CreateClient();
 
             // Act
-            var response = await client.GetAsync(url);
+            var response = await client.GetAsync(url).ConfigureAwait(false);
 
             // Assert
             response.EnsureSuccessStatusCode();

@@ -6,7 +6,7 @@ namespace PdfAValidatorWebApi
     /// <summary>
     /// The <see cref="Program"/>
     /// </summary>
-    public class Program
+    public static class Program
     {
         /// <summary>
         /// Entry point
@@ -16,6 +16,7 @@ namespace PdfAValidatorWebApi
         {
             CreateWebHostBuilder(args).Build().Run();
         }
+
         /// <summary>
         /// CreateWebHostBuilder
         /// </summary>

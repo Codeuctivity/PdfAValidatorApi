@@ -18,12 +18,14 @@ namespace PdfAValidator
         /// <value>e.g. gui</value>
         [XmlAttribute(AttributeName = "id")]
         public string Id { get; set; } = string.Empty;
+
         /// <summary>
         /// Version of component
         /// </summary>
         /// <value>e.g. 1.0.6-PDFBOX</value>
         [XmlAttribute(AttributeName = "version")]
         public string Version { get; set; } = string.Empty;
+
         /// <summary>
         /// Tells the build date
         /// </summary>
@@ -41,7 +43,6 @@ namespace PdfAValidator
         /// <summary>
         /// Collection of version information of veraPdf components
         /// </summary>
-        /// <value></value>
         [XmlElement(ElementName = "releaseDetails")]
         public List<ReleaseDetails> ReleaseDetails { get; set; } = new List<ReleaseDetails>();
     }
@@ -55,9 +56,9 @@ namespace PdfAValidator
         /// <summary>
         /// Pdf source path
         /// </summary>
-        /// <value></value>
         [XmlElement(ElementName = "name")]
         public string Name { get; set; } = string.Empty;
+
         /// <summary>
         /// Pdf source size
         /// </summary>
@@ -65,6 +66,7 @@ namespace PdfAValidator
         [XmlAttribute(AttributeName = "size")]
         public string Size { get; set; } = string.Empty;
     }
+
     /// <summary>
     /// Check
     /// </summary>
@@ -77,6 +79,7 @@ namespace PdfAValidator
         /// <value>e.g. root</value>
         [XmlElement(ElementName = "context")]
         public string Context { get; set; } = string.Empty;
+
         /// <summary>
         /// Status
         /// </summary>
@@ -84,6 +87,7 @@ namespace PdfAValidator
         [XmlAttribute(AttributeName = "status")]
         public string Status { get; set; } = string.Empty;
     }
+
     /// <summary>
     /// Rule
     /// </summary>
@@ -93,61 +97,69 @@ namespace PdfAValidator
         /// <summary>
         /// Rule description
         /// </summary>
-        /// <value></value>
         [XmlElement(ElementName = "description")]
         public string Description { get; set; } = string.Empty;
+
         /// <summary>
         /// Pdf object
         /// </summary>
         /// <value>e.g. CosDocument</value>
         [XmlElement(ElementName = "object")]
         public string Object { get; set; } = string.Empty;
+
         /// <summary>
         /// Test
         /// </summary>
         /// <value>e.g. doesInfoMatchXMP</value>
         [XmlElement(ElementName = "test")]
         public string Test { get; set; } = string.Empty;
+
         /// <summary>
         /// Collection of all checks
         /// </summary>
         [XmlElement(ElementName = "check")]
         public List<Check> Check { get; set; } = new List<Check>();
+
         /// <summary>
         /// Reference to iso standard paper 
         /// </summary>
         /// <value>e.g. ISO 19005-1:2005</value>
         [XmlAttribute(AttributeName = "specification")]
         public string Specification { get; set; } = string.Empty;
+
         /// <summary>
         /// Reference to clause
         /// </summary>
         /// <value>e.g. 6.7.3</value>
         [XmlAttribute(AttributeName = "clause")]
         public string Clause { get; set; } = string.Empty;
+
         /// <summary>
         /// Test number, seems like some veraPdf internal thingy
         /// </summary>
-        /// <value></value>
         [XmlAttribute(AttributeName = "testNumber")]
         public string TestNumber { get; set; } = string.Empty;
+
         /// <summary>
         /// Outcome
         /// </summary>
         /// <value>e.g. failed</value>
         [XmlAttribute(AttributeName = "status")]
         public string Status { get; set; } = string.Empty;
+
         /// <summary>
         /// Number of passed checks
         /// </summary>
         [XmlAttribute(AttributeName = "passedChecks")]
         public string PassedChecks { get; set; } = string.Empty;
+
         /// <summary>
         /// FAiled checks, seems like some veraPdf internal thingy
         /// </summary>
         [XmlAttribute(AttributeName = "failedChecks")]
         public string FailedChecks { get; set; } = string.Empty;
     }
+
     /// <summary>
     /// Detailed reports
     /// </summary>
@@ -159,26 +171,28 @@ namespace PdfAValidator
         /// </summary>
         [XmlElement(ElementName = "rule")]
         public List<Rule> Rule { get; set; } = new List<Rule>();
+
         /// <summary>
         /// Number of passed rules
         /// </summary>
         [XmlAttribute(AttributeName = "passedRules")]
         public int PassedRules { get; set; }
+
         /// <summary>
         /// Amount of failed rules
         /// </summary>
         [XmlAttribute(AttributeName = "failedRules")]
         public int FailedRules { get; set; }
+
         /// <summary>
         /// Amount of passed checks
         /// </summary>
-        /// <value></value>
         [XmlAttribute(AttributeName = "passedChecks")]
         public int PassedChecks { get; set; }
+
         /// <summary>
         /// Amount of failed checks
         /// </summary>
-        /// <value></value>
         [XmlAttribute(AttributeName = "failedChecks")]
         public int FailedChecks { get; set; }
     }
@@ -195,18 +209,21 @@ namespace PdfAValidator
         /// </summary>
         [XmlElement(ElementName = "details")]
         public Details Details { get; set; } = new Details();
+
         /// <summary>
         /// Shows the detected used PdfA profile of the source
         /// </summary>
         /// <value>e.g. "PDF/A-1B validation profile"</value>
         [XmlAttribute(AttributeName = "profileName")]
         public string ProfileName { get; set; } = string.Empty;
+
         /// <summary>
         /// Human readable validation outcome
         /// </summary>
         /// <value>e.g. "PDF file is compliant with Validation Profile requirements."</value>
         [XmlAttribute(AttributeName = "statement")]
         public string Statement { get; set; } = string.Empty;
+
         /// <summary>
         /// Is true, if the source pdf is compliant
         /// </summary>
@@ -225,16 +242,16 @@ namespace PdfAValidator
         /// </summary>
         [XmlAttribute(AttributeName = "start")]
         public string Start { get; set; } = string.Empty;
+
         /// <summary>
         /// End of validation
         /// </summary>
-        /// <value></value>
         [XmlAttribute(AttributeName = "finish")]
         public string Finish { get; set; } = string.Empty;
+
         /// <summary>
         /// Duration
         /// </summary>
-        /// <value></value>
         [XmlText]
         public string Text { get; set; } = string.Empty;
     }
@@ -248,15 +265,15 @@ namespace PdfAValidator
         /// <summary>
         /// Meta information of validated file
         /// </summary>
-        /// <returns></returns>
         [XmlElement(ElementName = "item")]
         public Item Item { get; set; } = new Item();
+
         /// <summary>
         /// Report details
         /// </summary>
-        /// <returns></returns>
         [XmlElement(ElementName = "validationReport")]
         public ValidationReport ValidationReport { get; set; } = new ValidationReport();
+
         /// <summary>
         /// Duration details
         /// </summary>
@@ -273,7 +290,6 @@ namespace PdfAValidator
         /// <summary>
         /// Contains the details to the validated pdf
         /// </summary>
-        /// <returns></returns>
         [XmlElement(ElementName = "job")]
         public Job Job { get; set; } = new Job();
     }
@@ -289,18 +305,19 @@ namespace PdfAValidator
         /// </summary>
         [XmlAttribute(AttributeName = "compliant")]
         public string Compliant { get; set; } = string.Empty;
+
         /// <summary>
         /// Amount of nonCompliant pdfs
         /// </summary>
-        /// <value></value>
         [XmlAttribute(AttributeName = "nonCompliant")]
         public string NonCompliant { get; set; } = string.Empty;
+
         /// <summary>
         /// Amount of pdfs failed to validate
         /// </summary>
-        /// <value></value>
         [XmlAttribute(AttributeName = "failedJobs")]
         public string FailedJobs { get; set; } = string.Empty;
+
         /// <summary>
         /// Seems like some veraPdf internal thingy
         /// </summary>
@@ -308,6 +325,7 @@ namespace PdfAValidator
         [XmlText]
         public string Text { get; set; } = string.Empty;
     }
+
     /// <summary>
     /// Not used with plain validation
     /// </summary>
@@ -319,16 +337,16 @@ namespace PdfAValidator
         /// </summary>
         [XmlAttribute(AttributeName = "failedJobs")]
         public string FailedJobs { get; set; } = string.Empty;
+
         /// <summary>
         /// Amount of succeeded jobs
         /// </summary>
-        /// <value></value>
         [XmlText]
         public string Text { get; set; } = string.Empty;
     }
 
     /// <summary>
-    /// 
+    /// Not used in this integration
     /// </summary>
     [XmlRoot(ElementName = "repairReports")]
     public class RepairReports
@@ -336,13 +354,12 @@ namespace PdfAValidator
         /// <summary>
         /// Amount of failed jobs
         /// </summary>
-        /// <value></value>
         [XmlAttribute(AttributeName = "failedJobs")]
         public string FailedJobs { get; set; } = string.Empty;
+
         /// <summary>
         /// seems like some veraPdf internal thingy
         /// </summary>
-        /// <value></value>
         [XmlText]
         public string Text { get; set; } = string.Empty;
     }
@@ -358,39 +375,44 @@ namespace PdfAValidator
         /// </summary>
         [XmlElement(ElementName = "validationReports")]
         public ValidationReports ValidationReports { get; set; } = new ValidationReports();
+
         /// <summary>
         /// Not used in this integration
         /// </summary>
         [XmlElement(ElementName = "featureReports")]
         public FeatureReports FeatureReports { get; set; } = new FeatureReports();
+
         /// <summary>
         /// Not used in this integration
         /// </summary>
-
         [XmlElement(ElementName = "repairReports")]
         public RepairReports RepairReports { get; set; } = new RepairReports();
+
         /// <summary>
         /// Summarized duration
         /// </summary>
         [XmlElement(ElementName = "duration")]
         public Duration Duration { get; set; } = new Duration();
+
         /// <summary>
         /// In this integration always one, if it does not fail
         /// </summary>
         [XmlAttribute(AttributeName = "totalJobs")]
         public string TotalJobs { get; set; } = string.Empty;
+
         /// <summary>
         /// Failed to parse
         /// </summary>
         [XmlAttribute(AttributeName = "failedToParse")]
         public string FailedToParse { get; set; } = string.Empty;
+
         /// <summary>
         /// Indicates pdf encryption
         /// </summary>
-        /// <value></value>
         [XmlAttribute(AttributeName = "encrypted")]
         public string Encrypted { get; set; } = string.Empty;
     }
+
     /// <summary>
     /// VeraPdf report
     /// </summary>
@@ -400,21 +422,19 @@ namespace PdfAValidator
         /// <summary>
         /// VeraPdf bin details
         /// </summary>
-        /// <returns></returns>
         [XmlElement(ElementName = "buildInformation")]
         public BuildInformation BuildInformation { get; set; } = new BuildInformation();
+
         /// <summary>
         /// VeraPdf jobs - in this integration always contains just one job
         /// </summary>
-        /// <returns></returns>
         [XmlElement(ElementName = "jobs")]
         public Jobs Jobs { get; set; } = new Jobs();
+
         /// <summary>
         /// VeraPdf batch summary
         /// </summary>
-        /// <returns></returns>
         [XmlElement(ElementName = "batchSummary")]
         public BatchSummary BatchSummary { get; set; } = new BatchSummary();
     }
-
 }
