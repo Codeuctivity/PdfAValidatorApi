@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace PdfAValidator
@@ -150,10 +151,12 @@ namespace PdfAValidator
 
         private static T DeserializeXml<T>(string sourceXML) where T : class
         {
+            var settings = new XmlReaderSettings();
             var serializer = new XmlSerializer(typeof(T));
 
-            using (TextReader reader = new StringReader(sourceXML))
-                return (T)serializer.Deserialize(reader);
+            using var reader = new StringReader(sourceXML);
+            using XmlReader xmlReader = XmlReader.Create(reader, settings);
+            return (T)serializer.Deserialize(xmlReader);
         }
 
         private void IntiPathToVeraPdfBinAndJava()
@@ -200,7 +203,7 @@ namespace PdfAValidator
             var chmodCmd = "chmod 700 " + filePath;
             var escapedArgs = chmodCmd.Replace(maskedQuote, "\\\"");
 
-            using (var process = new Process
+            using var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
@@ -211,11 +214,9 @@ namespace PdfAValidator
                     FileName = "/bin/bash",
                     Arguments = $"-c \"{escapedArgs}\""
                 }
-            })
-            {
-                process.Start();
-                process.WaitForExit();
-            }
+            };
+            process.Start();
+            process.WaitForExit();
         }
 
         private void ExtractBinaryFromManifest(string resourceName)

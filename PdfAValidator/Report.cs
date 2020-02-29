@@ -44,7 +44,7 @@ namespace PdfAValidator
         /// Collection of version information of veraPdf components
         /// </summary>
         [XmlElement(ElementName = "releaseDetails")]
-        public List<ReleaseDetails> ReleaseDetails { get; set; } = new List<ReleaseDetails>();
+        public List<ReleaseDetails> ReleaseDetails { get; } = new List<ReleaseDetails>();
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ namespace PdfAValidator
         /// </summary>
         /// <value>e.g. CosDocument</value>
         [XmlElement(ElementName = "object")]
-        public string Object { get; set; } = string.Empty;
+        public string PdfObject { get; set; } = string.Empty;
 
         /// <summary>
         /// Test
@@ -118,7 +118,7 @@ namespace PdfAValidator
         /// Collection of all checks
         /// </summary>
         [XmlElement(ElementName = "check")]
-        public List<Check> Check { get; set; } = new List<Check>();
+        public List<Check> Check { get; } = new List<Check>();
 
         /// <summary>
         /// Reference to iso standard paper 
@@ -170,7 +170,7 @@ namespace PdfAValidator
         /// Collection of rules
         /// </summary>
         [XmlElement(ElementName = "rule")]
-        public List<Rule> Rule { get; set; } = new List<Rule>();
+        public List<Rule> Rule { get; } = new List<Rule>();
 
         /// <summary>
         /// Number of passed rules
