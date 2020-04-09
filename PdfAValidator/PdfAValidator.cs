@@ -133,12 +133,12 @@ namespace PdfAValidator
 
             process.WaitForExit();
 
-            if (string.IsNullOrEmpty(errorResult))
+            if (process.ExitCode == 0)
             {
                 var veraPdfReport = DeserializeXml<Report>(outputResult);
                 return veraPdfReport;
             }
-            throw new VeraPdfException("Calling VeraPdf caused an error: " + errorResult);
+            throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} caused an error: {errorResult}");
         }
 
         private static string GetStreamOutput(StreamReader stream)
@@ -155,7 +155,7 @@ namespace PdfAValidator
             var serializer = new XmlSerializer(typeof(T));
 
             using var reader = new StringReader(sourceXML);
-            using XmlReader xmlReader = XmlReader.Create(reader, settings);
+            using var xmlReader = XmlReader.Create(reader, settings);
             return (T)serializer.Deserialize(xmlReader);
         }
 
