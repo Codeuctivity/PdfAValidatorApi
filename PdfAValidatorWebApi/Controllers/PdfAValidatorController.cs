@@ -46,7 +46,9 @@ namespace PdfAValidatorWebApi.Controllers
             finally
             {
                 if (System.IO.File.Exists(tempPdfFilePath))
+                {
                     System.IO.File.Delete(tempPdfFilePath);
+                }
             }
         }
 
@@ -77,7 +79,9 @@ namespace PdfAValidatorWebApi.Controllers
             finally
             {
                 if (System.IO.File.Exists(tempPdfFilePath))
+                {
                     System.IO.File.Delete(tempPdfFilePath);
+                }
             }
         }
     }
