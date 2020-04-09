@@ -9,7 +9,7 @@ namespace PDfAValidatorTest
         [Fact]
         public static void ShouldUnpackNewDirectoryInTempdirectory()
         {
-            string veraPdfStartScript;
+            string? veraPdfStartScript;
             using (var pdfAValidator = new PdfAValidator.PdfAValidator())
             {
                 pdfAValidator.Validate("./TestPdfFiles/FromLibreOffice.pdf");
@@ -73,13 +73,13 @@ namespace PDfAValidatorTest
         [Fact]
         public static void ShouldWorkWithCustomJavaAndVeraPdfLocation()
         {
-            string veraPdfStartScript;
-            // Using default ctor to get verapdf and java bins for the test
+            string? veraPdfStartScript;
+            // Using default ctor to get verapdf and Java bins for the test
             using (var pdfAValidatorPrepareBins = new PdfAValidator.PdfAValidator())
             {
                 {
                     pdfAValidatorPrepareBins.Validate("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
-                    using (var pdfAValidator = new PdfAValidator.PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStartScript, pdfAValidatorPrepareBins.PathJava))
+                    using (var pdfAValidator = new PdfAValidator.PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStartScript!, pdfAValidatorPrepareBins.PathJava!))
                     {
                         veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
                         AssertVeraPdfBinCreation(veraPdfStartScript);
@@ -93,15 +93,15 @@ namespace PDfAValidatorTest
             Assert.False(File.Exists(veraPdfStartScript));
         }
 
-        private static void AssertVeraPdfBinCreation(string scriptPath)
+        private static void AssertVeraPdfBinCreation(string? scriptPath)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                Assert.Equal(".bat", scriptPath.Substring(scriptPath.Length - 4));
+                Assert.Equal(".bat", scriptPath?.Substring(scriptPath.Length - 4));
             }
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                Assert.Equal("verapdf", scriptPath.Substring(scriptPath.Length - 7));
+                Assert.Equal("verapdf", scriptPath?.Substring(scriptPath.Length - 7));
             }
             Assert.True(File.Exists(scriptPath), scriptPath + " does not exist.");
         }
