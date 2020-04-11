@@ -122,6 +122,7 @@ namespace PdfAValidator
             {
                 process.StartInfo.EnvironmentVariables["JAVACMD"] = PathJava;
             }
+            var currentJavaCmd = process.StartInfo.EnvironmentVariables["JAVACMD"];
             var startInfo = process.StartInfo;
             // http://docs.verapdf.org/cli/terminal/
             var arguments = new[] { maskedQuote, absolutePathToPdfFile, maskedQuote };
@@ -135,10 +136,24 @@ namespace PdfAValidator
 
             if (process.ExitCode == 0)
             {
+                validateVeraPdfOutputToBeXml(outputResult, currentJavaCmd, VeraPdfStartScript);
                 var veraPdfReport = DeserializeXml<Report>(outputResult);
                 return veraPdfReport;
             }
-            throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} caused an error: {errorResult}");
+            throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} caused an error: {errorResult}\nJAVACMD: {currentJavaCmd}\nVeraPdfStartScript: {VeraPdfStartScript}");
+        }
+
+        private void validateVeraPdfOutputToBeXml(string outputResult, string currentJavaCmd, string veraPdfStartScript)
+        {
+            try
+            {
+                var xmlDocument = new XmlDocument();
+                xmlDocument.LoadXml(outputResult);
+            }
+            catch (XmlException xmlException)
+            {
+                throw new VeraPdfException($"Failed to parse VeraPdf Ouput: {outputResult}\n currentJavaCmd: {currentJavaCmd}\n veraPdfStartScriptPath: {veraPdfStartScript}", xmlException);
+            }
         }
 
         private static string GetStreamOutput(StreamReader stream)

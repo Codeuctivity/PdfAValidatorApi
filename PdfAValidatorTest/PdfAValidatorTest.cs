@@ -1,3 +1,5 @@
+using PdfAValidator;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using Xunit;
@@ -6,6 +8,8 @@ namespace PDfAValidatorTest
 {
     public static class PdfAValidatorTest
     {
+        private const string maskedQuote = "\"";
+
         [Fact]
         public static void ShouldUnpackNewDirectoryInTempdirectory()
         {
@@ -93,6 +97,68 @@ namespace PDfAValidatorTest
             Assert.False(File.Exists(veraPdfStartScript));
         }
 
+        [Fact]
+        public static void ShouldFailGracefullWithUnrecognicedVeraPdfOutput()
+        {
+            var somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.bat";
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.sh";
+                SetLinuxFileExecuteable(somethingThatReturnsExitcode0);
+            }
+
+            var veraPdfException = Assert.Throws<VeraPdfException>(() =>
+              {
+                  string? veraPdfStartScript;
+                  // Using default ctor to get Java bins for the test
+                  using (var pdfAValidatorPrepareBins = new PdfAValidator.PdfAValidator())
+                  {
+                      {
+                          pdfAValidatorPrepareBins.Validate("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                          using (var pdfAValidator = new PdfAValidator.PdfAValidator(somethingThatReturnsExitcode0, "SomeValue"))
+                          {
+                              veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
+                              var result = pdfAValidator.Validate("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                          }
+                      }
+                  }
+                  Assert.False(File.Exists(veraPdfStartScript));
+              });
+            Assert.Equal($"Failed to parse VeraPdf Ouput: \n currentJavaCmd: SomeValue\n veraPdfStartScriptPath: {somethingThatReturnsExitcode0}", veraPdfException.Message);
+        }
+
+        [Fact]
+        public static void ShouldFailGracefullWithExitcode1()
+        {
+            var somethingThatReturnsExitcode1 = "./TestExecuteables/exitcode1.bat";
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                somethingThatReturnsExitcode1 = "./TestExecuteables/exitcode1.sh";
+                SetLinuxFileExecuteable(somethingThatReturnsExitcode1);
+            }
+
+            var veraPdfException = Assert.Throws<VeraPdfException>(() =>
+            {
+                string? veraPdfStartScript;
+                // Using default ctor to get Java bins for the test
+                using (var pdfAValidatorPrepareBins = new PdfAValidator.PdfAValidator())
+                {
+                    {
+                        pdfAValidatorPrepareBins.Validate("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                        using (var pdfAValidator = new PdfAValidator.PdfAValidator(somethingThatReturnsExitcode1, "SomeValue"))
+                        {
+                            veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
+                            var result = pdfAValidator.Validate("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                        }
+                    }
+                }
+                Assert.False(File.Exists(veraPdfStartScript));
+            });
+            Assert.Equal($"Calling VeraPdf exited with 1 caused an error: \nJAVACMD: SomeValue\nVeraPdfStartScript: {somethingThatReturnsExitcode1}", veraPdfException.Message);
+        }
+
         private static void AssertVeraPdfBinCreation(string? scriptPath)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -121,6 +187,27 @@ namespace PDfAValidatorTest
             var postscriptValidator = new PdfAValidator.PdfAValidator();
             postscriptValidator.Dispose();
             postscriptValidator.Dispose();
+        }
+
+        private static void SetLinuxFileExecuteable(string filePath)
+        {
+            var chmodCmd = "chmod 700 " + filePath;
+            var escapedArgs = chmodCmd.Replace(maskedQuote, "\\\"");
+
+            using var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{escapedArgs}\""
+                }
+            };
+            process.Start();
+            process.WaitForExit();
         }
     }
 }
