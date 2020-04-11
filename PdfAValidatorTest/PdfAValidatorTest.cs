@@ -1,5 +1,4 @@
 using PdfAValidator;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using Xunit;
@@ -8,8 +7,6 @@ namespace PDfAValidatorTest
 {
     public static class PdfAValidatorTest
     {
-        private const string maskedQuote = "\"";
-
         [Fact]
         public static void ShouldUnpackNewDirectoryInTempdirectory()
         {
@@ -124,7 +121,7 @@ namespace PDfAValidatorTest
                   }
                   Assert.False(File.Exists(veraPdfStartScript));
               });
-            Assert.Equal($"Failed to parse VeraPdf Ouput: \nCustom JAVACMD: SomeValue\nveraPdfStartScriptPath: {somethingThatReturnsExitcode0}", veraPdfException.Message);
+            Assert.Equal($"Failed to parse VeraPdf Output: \nCustom JAVACMD: SomeValue\nveraPdfStartScriptPath: {somethingThatReturnsExitcode0}", veraPdfException.Message);
         }
 
         [Fact]
@@ -145,11 +142,8 @@ namespace PDfAValidatorTest
                 {
                     {
                         pdfAValidatorPrepareBins.Validate("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
-                        using (var pdfAValidator = new PdfAValidator.PdfAValidator(somethingThatReturnsExitcode1, "SomeValue"))
-                        {
-                            veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
-                            var result = pdfAValidator.Validate("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
-                        }
+                        using var pdfAValidator = new PdfAValidator.PdfAValidator(somethingThatReturnsExitcode1, "SomeValue");
+                        veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
                     }
                 }
                 Assert.False(File.Exists(veraPdfStartScript));
