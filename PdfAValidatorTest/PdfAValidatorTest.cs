@@ -125,7 +125,7 @@ namespace PDfAValidatorTest
                   }
                   Assert.False(File.Exists(veraPdfStartScript));
               });
-            Assert.Equal($"Failed to parse VeraPdf Ouput: \n currentJavaCmd: SomeValue\n veraPdfStartScriptPath: {somethingThatReturnsExitcode0}", veraPdfException.Message);
+            Assert.Equal($"Failed to parse VeraPdf Ouput: \nCustom JAVACMD: SomeValue\nveraPdfStartScriptPath: {somethingThatReturnsExitcode0}", veraPdfException.Message);
         }
 
         [Fact]
@@ -156,7 +156,7 @@ namespace PDfAValidatorTest
                 }
                 Assert.False(File.Exists(veraPdfStartScript));
             });
-            Assert.Equal($"Calling VeraPdf exited with 1 caused an error: \nJAVACMD: SomeValue\nVeraPdfStartScript: {somethingThatReturnsExitcode1}", veraPdfException.Message);
+            Assert.Equal($"Calling VeraPdf exited with 1 caused an error: \nCustom JAVACMD: SomeValue\nVeraPdfStartScript: {somethingThatReturnsExitcode1}", veraPdfException.Message);
         }
 
         private static void AssertVeraPdfBinCreation(string? scriptPath)
