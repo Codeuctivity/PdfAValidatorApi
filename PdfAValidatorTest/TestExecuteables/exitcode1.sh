@@ -1,1 +1,2 @@
-EXIT 1
+#!/bin/sh
+exit 1

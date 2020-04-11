@@ -105,7 +105,6 @@ namespace PDfAValidatorTest
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.sh";
-                SetLinuxFileExecuteable(somethingThatReturnsExitcode0);
             }
 
             var veraPdfException = Assert.Throws<VeraPdfException>(() =>
@@ -136,7 +135,6 @@ namespace PDfAValidatorTest
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 somethingThatReturnsExitcode1 = "./TestExecuteables/exitcode1.sh";
-                SetLinuxFileExecuteable(somethingThatReturnsExitcode1);
             }
 
             var veraPdfException = Assert.Throws<VeraPdfException>(() =>
@@ -187,27 +185,6 @@ namespace PDfAValidatorTest
             var postscriptValidator = new PdfAValidator.PdfAValidator();
             postscriptValidator.Dispose();
             postscriptValidator.Dispose();
-        }
-
-        private static void SetLinuxFileExecuteable(string filePath)
-        {
-            var chmodCmd = "chmod 700 " + filePath;
-            var escapedArgs = chmodCmd.Replace(maskedQuote, "\\\"");
-
-            using var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    FileName = "/bin/bash",
-                    Arguments = $"-c \"{escapedArgs}\""
-                }
-            };
-            process.Start();
-            process.WaitForExit();
         }
     }
 }
