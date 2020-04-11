@@ -1,3 +1,4 @@
+using PdfAValidator;
 using System.IO;
 using System.Runtime.InteropServices;
 using Xunit;
@@ -91,6 +92,45 @@ namespace PDfAValidatorTest
                 }
             }
             Assert.False(File.Exists(veraPdfStartScript));
+        }
+
+        [Fact]
+        public static void ShouldFailGracefullWithUnrecognicedVeraPdfOutput()
+        {
+            var somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.bat";
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.sh";
+            }
+
+            var veraPdfException = Assert.Throws<VeraPdfException>(() =>
+              {
+                  using var pdfAValidator = new PdfAValidator.PdfAValidator(somethingThatReturnsExitcode0, "SomeValue");
+                  pdfAValidator.Validate("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+              });
+
+            Assert.Equal($"Failed to parse VeraPdf Output: \nCustom JAVACMD: SomeValue\nveraPdfStartScriptPath: {somethingThatReturnsExitcode0}", veraPdfException.Message);
+        }
+
+        [Fact]
+        public static void ShouldFailGracefullWithExitcode1()
+        {
+            var somethingThatReturnsExitcode1 = "./TestExecuteables/exitcode1.bat";
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                somethingThatReturnsExitcode1 = "./TestExecuteables/exitcode1.sh";
+            }
+
+            var veraPdfException = Assert.Throws<VeraPdfException>(() =>
+            {
+                // Using default ctor to get Java bins for the test
+                using var pdfAValidator = new PdfAValidator.PdfAValidator(somethingThatReturnsExitcode1, "SomeValue");
+                pdfAValidator.Validate("./TestPdfFiles/FromLibreOffice.pdf");
+            });
+
+            Assert.Equal($"Calling VeraPdf exited with 1 caused an error: \nCustom JAVACMD: SomeValue\nVeraPdfStartScript: {somethingThatReturnsExitcode1}", veraPdfException.Message);
         }
 
         private static void AssertVeraPdfBinCreation(string? scriptPath)

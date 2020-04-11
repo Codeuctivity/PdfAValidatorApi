@@ -41,7 +41,6 @@ namespace PdfAValidator
         /// <summary>
         /// Disposing verapdf bins
         /// </summary>
-
         public void Dispose()
         {
             Dispose(true);
@@ -135,10 +134,24 @@ namespace PdfAValidator
 
             if (process.ExitCode == 0)
             {
+                ValidateVeraPdfOutputToBeXml(outputResult, PathJava, VeraPdfStartScript);
                 var veraPdfReport = DeserializeXml<Report>(outputResult);
                 return veraPdfReport;
             }
-            throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} caused an error: {errorResult}");
+            throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} caused an error: {errorResult}\nCustom JAVACMD: {PathJava}\nVeraPdfStartScript: {VeraPdfStartScript}");
+        }
+
+        private static void ValidateVeraPdfOutputToBeXml(string outputResult, string? customJavaCmd, string? veraPdfStartScript)
+        {
+            try
+            {
+                var xmlDocument = new XmlDocument();
+                xmlDocument.LoadXml(outputResult);
+            }
+            catch (XmlException xmlException)
+            {
+                throw new VeraPdfException($"Failed to parse VeraPdf Output: {outputResult}\nCustom JAVACMD: {customJavaCmd}\nveraPdfStartScriptPath: {veraPdfStartScript}", xmlException);
+            }
         }
 
         private static string GetStreamOutput(StreamReader stream)

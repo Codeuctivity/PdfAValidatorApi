@@ -121,7 +121,7 @@ namespace PdfAValidator
         public List<Check> Check { get; } = new List<Check>();
 
         /// <summary>
-        /// Reference to iso standard paper 
+        /// Reference to iso standard paper
         /// </summary>
         /// <value>e.g. ISO 19005-1:2005</value>
         [XmlAttribute(AttributeName = "specification")]
@@ -200,7 +200,6 @@ namespace PdfAValidator
     /// <summary>
     /// Validation report
     /// </summary>
-
     [XmlRoot(ElementName = "validationReport")]
     public class ValidationReport
     {

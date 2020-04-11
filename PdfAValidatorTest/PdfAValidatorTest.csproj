@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
@@ -8,12 +8,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="TestExecuteables\exitcode0.bat" />
+    <None Remove="TestExecuteables\exitcode0.sh" />
+    <None Remove="TestExecuteables\exitcode1.sh" />
     <None Remove="TestPdfFiles\FontsNotEmbedded.pdf" />
     <None Remove="TestPdfFiles\FromLibreOffice.pdf" />
     <None Remove="TestPdfFiles\FromLibreOfficeNonPdfA.pdf" />
+    <None Remove="TestExecuteables\exitcode1.bat" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="TestExecuteables\exitcode1.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestExecuteables\exitcode0.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="TestPdfFiles\FromLibreOffice.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -23,6 +33,13 @@
     <Content Include="TestPdfFiles\FontsNotEmbedded.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="TestExecuteables\exitcode1.bat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestExecuteables\exitcode0.bat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+
   </ItemGroup>
 
   <ItemGroup>
