@@ -107,7 +107,7 @@ namespace PDfAValidatorTest
             var veraPdfException = Assert.Throws<VeraPdfException>(() =>
               {
                   using var pdfAValidator = new PdfAValidator.PdfAValidator(somethingThatReturnsExitcode0, "SomeValue");
-                  var result = pdfAValidator.Validate("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                  pdfAValidator.Validate("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
               });
 
             Assert.Equal($"Failed to parse VeraPdf Output: \nCustom JAVACMD: SomeValue\nveraPdfStartScriptPath: {somethingThatReturnsExitcode0}", veraPdfException.Message);
