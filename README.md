@@ -43,3 +43,20 @@ public static void ShouldGetDetailedReportFromPdfA()
 ## Demo OpenApi - PdfAValidatorWebApi
 
 Give <https://pdfavalidator.azurewebsites.net> a try, but dont be disappointed if it is offline. The demo azure account is running on limited budget.
+
+## Dependencies
+
+### Windows
+
+Everything comes with the nuget package
+
+### Ubuntu 20.04
+
+Current PdfAValidatorApi depends on opnejdf-8-jre.
+
+```bash
+sudo snap install dotnet-sdk
+sudo snap alias dotnet-sdk.dotnet dotnet
+sudo apt install openjdk-8-jre
+sudo update-alternatives --config java
+```
