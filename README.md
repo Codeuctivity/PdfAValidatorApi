@@ -49,11 +49,25 @@ Everything comes with the nuget package
 
 ### Ubuntu 20.04
 
-Current PdfAValidatorApi depends on opnejdf-8-jre.
+Current PdfAValidatorApi depends on opnejdf-8-jre and .net core 3.1.
 
 ```bash
-sudo snap install dotnet-sdk
-sudo snap alias dotnet-sdk.dotnet dotnet
 sudo apt install openjdk-8-jre
 sudo update-alternatives --config java
+```
+
+#### Additional things for developing this package
+
+#### Setup .net sdk 
+
+Based on https://docs.microsoft.com/de-de/dotnet/core/install/linux-package-manager-ubuntu-2004
+
+```bash
+sudo snap remove dotnet-sdk
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt-get update
+sudo apt-get install apt-transport-https
+sudo apt-get update
+sudo apt-get install dotnet-sdk-3.1
 ```
