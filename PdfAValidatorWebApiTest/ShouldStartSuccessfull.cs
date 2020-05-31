@@ -1,15 +1,15 @@
+using Microsoft.AspNetCore.Mvc.Testing;
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-namespace PdfAValidatorWebApiTest
+namespace CodeuctivityWebApiTest
 {
-    public class ShouldStartSuccessfull : IClassFixture<WebApplicationFactory<PdfAValidatorWebApi.Startup>>
+    public class ShouldStartSuccessfull : IClassFixture<WebApplicationFactory<CodeuctivityWebApi.Startup>>
     {
-        private readonly WebApplicationFactory<PdfAValidatorWebApi.Startup> _factory;
+        private readonly WebApplicationFactory<CodeuctivityWebApi.Startup> _factory;
 
-        public ShouldStartSuccessfull(WebApplicationFactory<PdfAValidatorWebApi.Startup> factory)
+        public ShouldStartSuccessfull(WebApplicationFactory<CodeuctivityWebApi.Startup> factory)
         {
             _factory = factory;
         }

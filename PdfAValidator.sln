@@ -11,12 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfAValidatorWebApi", "PdfA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{49D9D2CB-EF79-4962-B4C3-2F1BAFD9DCC8}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		appveyor.yml = appveyor.yml
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfAValidatorWebApiTest", "PdfAValidatorWebApiTest\PdfAValidatorWebApiTest.csproj", "{92E8D03D-F39B-46BD-98BF-1F2BB0AE21BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfAValidatorWebApiTest", "PdfAValidatorWebApiTest\PdfAValidatorWebApiTest.csproj", "{92E8D03D-F39B-46BD-98BF-1F2BB0AE21BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

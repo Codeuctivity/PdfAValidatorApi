@@ -1,26 +1,28 @@
-﻿using System;
+﻿using Codeuctivity.Properties;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace PdfAValidator
+namespace Codeuctivity
 {
     /// <summary>
     /// PdfAValidator is a VeraPdf wrapper
     /// </summary>
-    public class PdfAValidator : IDisposable
+
+    public class PdfAValidator : IPdfAValidator
     {
         private const string maskedQuote = "\"";
         private const int maxLengthTempdirectoryThatVeraPdfFitsIn = 206;
-        private const string OsNotSupportedMessage = "Sorry, only supporting linux and windows.";
-        private readonly object lockObject = new object();
         private string? pathVeraPdfDirectory;
         private bool disposed;
+        private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
         /// <summary>
         /// Path to java jre used by windows
@@ -57,12 +59,9 @@ namespace PdfAValidator
                 return;
             }
 
-            if (disposing)
+            if (disposing && !customVerapdfAndJavaLocations && Directory.Exists(pathVeraPdfDirectory))
             {
-                if (!customVerapdfAndJavaLocations && Directory.Exists(pathVeraPdfDirectory))
-                {
-                    Directory.Delete(pathVeraPdfDirectory, true);
-                }
+                Directory.Delete(pathVeraPdfDirectory, true);
             }
             disposed = true;
         }
@@ -84,16 +83,17 @@ namespace PdfAValidator
         /// Use this constructor to use the embedded veraPdf binaries
         /// </summary>
         public PdfAValidator()
-        { }
+        {
+        }
 
         /// <summary>
         /// Validates a pdf to be compliant with the pdfa standard claimed by its meta data
         /// </summary>
         /// <param name="pathToPdfFile"></param>
         /// <returns>True for compliant PdfA Files</returns>
-        public bool Validate(string pathToPdfFile)
+        public async Task<bool> ValidateAsync(string pathToPdfFile)
         {
-            return ValidateWithDetailedReport(pathToPdfFile).BatchSummary.ValidationReports.Compliant == "1";
+            return (await ValidateWithDetailedReportAsync(pathToPdfFile).ConfigureAwait(false)).BatchSummary.ValidationReports.Compliant == "1";
         }
 
         /// <summary>
@@ -101,9 +101,9 @@ namespace PdfAValidator
         /// </summary>
         /// <param name="pathToPdfFile"></param>
         /// <returns></returns>
-        public Report ValidateWithDetailedReport(string pathToPdfFile)
+        public async Task<Report> ValidateWithDetailedReportAsync(string pathToPdfFile)
         {
-            IntiPathToVeraPdfBinAndJava();
+            await IntiPathToVeraPdfBinAndJava().ConfigureAwait(false);
             var absolutePathToPdfFile = Path.GetFullPath(pathToPdfFile);
 
             if (!File.Exists(absolutePathToPdfFile))
@@ -172,9 +172,10 @@ namespace PdfAValidator
             return (T)serializer.Deserialize(xmlReader);
         }
 
-        private void IntiPathToVeraPdfBinAndJava()
+        private async Task IntiPathToVeraPdfBinAndJava()
         {
-            lock (lockObject)
+            await semaphore.WaitAsync().ConfigureAwait(false);
+            try
             {
                 if (IsInitialized)
                 {
@@ -191,23 +192,27 @@ namespace PdfAValidator
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    ExtractBinaryFromManifest("PdfAValidator.VeraPdf.Windows.zip");
+                    await ExtractBinaryFromManifest("Codeuctivity.VeraPdf.Windows.zip").ConfigureAwait(false);
                     VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf", "verapdf.bat");
                     // took from https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot#x64_win
                     PathJava = Path.Combine(pathVeraPdfDirectory, "verapdf", "jdk8u202-b08-jre", "bin", "java");
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    ExtractBinaryFromManifest("PdfAValidator.VeraPdf.Linux.zip");
+                    await ExtractBinaryFromManifest("Codeuctivity.VeraPdf.Linux.zip").ConfigureAwait(false);
                     VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf", "verapdf");
                     SetLinuxFileExecuteable(VeraPdfStartScript);
                 }
                 else
                 {
-                    throw new NotImplementedException(OsNotSupportedMessage);
+                    throw new NotImplementedException(Resources.OsNotSupportedMessage);
                 }
 
                 IsInitialized = true;
+            }
+            finally
+            {
+                semaphore.Release();
             }
         }
 
@@ -232,7 +237,7 @@ namespace PdfAValidator
             process.WaitForExit();
         }
 
-        private void ExtractBinaryFromManifest(string resourceName)
+        private async Task ExtractBinaryFromManifest(string resourceName)
         {
             var pathZipVeraPdf = Path.Combine(pathVeraPdfDirectory, "VeraPdf.zip");
             var assembly = Assembly.GetExecutingAssembly();
@@ -240,7 +245,7 @@ namespace PdfAValidator
             using (var fileStream = File.Create(pathZipVeraPdf))
             {
                 stream.Seek(0, SeekOrigin.Begin);
-                stream.CopyTo(fileStream);
+                await stream.CopyToAsync(fileStream).ConfigureAwait(false);
             }
 
             ZipFile.ExtractToDirectory(pathZipVeraPdf, pathVeraPdfDirectory);

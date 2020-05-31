@@ -1,19 +1,20 @@
-using PdfAValidator;
+using Codeuctivity;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace PDfAValidatorTest
+namespace CodeuctivityTest
 {
     public static class PdfAValidatorTest
     {
         [Fact]
-        public static void ShouldUnpackNewDirectoryInTempdirectory()
+        public static async Task ShouldUnpackNewDirectoryInTempdirectory()
         {
             string? veraPdfStartScript;
-            using (var pdfAValidator = new PdfAValidator.PdfAValidator())
+            using (var pdfAValidator = new PdfAValidator())
             {
-                pdfAValidator.Validate("./TestPdfFiles/FromLibreOffice.pdf");
+                await pdfAValidator.ValidateAsync("./TestPdfFiles/FromLibreOffice.pdf");
                 veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
                 AssertVeraPdfBinCreation(pdfAValidator.VeraPdfStartScript);
             }
@@ -21,39 +22,39 @@ namespace PDfAValidatorTest
         }
 
         [Fact]
-        public static void ShouldDetectCompliantPdfA()
+        public static async Task ShouldDetectCompliantPdfA()
         {
-            using var pdfAValidator = new PdfAValidator.PdfAValidator();
+            using var pdfAValidator = new PdfAValidator();
             Assert.True(File.Exists("./TestPdfFiles/FromLibreOffice.pdf"));
-            var result = pdfAValidator.Validate("./TestPdfFiles/FromLibreOffice.pdf");
+            var result = await pdfAValidator.ValidateAsync("./TestPdfFiles/FromLibreOffice.pdf");
             Assert.True(result);
         }
 
         [Fact]
-        public static void ShouldGetDetailedReportFromPdfA()
+        public static async Task ShouldGetDetailedReportFromPdfA()
         {
-            using var pdfAValidator = new PdfAValidator.PdfAValidator();
+            using var pdfAValidator = new PdfAValidator();
             Assert.True(File.Exists("./TestPdfFiles/FromLibreOffice.pdf"));
-            var result = pdfAValidator.ValidateWithDetailedReport("./TestPdfFiles/FromLibreOffice.pdf");
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf");
             Assert.True(result.Jobs.Job.ValidationReport.IsCompliant);
             Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1A validation profile");
         }
 
         [Fact]
-        public static void ShouldDetectNonCompliantPdfA()
+        public static async Task ShouldDetectNonCompliantPdfA()
         {
-            using var pdfAValidator = new PdfAValidator.PdfAValidator();
+            using var pdfAValidator = new PdfAValidator();
             Assert.True(File.Exists("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
-            var result = pdfAValidator.Validate("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+            var result = await pdfAValidator.ValidateAsync("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
             Assert.False(result);
         }
 
         [Fact]
-        public static void ShouldGetDetailedReportFromNonCompliantPdfA()
+        public static async Task ShouldGetDetailedReportFromNonCompliantPdfA()
         {
-            using var pdfAValidator = new PdfAValidator.PdfAValidator();
+            using var pdfAValidator = new PdfAValidator();
             Assert.True(File.Exists("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
-            var result = pdfAValidator.ValidateWithDetailedReport("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
             Assert.False(result.Jobs.Job.ValidationReport.IsCompliant);
             Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1B validation profile");
             Assert.InRange(result.Jobs.Job.ValidationReport.Details.FailedRules, 1, 20);
@@ -61,41 +62,39 @@ namespace PDfAValidatorTest
         }
 
         [Fact]
-        public static void ShouldGetDetailedReportFromNonCompliantPdfAMissingFont()
+        public static async Task ShouldGetDetailedReportFromNonCompliantPdfAMissingFont()
         {
-            using var pdfAValidator = new PdfAValidator.PdfAValidator();
+            using var pdfAValidator = new PdfAValidator();
             Assert.True(File.Exists("./TestPdfFiles/FontsNotEmbedded.pdf"));
-            var result = pdfAValidator.ValidateWithDetailedReport("./TestPdfFiles/FontsNotEmbedded.pdf");
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FontsNotEmbedded.pdf");
             Assert.False(result.Jobs.Job.ValidationReport.IsCompliant);
             Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1B validation profile");
             Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Clause == "6.3.5");
         }
 
         [Fact]
-        public static void ShouldWorkWithCustomJavaAndVeraPdfLocation()
+        public static async Task ShouldWorkWithCustomJavaAndVeraPdfLocation()
         {
             string? veraPdfStartScript;
             // Using default ctor to get verapdf and Java bins for the test
-            using (var pdfAValidatorPrepareBins = new PdfAValidator.PdfAValidator())
+            using (var pdfAValidatorPrepareBins = new PdfAValidator())
             {
+                await pdfAValidatorPrepareBins.ValidateAsync("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                using (var pdfAValidator = new PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStartScript!, pdfAValidatorPrepareBins.PathJava!))
                 {
-                    pdfAValidatorPrepareBins.Validate("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
-                    using (var pdfAValidator = new PdfAValidator.PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStartScript!, pdfAValidatorPrepareBins.PathJava!))
-                    {
-                        veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
-                        AssertVeraPdfBinCreation(veraPdfStartScript);
-                        Assert.True(File.Exists("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
-                        var result = pdfAValidator.Validate("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
-                        Assert.False(result);
-                    }
-                    Assert.True(File.Exists(veraPdfStartScript));
+                    veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
+                    AssertVeraPdfBinCreation(veraPdfStartScript);
+                    Assert.True(File.Exists("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
+                    var result = await pdfAValidator.ValidateAsync("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                    Assert.False(result);
                 }
+                Assert.True(File.Exists(veraPdfStartScript));
             }
             Assert.False(File.Exists(veraPdfStartScript));
         }
 
         [Fact]
-        public static void ShouldFailGracefullWithUnrecognicedVeraPdfOutput()
+        public static async Task ShouldFailGracefullWithUnrecognicedVeraPdfOutput()
         {
             var somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.bat";
 
@@ -104,17 +103,17 @@ namespace PDfAValidatorTest
                 somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.sh";
             }
 
-            var veraPdfException = Assert.Throws<VeraPdfException>(() =>
+            var veraPdfException = await Assert.ThrowsAsync<VeraPdfException>(async () =>
               {
-                  using var pdfAValidator = new PdfAValidator.PdfAValidator(somethingThatReturnsExitcode0, "SomeValue");
-                  pdfAValidator.Validate("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                  using var pdfAValidator = new PdfAValidator(somethingThatReturnsExitcode0, "SomeValue");
+                  await pdfAValidator.ValidateAsync("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
               });
 
             Assert.Equal($"Failed to parse VeraPdf Output: \nCustom JAVACMD: SomeValue\nveraPdfStartScriptPath: {somethingThatReturnsExitcode0}", veraPdfException.Message);
         }
 
         [Fact]
-        public static void ShouldFailGracefullWithExitcode1()
+        public static async Task ShouldFailGracefullWithExitcode1()
         {
             var somethingThatReturnsExitcode1 = "./TestExecuteables/exitcode1.bat";
 
@@ -123,11 +122,11 @@ namespace PDfAValidatorTest
                 somethingThatReturnsExitcode1 = "./TestExecuteables/exitcode1.sh";
             }
 
-            var veraPdfException = Assert.Throws<VeraPdfException>(() =>
+            var veraPdfException = await Assert.ThrowsAsync<VeraPdfException>(async () =>
             {
                 // Using default ctor to get Java bins for the test
-                using var pdfAValidator = new PdfAValidator.PdfAValidator(somethingThatReturnsExitcode1, "SomeValue");
-                pdfAValidator.Validate("./TestPdfFiles/FromLibreOffice.pdf");
+                using var pdfAValidator = new PdfAValidator(somethingThatReturnsExitcode1, "SomeValue");
+                await pdfAValidator.ValidateAsync("./TestPdfFiles/FromLibreOffice.pdf");
             });
 
             Assert.Equal($"Calling VeraPdf exited with 1 caused an error: \nCustom JAVACMD: SomeValue\nVeraPdfStartScript: {somethingThatReturnsExitcode1}", veraPdfException.Message);
@@ -147,20 +146,27 @@ namespace PDfAValidatorTest
         }
 
         [Fact]
-        public static void ShouldNotFailOnMultipleDisposeCalls()
+        public static async Task ShouldNotFailOnMultipleDisposeCalls()
         {
-            var postscriptValidator = new PdfAValidator.PdfAValidator();
-            postscriptValidator.Validate("./TestPdfFiles/FromLibreOffice.pdf");
+            var postscriptValidator = new PdfAValidator();
+            _ = await postscriptValidator.ValidateAsync("./TestPdfFiles/FromLibreOffice.pdf");
             postscriptValidator.Dispose();
+#pragma warning disable S3966 // Expecting multiple dispose calls to pass
             postscriptValidator.Dispose();
+#pragma warning restore S3966 // Expecting multiple dispose calls to pass
         }
 
         [Fact]
         public static void ShouldNotFailOnMultipleDisposeCallseWithoutInitialization()
         {
-            var postscriptValidator = new PdfAValidator.PdfAValidator();
+            var postscriptValidator = new PdfAValidator();
+
             postscriptValidator.Dispose();
+#pragma warning disable S3966 // Expecting multiple dispose calls to pass
             postscriptValidator.Dispose();
+#pragma warning restore S3966 // Expecting multiple dispose calls to pass
+
+            Assert.True(true);
         }
     }
 }

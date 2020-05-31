@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PdfAValidatorWebApi.Controllers
+namespace CodeuctivityWebApi.Controllers
 {
     /// <summary>
     /// <see cref="PdfAValidatorController"/>
@@ -25,22 +25,27 @@ namespace PdfAValidatorWebApi.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Validate(IFormFile pdfFile)
+        public Task<ActionResult> Validate(IFormFile pdfFile)
         {
             if (pdfFile is null)
             {
                 throw new ArgumentNullException(nameof(pdfFile));
             }
 
+            return InternalValidate();
+        }
+
+        private async Task<ActionResult> InternalValidate()
+        {
             var uploadedFile = Request.Form.Files.Single();
             var tempPdfFilePath = Path.Combine(Path.GetTempPath(), "VeraPdf" + Guid.NewGuid() + ".pdf");
             try
             {
                 using var fs = new FileStream(tempPdfFilePath, FileMode.CreateNew, FileAccess.Write);
-                using var pdfAValidator = new PdfAValidator.PdfAValidator();
+                using var pdfAValidator = new Codeuctivity.PdfAValidator();
                 await uploadedFile.CopyToAsync(fs).ConfigureAwait(false);
 
-                var result = pdfAValidator.Validate(tempPdfFilePath);
+                var result = await pdfAValidator.ValidateAsync(tempPdfFilePath).ConfigureAwait(false);
                 return Ok(result);
             }
             finally
@@ -70,10 +75,10 @@ namespace PdfAValidatorWebApi.Controllers
             try
             {
                 using var fs = new FileStream(tempPdfFilePath, FileMode.CreateNew, FileAccess.Write);
-                using var pdfAValidator = new PdfAValidator.PdfAValidator();
+                using var pdfAValidator = new Codeuctivity.PdfAValidator();
                 await uploadedFile.CopyToAsync(fs).ConfigureAwait(false);
 
-                var result = pdfAValidator.ValidateWithDetailedReport(tempPdfFilePath);
+                var result = pdfAValidator.ValidateWithDetailedReportAsync(tempPdfFilePath);
                 return Ok(result);
             }
             finally

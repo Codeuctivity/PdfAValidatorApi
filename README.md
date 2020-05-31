@@ -15,31 +15,59 @@ dotnet add package PdfAValidator
 Sample - e.g. use it in your unit test to check compliance of some pdf:
 
 ```csharp
-public void ShouldDetectCompliantPdfA()
+public static async Task ShouldDetectCompliantPdfA()
 {
-    using (var pdfAValidator = new PdfAValidator.PdfAValidator())
-    {
-        var result = pdfAValidator.Validate("./TestPdfFiles/FromLibreOffice.pdf");
-        Assert.True(result);
-    }
+    using var pdfAValidator = new PdfAValidator();
+    Assert.True(File.Exists("./TestPdfFiles/FromLibreOffice.pdf"));
+    var result = await pdfAValidator.ValidateAsync("./TestPdfFiles/FromLibreOffice.pdf");
+    Assert.True(result);
 }
 ```
 
 Sample - e.g. use it in your unit test to check the used sub standard of some pdf:
 
 ```csharp
-public static void ShouldGetDetailedReportFromPdfA()
+public static async Task ShouldGetDetailedReportFromPdfA()
 {
-    using (var pdfAValidator = new PdfAValidator.PdfAValidator())
-    {
-        Assert.True(File.Exists("./TestPdfFiles/FromLibreOffice.pdf"));
-        var result = pdfAValidator.ValidateWithDetailedReport("./TestPdfFiles/FromLibreOffice.pdf");
-        Assert.True(result.Jobs.Job.ValidationReport.IsCompliant);
-        Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1A validation profile");
-    }
+    using var pdfAValidator = new PdfAValidator();
+    Assert.True(File.Exists("./TestPdfFiles/FromLibreOffice.pdf"));
+    var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf");
+    Assert.True(result.Jobs.Job.ValidationReport.IsCompliant);
+    Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1A validation profile");
 }
 ```
 
 ## Demo OpenApi - PdfAValidatorWebApi
 
 Give <https://pdfavalidator.azurewebsites.net> a try, but dont be disappointed if it is offline. The demo azure account is running on limited budget.
+
+## Dependencies
+
+### Windows
+
+Everything comes with the nuget package
+
+### Ubuntu 20.04
+
+Current PdfAValidatorApi depends on opnejdf-8-jre and .net core 3.1.
+
+```bash
+sudo apt install openjdk-8-jre
+sudo update-alternatives --config java
+```
+
+#### Additional things for developing this package
+
+#### Setup .net sdk 
+
+Based on https://docs.microsoft.com/de-de/dotnet/core/install/linux-package-manager-ubuntu-2004
+
+```bash
+sudo snap remove dotnet-sdk
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt-get update
+sudo apt-get install apt-transport-https
+sudo apt-get update
+sudo apt-get install dotnet-sdk-3.1
+```

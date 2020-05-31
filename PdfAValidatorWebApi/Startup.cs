@@ -8,13 +8,15 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace PdfAValidatorWebApi
+namespace CodeuctivityWebApi
 {
     /// <summary>
     /// Startup Things comes in here
     /// </summary>
     public class Startup
     {
+        private const string GithubProjectAdress = "https://github.com/Codeuctivity/PdfAValidatorApi";
+
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
         ///For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -31,17 +33,17 @@ namespace PdfAValidatorWebApi
                     Version = "v1",
                     Title = "PdfAValidator",
                     Description = "A simple ASP.NET Core Web API wrapping access to VeraPdf",
-                    TermsOfService = new Uri("https://github.com/Codeuctivity/PdfAValidatorApi"),
+                    TermsOfService = new Uri(GithubProjectAdress),
                     Contact = new OpenApiContact
                     {
                         Name = "Codeuctivity",
                         Email = string.Empty,
-                        Url = new Uri("https://github.com/Codeuctivity/PdfAValidatorApi"),
+                        Url = new Uri(GithubProjectAdress),
                     },
                     License = new OpenApiLicense
                     {
                         Name = "Use under AGPL",
-                        Url = new Uri("https://github.com/Codeuctivity/PdfAValidatorApi/blob/master/LICENSE"),
+                        Url = new Uri($"{GithubProjectAdress}/blob/master/LICENSE"),
                     }
                 });
 
@@ -68,8 +70,7 @@ namespace PdfAValidatorWebApi
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "PdfAValidator V1");
