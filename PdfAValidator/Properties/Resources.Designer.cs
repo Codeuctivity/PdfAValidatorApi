@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PdfAValidatorTest.Properties {
+namespace Codeuctivity.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace PdfAValidatorTest.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PdfAValidatorTest.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Codeuctivity.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,15 @@ namespace PdfAValidatorTest.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, only supporting Linux and windows..
+        /// </summary>
+        internal static string OsNotSupportedMessage {
+            get {
+                return ResourceManager.GetString("OsNotSupportedMessage", resourceCulture);
             }
         }
     }

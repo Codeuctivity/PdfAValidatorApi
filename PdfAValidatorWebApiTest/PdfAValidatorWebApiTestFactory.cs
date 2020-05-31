@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace PdfAValidatorWebApiTest
+namespace CodeuctivityWebApiTest
 {
     public class PdfAValidatorWebApiTestFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
     {
@@ -10,7 +10,7 @@ namespace PdfAValidatorWebApiTest
         {
             // see https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-3.1 for things you could place here
 
-            builder.ConfigureServices(services =>
+            builder?.ConfigureServices(services =>
         {
             // Build the service provider.
             services.BuildServiceProvider();

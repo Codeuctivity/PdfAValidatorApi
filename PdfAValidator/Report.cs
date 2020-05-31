@@ -1,10 +1,9 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
-using System.Collections.Generic;
 
 // example report file https://docs.verapdf.org/policy/info-dict/report.xml
 
-namespace PdfAValidator
+namespace Codeuctivity
 {
     /// <summary>
     /// ReleaseDetails shows details to the used veraPdf version

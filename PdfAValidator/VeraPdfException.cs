@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace PdfAValidator
+namespace Codeuctivity
 {
     /// <summary>
     /// The exception that is thrown when the call of verapdf fails execution of a program.
