@@ -7,11 +7,11 @@ using Xunit;
 
 namespace CodeuctivityWebApiTest
 {
-    public class ShouldStartSuccessfull : IClassFixture<WebApplicationFactory<CodeuctivityWebApi.Startup>>
+    public class IntegrativeTests : IClassFixture<WebApplicationFactory<CodeuctivityWebApi.Startup>>
     {
         private readonly WebApplicationFactory<CodeuctivityWebApi.Startup> _factory;
 
-        public ShouldStartSuccessfull(WebApplicationFactory<CodeuctivityWebApi.Startup> factory)
+        public IntegrativeTests(WebApplicationFactory<CodeuctivityWebApi.Startup> factory)
         {
             _factory = factory;
         }
@@ -30,8 +30,7 @@ namespace CodeuctivityWebApiTest
 
             // Assert
             response.EnsureSuccessStatusCode();
-            Assert.Equal(contentType,
-                response.Content.Headers.ContentType.ToString());
+            Assert.Equal(contentType, response.Content.Headers.ContentType.ToString());
         }
 
         [Fact]
@@ -43,17 +42,18 @@ namespace CodeuctivityWebApiTest
             using var request = new HttpRequestMessage(new HttpMethod("POST"), "http://localhost/api/PdfAValidator");
             request.Headers.TryAddWithoutValidation("accept", "*/*");
 
-            var multipartContent = new MultipartFormDataContent();
-            var file1 = new ByteArrayContent(File.ReadAllBytes("../../../FromLibreOffice.pdf"));
+            using var file1 = new ByteArrayContent(File.ReadAllBytes("../../../FromLibreOffice.pdf"));
             file1.Headers.Add("Content-Type", "application/pdf");
+            var multipartContent = new MultipartFormDataContent();
             multipartContent.Add(file1, "pdfFile", Path.GetFileName("FromLibreOffice.pdf"));
             request.Content = multipartContent;
 
             // Act
-            var response = await client.SendAsync(request);
+            var response = await client.SendAsync(request).ConfigureAwait(false);
 
             // Assert
             response.EnsureSuccessStatusCode();
+            Assert.Equal("true", await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
     }
 }

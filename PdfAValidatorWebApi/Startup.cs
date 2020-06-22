@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Codeuctivity;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,7 @@ namespace CodeuctivityWebApi
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IPdfAValidator, PdfAValidator>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
