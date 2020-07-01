@@ -32,7 +32,7 @@ namespace CodeuctivityWebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Version = "v1",
+                    Version = "v2",
                     Title = "PdfAValidator",
                     Description = "A simple ASP.NET Core Web API wrapping access to VeraPdf",
                     TermsOfService = new Uri(GithubProjectAdress),
