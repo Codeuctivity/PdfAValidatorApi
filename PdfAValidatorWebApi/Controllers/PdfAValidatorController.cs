@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Codeuctivity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IO;
@@ -15,6 +16,15 @@ namespace CodeuctivityWebApi.Controllers
     [ApiController]
     public class PdfAValidatorController : ControllerBase
     {
+        private IPdfAValidator pdfAValidator { get; }
+        /// <summary>
+        /// Inject the validator.
+        /// </summary>
+        public PdfAValidatorController(IPdfAValidator PdfAValidator)
+        {
+            pdfAValidator = PdfAValidator;
+        }
+
         /// <summary>
         /// Validates the compliance of a PdfA.
         /// </summary>
@@ -42,7 +52,6 @@ namespace CodeuctivityWebApi.Controllers
             try
             {
                 using var fs = new FileStream(tempPdfFilePath, FileMode.CreateNew, FileAccess.Write);
-                using var pdfAValidator = new Codeuctivity.PdfAValidator();
                 await uploadedFile.CopyToAsync(fs).ConfigureAwait(false);
 
                 var result = await pdfAValidator.ValidateAsync(tempPdfFilePath).ConfigureAwait(false);
@@ -75,7 +84,6 @@ namespace CodeuctivityWebApi.Controllers
             try
             {
                 using var fs = new FileStream(tempPdfFilePath, FileMode.CreateNew, FileAccess.Write);
-                using var pdfAValidator = new Codeuctivity.PdfAValidator();
                 await uploadedFile.CopyToAsync(fs).ConfigureAwait(false);
 
                 var result = pdfAValidator.ValidateWithDetailedReportAsync(tempPdfFilePath);

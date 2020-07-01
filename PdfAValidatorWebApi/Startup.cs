@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Codeuctivity;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,13 +25,14 @@ namespace CodeuctivityWebApi
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IPdfAValidator, PdfAValidator>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Version = "v1",
+                    Version = "v2",
                     Title = "PdfAValidator",
                     Description = "A simple ASP.NET Core Web API wrapping access to VeraPdf",
                     TermsOfService = new Uri(GithubProjectAdress),
