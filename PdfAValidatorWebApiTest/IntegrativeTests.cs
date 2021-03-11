@@ -30,7 +30,7 @@ namespace CodeuctivityWebApiTest
 
             // Assert
             response.EnsureSuccessStatusCode();
-            Assert.Equal(contentType, response.Content.Headers.ContentType.ToString());
+            Assert.Equal(contentType, response.Content.Headers.ContentType?.ToString());
         }
 
         [Fact]
@@ -41,8 +41,10 @@ namespace CodeuctivityWebApiTest
             using var request = new HttpRequestMessage(new HttpMethod("POST"), "http://localhost/api/PdfAValidator");
             using var file = new ByteArrayContent(File.ReadAllBytes("../../../FromLibreOffice.pdf"));
             file.Headers.Add("Content-Type", "application/pdf");
-            var multipartContent = new MultipartFormDataContent();
-            multipartContent.Add(file, "pdfFile", Path.GetFileName("FromLibreOffice.pdf"));
+            var multipartContent = new MultipartFormDataContent
+            {
+                { file, "pdfFile", Path.GetFileName("FromLibreOffice.pdf") }
+            };
             request.Content = multipartContent;
 
             // Act
@@ -61,8 +63,10 @@ namespace CodeuctivityWebApiTest
             using var request = new HttpRequestMessage(new HttpMethod("POST"), "http://localhost/api/PdfAValidator/DetailedReport");
             using var file = new ByteArrayContent(File.ReadAllBytes("../../../FromLibreOffice.pdf"));
             file.Headers.Add("Content-Type", "application/pdf");
-            var multipartContent = new MultipartFormDataContent();
-            multipartContent.Add(file, "pdfFile", Path.GetFileName("FromLibreOffice.pdf"));
+            var multipartContent = new MultipartFormDataContent
+            {
+                { file, "pdfFile", Path.GetFileName("FromLibreOffice.pdf") }
+            };
             request.Content = multipartContent;
 
             // Act
@@ -70,7 +74,7 @@ namespace CodeuctivityWebApiTest
             // Assert
             response.EnsureSuccessStatusCode();
 
-            string actual = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var actual = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             Assert.Contains("isCompliant\":true", actual);
         }
     }
