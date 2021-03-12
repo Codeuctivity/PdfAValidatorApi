@@ -17,6 +17,7 @@
     <Description>PdfAValidator is based on VeraPdf and is an open source conformance checker for PDF/A files. It is designed to help archives and libraries check that their PDF/A collections conform to the appropriate ISO 19005 archiving standard specification.</Description>
     <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>$(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)</PackageReleaseNotes>
     <AssemblyOriginatorKeyFile>PdfAValidator.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <IncludeSymbols>true</IncludeSymbols>
