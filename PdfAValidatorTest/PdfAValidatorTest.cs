@@ -113,23 +113,23 @@ namespace CodeuctivityTest
         }
 
         [Fact]
-        public static async Task ShouldFailGracefullWithExitcode1()
+        public static async Task ShouldFailGracefullWithExitcode2()
         {
-            var somethingThatReturnsExitcode1 = "./TestExecuteables/exitcode1.bat";
+            var somethingThatReturnsExitcode2 = "./TestExecuteables/exitcode2.bat";
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                somethingThatReturnsExitcode1 = "./TestExecuteables/exitcode1.sh";
+                somethingThatReturnsExitcode2 = "./TestExecuteables/exitcode2.sh";
             }
 
             var veraPdfException = await Assert.ThrowsAsync<VeraPdfException>(async () =>
             {
                 // Using default ctor to get Java bins for the test
-                using var pdfAValidator = new PdfAValidator(somethingThatReturnsExitcode1, "SomeValue");
+                using var pdfAValidator = new PdfAValidator(somethingThatReturnsExitcode2, "SomeValue");
                 await pdfAValidator.ValidateAsync("./TestPdfFiles/FromLibreOffice.pdf");
             });
 
-            Assert.Equal($"Calling VeraPdf exited with 1 caused an error: \nCustom JAVACMD: SomeValue\nVeraPdfStartScript: {somethingThatReturnsExitcode1}", veraPdfException.Message);
+            Assert.Equal($"Calling VeraPdf exited with 2 caused an error: \nCustom JAVACMD: SomeValue\nVeraPdfStartScript: {somethingThatReturnsExitcode2}", veraPdfException.Message);
         }
 
         private static void AssertVeraPdfBinCreation(string? scriptPath)

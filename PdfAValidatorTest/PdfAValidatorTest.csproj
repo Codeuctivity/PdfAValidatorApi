@@ -11,15 +11,15 @@
   <ItemGroup>
     <None Remove="TestExecuteables\exitcode0.bat" />
     <None Remove="TestExecuteables\exitcode0.sh" />
-    <None Remove="TestExecuteables\exitcode1.sh" />
+    <None Remove="TestExecuteables\exitcode2.bat" />
+    <None Remove="TestExecuteables\exitcode2.sh" />
     <None Remove="TestPdfFiles\FontsNotEmbedded.pdf" />
     <None Remove="TestPdfFiles\FromLibreOffice.pdf" />
     <None Remove="TestPdfFiles\FromLibreOfficeNonPdfA.pdf" />
-    <None Remove="TestExecuteables\exitcode1.bat" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="TestExecuteables\exitcode1.sh">
+    <Content Include="TestExecuteables\exitcode2.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestExecuteables\exitcode0.sh">
@@ -34,7 +34,7 @@
     <Content Include="TestPdfFiles\FontsNotEmbedded.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestExecuteables\exitcode1.bat">
+    <Content Include="TestExecuteables\exitcode2.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestExecuteables\exitcode0.bat">

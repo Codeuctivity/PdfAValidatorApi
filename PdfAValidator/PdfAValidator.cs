@@ -132,7 +132,7 @@ namespace Codeuctivity
 
             process.WaitForExit();
 
-            if (process.ExitCode == 0)
+            if (process.ExitCode == 0 || process.ExitCode == 1)
             {
                 ValidateVeraPdfOutputToBeXml(outputResult, PathJava, VeraPdfStartScript);
                 var veraPdfReport = DeserializeXml<Report>(outputResult);
