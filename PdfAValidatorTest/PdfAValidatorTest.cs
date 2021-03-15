@@ -50,6 +50,16 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldThrowOnValidatingBrokenPdf()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/NoPdf.pdf"));
+            var actualException = await Assert.ThrowsAsync<VeraPdfException>(() => pdfAValidator.ValidateAsync("./TestPdfFiles/NoPdf.pdf"));
+            Assert.Contains("Calling VeraPdf exited with 7 caused an error:", actualException.Message);
+            Assert.Contains("NoPdf.pdf doesn't appear to be a valid PDF.", actualException.Message);
+        }
+
+        [Fact]
         public static async Task ShouldGetDetailedReportFromNonCompliantPdfA()
         {
             using var pdfAValidator = new PdfAValidator();
@@ -70,6 +80,16 @@ namespace CodeuctivityTest
             Assert.False(result.Jobs.Job.ValidationReport.IsCompliant);
             Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1B validation profile");
             Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Clause == "6.3.5");
+        }
+
+        [Fact]
+        public static async Task ShouldThrowOnGetDetailedReportFromBrokenPdf()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/NoPdf.pdf"));
+            var actualException = await Assert.ThrowsAsync<VeraPdfException>(() => pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/NoPdf.pdf"));
+            Assert.Contains("Calling VeraPdf exited with 7 caused an error:", actualException.Message);
+            Assert.Contains("NoPdf.pdf doesn't appear to be a valid PDF.", actualException.Message);
         }
 
         [Fact]
