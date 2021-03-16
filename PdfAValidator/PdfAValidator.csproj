@@ -17,6 +17,7 @@
     <Description>PdfAValidator is based on VeraPdf and is an open source conformance checker for PDF/A files. It is designed to help archives and libraries check that their PDF/A collections conform to the appropriate ISO 19005 archiving standard specification.</Description>
     <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>$(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)</PackageReleaseNotes>
     <AssemblyOriginatorKeyFile>PdfAValidator.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <IncludeSymbols>true</IncludeSymbols>
@@ -27,6 +28,7 @@
     <LangVersion>8.0</LangVersion>
     <RootNamespace>Codeuctivity</RootNamespace>
     <NeutralLanguage>en</NeutralLanguage>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,11 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.9.0.19135">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.19.0.28253">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -1,8 +1,11 @@
 {
-    "cSpell.language": "en",
     "cSpell.words": [
-        "AGPL",
-        "chmod",
-        "pdfa"
-    ]
+        "Codacy",
+        "Codeuctivity",
+        "Nuget",
+        "Nunit",
+        "nupkg",
+        "snupkg"
+    ],
+    "editor.formatOnSave": true
 }
