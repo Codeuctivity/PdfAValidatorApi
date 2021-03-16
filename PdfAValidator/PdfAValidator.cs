@@ -103,7 +103,7 @@ namespace Codeuctivity
         /// <returns></returns>
         public async Task<Report> ValidateWithDetailedReportAsync(string pathToPdfFile)
         {
-            return await ValidateWithDetailedReportAsync(pathToPdfFile, "");
+            return await ValidateWithDetailedReportAsync(pathToPdfFile, "").ConfigureAwait(false);
         }
 
         /// <summary>
