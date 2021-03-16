@@ -103,6 +103,17 @@ namespace Codeuctivity
         /// <returns></returns>
         public async Task<Report> ValidateWithDetailedReportAsync(string pathToPdfFile)
         {
+            return await ValidateWithDetailedReportAsync(pathToPdfFile, "").ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Validates a pdf and returns a detailed compliance report
+        /// </summary>
+        /// <param name="pathToPdfFile"></param>
+        /// <param name="otherArguments">Command line arguments</param>
+        /// <returns></returns>
+        public async Task<Report> ValidateWithDetailedReportAsync(string pathToPdfFile, string otherArguments)
+        {
             await IntiPathToVeraPdfBinAndJava().ConfigureAwait(false);
             var absolutePathToPdfFile = Path.GetFullPath(pathToPdfFile);
 
@@ -124,7 +135,7 @@ namespace Codeuctivity
             var startInfo = process.StartInfo;
             // http://docs.verapdf.org/cli/terminal/
             var arguments = new[] { maskedQuote, absolutePathToPdfFile, maskedQuote };
-            startInfo.Arguments = string.Concat(arguments);
+            startInfo.Arguments = $"{otherArguments} {string.Concat(arguments)}";
             process.Start();
 
             var outputResult = GetStreamOutput(process.StandardOutput);

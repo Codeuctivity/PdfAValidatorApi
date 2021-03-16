@@ -50,6 +50,27 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldDetectNonCompliantPdfAWhenCheckingWrongFlavour()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/FromLibreOffice.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf", "-f 2b");
+            Assert.False(result.Jobs.Job.ValidationReport.IsCompliant);
+            Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-2B validation profile");
+        }
+
+        [Fact]
+        public static async Task ShouldParseButNotValidateRegularPdfWithValidateOffArgument()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf", "-o");
+            Assert.Equal("1", result.BatchSummary.TotalJobs);
+            Assert.Equal("0", result.BatchSummary.FailedToParse);
+            Assert.Equal("0", result.BatchSummary.Encrypted);
+        }
+
+        [Fact]
         public static async Task ShouldThrowOnValidatingBrokenPdf()
         {
             using var pdfAValidator = new PdfAValidator();
