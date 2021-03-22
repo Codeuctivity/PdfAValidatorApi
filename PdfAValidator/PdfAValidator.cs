@@ -115,7 +115,7 @@ namespace Codeuctivity
         /// <returns></returns>
         public async Task<Report> ValidateWithDetailedReportAsync(string pathToPdfFile, string commandLineArguments)
         {
-            return await ValidateBatchWithDetailedReportAsync(commandLineArguments, pathToPdfFile);
+            return await ValidateBatchWithDetailedReportAsync(commandLineArguments, pathToPdfFile).ConfigureAwait(false);
         }
 
         /// <summary>

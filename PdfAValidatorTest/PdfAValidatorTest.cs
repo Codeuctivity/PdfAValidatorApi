@@ -118,7 +118,7 @@ namespace CodeuctivityTest
         public static async Task ShouldBatchValidatePdfsWithoutThrowingException()
         {
             using var pdfAValidator = new PdfAValidator();
-            var files = new string[]
+            var files = new []
             {
                 "./TestPdfFiles/FromLibreOffice.pdf",
                 "./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"
