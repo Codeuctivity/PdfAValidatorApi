@@ -43,7 +43,7 @@ namespace Codeuctivity
         public string? VeraPdfStartScript { private set; get; }
 
         /// <summary>
-        /// Disposing verapdf bins
+        /// Disposing VeraPdf bins
         /// </summary>
         public void Dispose()
         {
