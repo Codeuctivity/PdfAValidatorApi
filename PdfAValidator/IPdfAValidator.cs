@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Codeuctivity
@@ -26,9 +27,16 @@ namespace Codeuctivity
         /// Validates a pdf and returns a detailed compliance report
         /// </summary>
         /// <param name="pathToPdfFile"></param>
-        /// <param name="otherArguments">Command line arguments</param>
+        /// <param name="commandLineArguments">Command line arguments</param>
         /// <returns></returns>
-        Task<Report> ValidateWithDetailedReportAsync(string pathToPdfFile, string otherArguments);
+        Task<Report> ValidateWithDetailedReportAsync(string pathToPdfFile, string commandLineArguments);
 
+        /// <summary>
+        /// Validates a batch of pdf files and returns a detailed compliance report
+        /// </summary>
+        /// <param name="pathsToPdfFiles"></param>
+        /// <param name="commandLineArguments">Command line arguments</param>
+        /// <returns></returns>
+        Task<Report> ValidateBatchWithDetailedReportAsync(IEnumerable<string> pathsToPdfFiles, string commandLineArguments);
     }
 }
