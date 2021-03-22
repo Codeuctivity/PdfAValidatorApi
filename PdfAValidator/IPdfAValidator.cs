@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Codeuctivity
@@ -36,6 +37,6 @@ namespace Codeuctivity
         /// <param name="pathsToPdfFiles"></param>
         /// <param name="commandLineArguments">Command line arguments</param>
         /// <returns></returns>
-        Task<Report> ValidateBatchWithDetailedReportAsync(string[] pathsToPdfFiles, string commandLineArguments);
+        Task<Report> ValidateBatchWithDetailedReportAsync(IEnumerable<string> pathsToPdfFiles, string commandLineArguments);
     }
 }

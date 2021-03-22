@@ -1,5 +1,6 @@
 ﻿using Codeuctivity.Properties;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -124,7 +125,7 @@ namespace Codeuctivity
         /// <param name="pathsToPdfFiles"></param>
         /// <param name="commandLineArguments">Command line arguments</param>
         /// <returns></returns>
-        public async Task<Report> ValidateBatchWithDetailedReportAsync(string[] pathsToPdfFiles, string commandLineArguments)
+        public async Task<Report> ValidateBatchWithDetailedReportAsync(IEnumerable<string> pathsToPdfFiles, string commandLineArguments)
         {
             await IntiPathToVeraPdfBinAndJava().ConfigureAwait(false);
 
@@ -160,7 +161,7 @@ namespace Codeuctivity
             throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} caused an error: {errorResult}\nCustom JAVACMD: {PathJava}\nVeraPdfStartScript: {VeraPdfStartScript}");
         }
 
-        private void AssertThatPdfFilesExist(string[] pathsToPdfFiles)
+        private void AssertThatPdfFilesExist(IEnumerable<string> pathsToPdfFiles)
         {
             foreach (var pathToPdfFile in pathsToPdfFiles)
             {
