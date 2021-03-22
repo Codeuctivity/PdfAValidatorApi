@@ -52,7 +52,7 @@ namespace Codeuctivity
         }
 
         /// <summary>
-        /// Disposing ghostscript bins
+        /// Disposing VeraPdf bins
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
