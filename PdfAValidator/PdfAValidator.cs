@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -110,17 +111,24 @@ namespace Codeuctivity
         /// Validates a pdf and returns a detailed compliance report
         /// </summary>
         /// <param name="pathToPdfFile"></param>
-        /// <param name="otherArguments">Command line arguments</param>
+        /// <param name="commandLineArguments">Command line arguments</param>
         /// <returns></returns>
-        public async Task<Report> ValidateWithDetailedReportAsync(string pathToPdfFile, string otherArguments)
+        public async Task<Report> ValidateWithDetailedReportAsync(string pathToPdfFile, string commandLineArguments)
+        {
+            return await ValidateBatchWithDetailedReportAsync(commandLineArguments, pathToPdfFile);
+        }
+
+        /// <summary>
+        /// Validates a batch of pdf files and returns a detailed compliance report
+        /// </summary>
+        /// <param name="commandLineArguments">Command line arguments</param>
+        /// <param name="pathsToPdfFiles"></param>
+        /// <returns></returns>
+        public async Task<Report> ValidateBatchWithDetailedReportAsync(string commandLineArguments, params string[] pathsToPdfFiles)
         {
             await IntiPathToVeraPdfBinAndJava().ConfigureAwait(false);
-            var absolutePathToPdfFile = Path.GetFullPath(pathToPdfFile);
 
-            if (!File.Exists(absolutePathToPdfFile))
-            {
-                throw new FileNotFoundException(absolutePathToPdfFile + " not found");
-            }
+            AssertThatPdfFilesExist(pathsToPdfFiles);
 
             using var process = new Process();
             process.StartInfo.FileName = VeraPdfStartScript;
@@ -134,8 +142,8 @@ namespace Codeuctivity
             }
             var startInfo = process.StartInfo;
             // http://docs.verapdf.org/cli/terminal/
-            var arguments = new[] { maskedQuote, absolutePathToPdfFile, maskedQuote };
-            startInfo.Arguments = $"{otherArguments} {string.Concat(arguments)}";
+            var fileArguments = pathsToPdfFiles.Select(path => @$"""{Path.GetFullPath(path)}""");
+            startInfo.Arguments = $"{commandLineArguments} {string.Join(" ", fileArguments)}";
             process.Start();
 
             var outputResult = GetStreamOutput(process.StandardOutput);
@@ -150,6 +158,19 @@ namespace Codeuctivity
                 return veraPdfReport;
             }
             throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} caused an error: {errorResult}\nCustom JAVACMD: {PathJava}\nVeraPdfStartScript: {VeraPdfStartScript}");
+        }
+
+        private void AssertThatPdfFilesExist(string[] pathsToPdfFiles)
+        {
+            foreach (var pathToPdfFile in pathsToPdfFiles)
+            {
+                var absolutePathToPdfFile = Path.GetFullPath(pathToPdfFile);
+
+                if (!File.Exists(absolutePathToPdfFile))
+                {
+                    throw new FileNotFoundException(absolutePathToPdfFile + " not found");
+                }
+            }
         }
 
         private static void ValidateVeraPdfOutputToBeXml(string outputResult, string? customJavaCmd, string? veraPdfStartScript)

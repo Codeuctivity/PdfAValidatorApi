@@ -1,5 +1,6 @@
 using Codeuctivity;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Xunit;
@@ -111,6 +112,28 @@ namespace CodeuctivityTest
             var actualException = await Assert.ThrowsAsync<VeraPdfException>(() => pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/NoPdf.pdf"));
             Assert.Contains("Calling VeraPdf exited with 7 caused an error:", actualException.Message);
             Assert.Contains("NoPdf.pdf doesn't appear to be a valid PDF.", actualException.Message);
+        }
+
+        [Fact]
+        public static async Task ShouldBatchValidatePdfsWithoutThrowingException()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            var files = new string[]
+            {
+                "./TestPdfFiles/FromLibreOffice.pdf",
+                "./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"
+            };
+            Assert.True(files.All(f => File.Exists(f)));
+            var result = await pdfAValidator.ValidateBatchWithDetailedReportAsync("", files);
+
+            Assert.Equal("2", result.BatchSummary.TotalJobs);
+            Assert.Equal(2, result.Jobs.AllJobs.Count);
+            Assert.Equal("1", result.BatchSummary.ValidationReports.Compliant);
+            Assert.Equal("1", result.BatchSummary.ValidationReports.NonCompliant);
+            var fromLibreOfficeJob = result.Jobs.AllJobs[0];
+            Assert.True(fromLibreOfficeJob.ValidationReport.IsCompliant);
+            var nonPdfAJob = result.Jobs.AllJobs[1];
+            Assert.False(nonPdfAJob.ValidationReport.IsCompliant);
         }
 
         [Fact]
