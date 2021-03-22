@@ -115,16 +115,16 @@ namespace Codeuctivity
         /// <returns></returns>
         public async Task<Report> ValidateWithDetailedReportAsync(string pathToPdfFile, string commandLineArguments)
         {
-            return await ValidateBatchWithDetailedReportAsync(commandLineArguments, pathToPdfFile).ConfigureAwait(false);
+            return await ValidateBatchWithDetailedReportAsync(new[] { pathToPdfFile }, commandLineArguments).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Validates a batch of pdf files and returns a detailed compliance report
         /// </summary>
-        /// <param name="commandLineArguments">Command line arguments</param>
         /// <param name="pathsToPdfFiles"></param>
+        /// <param name="commandLineArguments">Command line arguments</param>
         /// <returns></returns>
-        public async Task<Report> ValidateBatchWithDetailedReportAsync(string commandLineArguments, params string[] pathsToPdfFiles)
+        public async Task<Report> ValidateBatchWithDetailedReportAsync(string[] pathsToPdfFiles, string commandLineArguments)
         {
             await IntiPathToVeraPdfBinAndJava().ConfigureAwait(false);
 

@@ -33,9 +33,9 @@ namespace Codeuctivity
         /// <summary>
         /// Validates a batch of pdf files and returns a detailed compliance report
         /// </summary>
-        /// <param name="commandLineArguments">Command line arguments</param>
         /// <param name="pathsToPdfFiles"></param>
+        /// <param name="commandLineArguments">Command line arguments</param>
         /// <returns></returns>
-        Task<Report> ValidateBatchWithDetailedReportAsync(string commandLineArguments, params string[] pathsToPdfFiles);
+        Task<Report> ValidateBatchWithDetailedReportAsync(string[] pathsToPdfFiles, string commandLineArguments);
     }
 }

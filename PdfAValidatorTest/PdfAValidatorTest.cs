@@ -124,7 +124,7 @@ namespace CodeuctivityTest
                 "./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"
             };
             Assert.True(files.All(f => File.Exists(f)));
-            var result = await pdfAValidator.ValidateBatchWithDetailedReportAsync("", files);
+            var result = await pdfAValidator.ValidateBatchWithDetailedReportAsync(files, "");
 
             Assert.Equal("2", result.BatchSummary.TotalJobs);
             Assert.Equal(2, result.Jobs.AllJobs.Count);
