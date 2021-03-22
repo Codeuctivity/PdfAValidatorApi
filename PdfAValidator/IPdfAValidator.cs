@@ -21,5 +21,14 @@ namespace Codeuctivity
         /// <param name="pathToPdfFile"></param>
         /// <returns></returns>
         Task<Report> ValidateWithDetailedReportAsync(string pathToPdfFile);
+
+        /// <summary>
+        /// Validates a pdf and returns a detailed compliance report
+        /// </summary>
+        /// <param name="pathToPdfFile"></param>
+        /// <param name="otherArguments">Command line arguments</param>
+        /// <returns></returns>
+        Task<Report> ValidateWithDetailedReportAsync(string pathToPdfFile, string otherArguments);
+
     }
 }
