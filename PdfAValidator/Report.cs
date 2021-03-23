@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Serialization;
 
 // example report file https://docs.verapdf.org/policy/info-dict/report.xml
@@ -286,10 +287,15 @@ namespace Codeuctivity
     public class Jobs
     {
         /// <summary>
-        /// Contains the details to the validated pdf
+        /// Contains the details to the validated pdfs
         /// </summary>
         [XmlElement(ElementName = "job")]
-        public Job Job { get; set; } = new Job();
+        public List<Job> AllJobs { get; set; } = new List<Job>();
+
+        /// <summary>
+        /// Convenience property for when there is only one Job
+        /// </summary>
+        public Job Job => AllJobs.FirstOrDefault();
     }
 
     /// <summary>
