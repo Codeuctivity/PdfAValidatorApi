@@ -134,7 +134,7 @@ namespace CodeuctivityTest
         public static async Task ShouldBatchValidatePdfsWithoutThrowingException()
         {
             using var pdfAValidator = new PdfAValidator();
-            var files = new []
+            var files = new[]
             {
                 "./TestPdfFiles/FromLibreOffice.pdf",
                 "./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"
@@ -159,19 +159,21 @@ namespace CodeuctivityTest
             {
                 return;
             }
+
             using var pdfAValidator = new PdfAValidator();
             var tooLongFileList = new List<string>();
             var path = Path.GetFullPath("./TestPdfFiles/FromLibreOffice.pdf");
             var necessaryNumberOfFiles = 10000 / path.Length;
-            for (int i = 1; i <= necessaryNumberOfFiles; i++)
+
+            for (var i = 1; i <= necessaryNumberOfFiles; i++)
             {
                 tooLongFileList.Add(path);
             }
-            var actualException = await Assert.ThrowsAsync<VeraPdfException>(() => pdfAValidator.ValidateBatchWithDetailedReportAsync(tooLongFileList, null));
+
+            var actualException = await Assert.ThrowsAsync<VeraPdfException>(() => pdfAValidator.ValidateBatchWithDetailedReportAsync(tooLongFileList, string.Empty));
             Assert.Contains("Calling VeraPdf exited with 1 without any output.", actualException.Message);
             Assert.Contains("The command line is too long.", actualException.Message);
         }
-
 
         [Fact]
         public static async Task ShouldWorkWithCustomJavaAndVeraPdfLocation()
@@ -238,11 +240,11 @@ namespace CodeuctivityTest
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                Assert.Equal(".bat", scriptPath?.Substring(scriptPath.Length - 4));
+                Assert.True(scriptPath?.EndsWith(".bat"));
             }
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                Assert.Equal("verapdf", scriptPath?.Substring(scriptPath.Length - 7));
+                Assert.True(scriptPath?.EndsWith("verapdf"));
             }
             Assert.True(File.Exists(scriptPath), scriptPath + " does not exist.");
         }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Codeuctivity
+﻿namespace Codeuctivity
 {
     /// <summary>
     /// Vera PDF Exit codes that we handle
@@ -14,7 +8,7 @@ namespace Codeuctivity
         /// <summary>
         /// All files valid
         /// </summary>
-        public static int AllFilesValid { get; }  = 0;
+        public static int AllFilesValid { get; } = 0;
 
         /// <summary>
         /// Invalid PDF/A files found

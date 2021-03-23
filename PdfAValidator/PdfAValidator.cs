@@ -129,22 +129,28 @@ namespace Codeuctivity
         {
             await IntiPathToVeraPdfBinAndJava().ConfigureAwait(false);
 
-            AssertThatPdfFilesExist(pathsToPdfFiles);
+            ValidatePdfFilesExist(pathsToPdfFiles);
+            // http://docs.verapdf.org/cli/terminal/
+            var fileArguments = pathsToPdfFiles.Select(path => @$"""{Path.GetFullPath(path)}""");
 
-            using var process = new Process();
-            process.StartInfo.FileName = VeraPdfStartScript;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardError = true;
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.CreateNoWindow = true;
+            using var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = VeraPdfStartScript,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    Arguments = $"{commandLineArguments} {string.Join(" ", fileArguments)}"
+                }
+            };
+
             if (!string.IsNullOrEmpty(PathJava))
             {
                 process.StartInfo.EnvironmentVariables["JAVACMD"] = PathJava;
             }
-            var startInfo = process.StartInfo;
-            // http://docs.verapdf.org/cli/terminal/
-            var fileArguments = pathsToPdfFiles.Select(path => @$"""{Path.GetFullPath(path)}""");
-            startInfo.Arguments = $"{commandLineArguments} {string.Join(" ", fileArguments)}";
+
             process.Start();
 
             var outputResult = GetStreamOutput(process.StandardOutput);
@@ -165,7 +171,7 @@ namespace Codeuctivity
             throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} caused an error: {errorResult}\nCustom JAVACMD: {PathJava}\nVeraPdfStartScript: {VeraPdfStartScript}");
         }
 
-        private void AssertThatPdfFilesExist(IEnumerable<string> pathsToPdfFiles)
+        private static void ValidatePdfFilesExist(IEnumerable<string> pathsToPdfFiles)
         {
             foreach (var pathToPdfFile in pathsToPdfFiles)
             {

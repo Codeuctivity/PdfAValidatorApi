@@ -17,6 +17,7 @@ namespace CodeuctivityWebApi.Controllers
     public class PdfAValidatorController : ControllerBase
     {
         private IPdfAValidator pdfAValidator { get; }
+
         /// <summary>
         /// Inject the validator.
         /// </summary>
