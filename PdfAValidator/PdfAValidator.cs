@@ -152,8 +152,12 @@ namespace Codeuctivity
 
             process.WaitForExit();
 
-            if (process.ExitCode == 0 || process.ExitCode == 1)
+            if (VeraPdfExitCodes.CanExitCodeBeParsed(process.ExitCode))
             {
+                if (string.IsNullOrEmpty(outputResult))
+                {
+                    throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} without any output. Error: {errorResult}\nCustom JAVACMD: {PathJava}\nVeraPdfStartScript: {VeraPdfStartScript}");
+                }
                 ValidateVeraPdfOutputToBeXml(outputResult, PathJava, VeraPdfStartScript);
                 var veraPdfReport = DeserializeXml<Report>(outputResult);
                 return veraPdfReport;

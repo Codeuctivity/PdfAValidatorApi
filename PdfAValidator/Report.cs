@@ -274,6 +274,12 @@ namespace Codeuctivity
         public ValidationReport ValidationReport { get; set; } = new ValidationReport();
 
         /// <summary>
+        /// Task result
+        /// </summary>
+        [XmlElement(ElementName = "taskResult")]
+        public TaskResult TaskResult { get; set; } = new TaskResult();
+
+        /// <summary>
         /// Duration details
         /// </summary>
         [XmlElement(ElementName = "duration")]
@@ -328,6 +334,42 @@ namespace Codeuctivity
         /// <value>e.g. "1"</value>
         [XmlText]
         public string Text { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// Task Result
+    /// </summary>
+    public class TaskResult
+    {
+        /// <summary>
+        /// Type
+        /// </summary>
+        [XmlAttribute(AttributeName = "type")]
+        public string Type { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Is executed
+        /// </summary>
+        [XmlAttribute(AttributeName = "isExecuted")]
+        public bool IsExecuted { get; set; }
+
+        /// <summary>
+        /// Is success
+        /// </summary>
+        [XmlAttribute(AttributeName = "isSuccess")]
+        public bool IsSuccess { get; set; }
+
+        /// <summary>
+        /// Duration
+        /// </summary>
+        [XmlElement(ElementName = "duration")]
+        public Duration Duration { get; set; } = new Duration();
+
+        /// <summary>
+        /// Exception message
+        /// </summary>
+        [XmlElement(ElementName = "exceptionMessage")]
+        public string ExceptionMessage { get; set; } = string.Empty;
     }
 
     /// <summary>
