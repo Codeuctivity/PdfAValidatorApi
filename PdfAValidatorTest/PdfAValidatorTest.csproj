@@ -14,6 +14,7 @@
     <None Remove="TestExecuteables\exitcode0.sh" />
     <None Remove="TestExecuteables\exitcode2.bat" />
     <None Remove="TestExecuteables\exitcode2.sh" />
+    <None Remove="TestPdfFiles\Encrypted.pdf" />
     <None Remove="TestPdfFiles\FontsNotEmbedded.pdf" />
     <None Remove="TestPdfFiles\FromLibreOffice.pdf" />
     <None Remove="TestPdfFiles\FromLibreOfficeNonPdfA.pdf" />
@@ -50,7 +51,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.19.0.28253">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.20.0.28934">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -67,6 +68,12 @@
 
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="TestPdfFiles\Encrypted.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
