@@ -14,22 +14,22 @@ namespace Codeuctivity
         /// <summary>
         /// All files valid
         /// </summary>
-        public const int AllFilesValid = 0;
+        public static int AllFilesValid { get; }  = 0;
 
         /// <summary>
         /// Invalid PDF/A files found
         /// </summary>
-        public const int InvalidPdfAFilesFound = 1;
+        public static int InvalidPdfAFilesFound { get; } = 1;
 
         /// <summary>
         /// Failed to parse on or more files
         /// </summary>
-        public const int FailedToParseOneOrMoreFiles = 7;
+        public static int FailedToParseOneOrMoreFiles { get; } = 7;
 
         /// <summary>
         /// Some PDFs encrypted
         /// </summary>
-        public const int SomePdfsEncrypted = 8;
+        public static int SomePdfsEncrypted { get; } = 8;
 
         /// <summary>
         /// Returns true if we can parse the output as xml
