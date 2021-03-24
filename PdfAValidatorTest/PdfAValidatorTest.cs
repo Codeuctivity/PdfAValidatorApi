@@ -1,4 +1,5 @@
 using Codeuctivity;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -66,19 +67,18 @@ namespace CodeuctivityTest
             using var pdfAValidator = new PdfAValidator();
             Assert.True(File.Exists("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"));
             var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf", "-o");
-            Assert.Equal("1", result.BatchSummary.TotalJobs);
-            Assert.Equal("0", result.BatchSummary.FailedToParse);
-            Assert.Equal("0", result.BatchSummary.Encrypted);
+            var taskResult = result.Jobs.Job.TaskResult;
+            Assert.Equal(string.Empty, taskResult.Type);
+            Assert.Equal(string.Empty, taskResult.ExceptionMessage);
         }
 
         [Fact]
-        public static async Task ShouldThrowOnValidatingBrokenPdf()
+        public static async Task ShouldDetectBrokenPdfAsNonCompliant()
         {
             using var pdfAValidator = new PdfAValidator();
             Assert.True(File.Exists("./TestPdfFiles/NoPdf.pdf"));
-            var actualException = await Assert.ThrowsAsync<VeraPdfException>(() => pdfAValidator.ValidateAsync("./TestPdfFiles/NoPdf.pdf"));
-            Assert.Contains("Calling VeraPdf exited with 7 caused an error:", actualException.Message);
-            Assert.Contains("NoPdf.pdf doesn't appear to be a valid PDF.", actualException.Message);
+            var result = await pdfAValidator.ValidateAsync("./TestPdfFiles/NoPdf.pdf");
+            Assert.False(result);
         }
 
         [Fact]
@@ -105,20 +105,36 @@ namespace CodeuctivityTest
         }
 
         [Fact]
-        public static async Task ShouldThrowOnGetDetailedReportFromBrokenPdf()
+        public static async Task ShouldGetDetailedReportFromBrokenPdf()
         {
             using var pdfAValidator = new PdfAValidator();
             Assert.True(File.Exists("./TestPdfFiles/NoPdf.pdf"));
-            var actualException = await Assert.ThrowsAsync<VeraPdfException>(() => pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/NoPdf.pdf"));
-            Assert.Contains("Calling VeraPdf exited with 7 caused an error:", actualException.Message);
-            Assert.Contains("NoPdf.pdf doesn't appear to be a valid PDF.", actualException.Message);
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/NoPdf.pdf");
+            var taskResult = result.Jobs.Job.TaskResult;
+            Assert.True(taskResult.IsExecuted);
+            Assert.False(taskResult.IsSuccess);
+            Assert.Equal("PARSE", taskResult.Type);
+            Assert.Contains("Couldn't parse", taskResult.ExceptionMessage);
+        }
+
+        [Fact]
+        public static async Task ShouldGetDetailedReportFromEncryptedPdf()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/Encrypted.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/Encrypted.pdf");
+            var taskResult = result.Jobs.Job.TaskResult;
+            Assert.True(taskResult.IsExecuted);
+            Assert.False(taskResult.IsSuccess);
+            Assert.Equal("PARSE", taskResult.Type);
+            Assert.Contains("appears to be encrypted", taskResult.ExceptionMessage);
         }
 
         [Fact]
         public static async Task ShouldBatchValidatePdfsWithoutThrowingException()
         {
             using var pdfAValidator = new PdfAValidator();
-            var files = new []
+            var files = new[]
             {
                 "./TestPdfFiles/FromLibreOffice.pdf",
                 "./TestPdfFiles/FromLibreOfficeNonPdfA.pdf"
@@ -134,6 +150,29 @@ namespace CodeuctivityTest
             Assert.True(fromLibreOfficeJob.ValidationReport.IsCompliant);
             var nonPdfAJob = result.Jobs.AllJobs[1];
             Assert.False(nonPdfAJob.ValidationReport.IsCompliant);
+        }
+
+        [Fact]
+        public static async Task ShouldThrowExplainableExceptionOnTooLongCommandLineOnWindows()
+        {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return;
+            }
+
+            using var pdfAValidator = new PdfAValidator();
+            var tooLongFileList = new List<string>();
+            var path = Path.GetFullPath("./TestPdfFiles/FromLibreOffice.pdf");
+            var necessaryNumberOfFiles = 10000 / path.Length;
+
+            for (var i = 1; i <= necessaryNumberOfFiles; i++)
+            {
+                tooLongFileList.Add(path);
+            }
+
+            var actualException = await Assert.ThrowsAsync<VeraPdfException>(() => pdfAValidator.ValidateBatchWithDetailedReportAsync(tooLongFileList, string.Empty));
+            Assert.Contains("Calling VeraPdf exited with 1 without any output.", actualException.Message);
+            Assert.Contains("The command line is too long.", actualException.Message);
         }
 
         [Fact]
@@ -173,7 +212,8 @@ namespace CodeuctivityTest
                   await pdfAValidator.ValidateAsync("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
               });
 
-            Assert.Equal($"Failed to parse VeraPdf Output: \nCustom JAVACMD: SomeValue\nveraPdfStartScriptPath: {somethingThatReturnsExitcode0}", veraPdfException.Message);
+            Assert.StartsWith($"Failed to parse VeraPdf Output: This is not XML", veraPdfException.Message);
+            Assert.Contains($"Custom JAVACMD: SomeValue\nveraPdfStartScriptPath: {somethingThatReturnsExitcode0}", veraPdfException.Message);
         }
 
         [Fact]
@@ -200,11 +240,11 @@ namespace CodeuctivityTest
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                Assert.Equal(".bat", scriptPath?.Substring(scriptPath.Length - 4));
+                Assert.True(scriptPath?.EndsWith(".bat"));
             }
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                Assert.Equal("verapdf", scriptPath?.Substring(scriptPath.Length - 7));
+                Assert.True(scriptPath?.EndsWith("verapdf"));
             }
             Assert.True(File.Exists(scriptPath), scriptPath + " does not exist.");
         }
