@@ -131,6 +131,19 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldValidateFolderWithExpectedResult()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles", "");
+
+            Assert.Equal("5", result.BatchSummary.TotalJobs);
+            Assert.Equal(5, result.Jobs.AllJobs.Count);
+            Assert.Equal("1", result.BatchSummary.ValidationReports.Compliant);
+            Assert.Equal("2", result.BatchSummary.ValidationReports.NonCompliant);
+            Assert.Equal("2", result.BatchSummary.ValidationReports.FailedJobs);
+        }
+
+        [Fact]
         public static async Task ShouldBatchValidatePdfsWithoutThrowingException()
         {
             using var pdfAValidator = new PdfAValidator();
