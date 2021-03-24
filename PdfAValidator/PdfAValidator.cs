@@ -129,9 +129,12 @@ namespace Codeuctivity
         {
             await IntiPathToVeraPdfBinAndJava().ConfigureAwait(false);
 
-            ValidatePdfFilesExist(pathsToPdfFiles);
+            if (!IsSingleFolder(pathsToPdfFiles))
+            {
+                ValidatePdfFilesExist(pathsToPdfFiles);
+            }
             // http://docs.verapdf.org/cli/terminal/
-            var fileArguments = pathsToPdfFiles.Select(path => @$"""{Path.GetFullPath(path)}""");
+            var pathArguments = pathsToPdfFiles.Select(path => @$"""{Path.GetFullPath(path)}""");
 
             using var process = new Process
             {
@@ -142,7 +145,7 @@ namespace Codeuctivity
                     RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    Arguments = $"{commandLineArguments} {string.Join(" ", fileArguments)}"
+                    Arguments = $"{commandLineArguments} {string.Join(" ", pathArguments)}"
                 }
             };
 
@@ -169,6 +172,20 @@ namespace Codeuctivity
                 return veraPdfReport;
             }
             throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} caused an error: {errorResult}\nCustom JAVACMD: {PathJava}\nVeraPdfStartScript: {VeraPdfStartScript}");
+        }
+
+        private bool IsSingleFolder(IEnumerable<string> pathsToPdfFiles)
+        {
+            bool isSingle = pathsToPdfFiles.Count() == 1;
+            if (isSingle)
+            {
+                var absolutePath = Path.GetFullPath(pathsToPdfFiles.First());
+                if (Directory.Exists(absolutePath))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static void ValidatePdfFilesExist(IEnumerable<string> pathsToPdfFiles)
