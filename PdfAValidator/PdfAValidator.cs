@@ -169,6 +169,7 @@ namespace Codeuctivity
                 }
                 ValidateVeraPdfOutputToBeXml(outputResult, PathJava, VeraPdfStartScript);
                 var veraPdfReport = DeserializeXml<Report>(outputResult);
+                veraPdfReport.RawOutput = outputResult;
                 return veraPdfReport;
             }
             throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} caused an error: {errorResult}\nCustom JAVACMD: {PathJava}\nVeraPdfStartScript: {VeraPdfStartScript}");

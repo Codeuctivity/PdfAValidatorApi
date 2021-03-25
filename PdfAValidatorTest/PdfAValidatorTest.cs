@@ -40,6 +40,7 @@ namespace CodeuctivityTest
             var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf");
             Assert.True(result.Jobs.Job.ValidationReport.IsCompliant);
             Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1A validation profile");
+            Assert.StartsWith(@"<?xml version=""1.0"" encoding=""utf-8""?>", result.RawOutput);
         }
 
         [Fact]
