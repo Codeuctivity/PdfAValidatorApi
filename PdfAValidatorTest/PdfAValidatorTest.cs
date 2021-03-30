@@ -1,4 +1,4 @@
-using Codeuctivity;
+﻿using Codeuctivity;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -119,6 +119,15 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldGetCorrectFileNameWithUnicodeChars()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/NoPdfWithUnicodeChars-üåäö.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/NoPdfWithUnicodeChars-üåäö.pdf");
+            Assert.Contains("NoPdfWithUnicodeChars-üåäö.pdf", result.Jobs.Job.Item.Name);
+        }
+
+        [Fact]
         public static async Task ShouldGetDetailedReportFromEncryptedPdf()
         {
             using var pdfAValidator = new PdfAValidator();
@@ -137,11 +146,11 @@ namespace CodeuctivityTest
             using var pdfAValidator = new PdfAValidator();
             var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles", "");
 
-            Assert.Equal("5", result.BatchSummary.TotalJobs);
-            Assert.Equal(5, result.Jobs.AllJobs.Count);
+            Assert.Equal("6", result.BatchSummary.TotalJobs);
+            Assert.Equal(6, result.Jobs.AllJobs.Count);
             Assert.Equal("1", result.BatchSummary.ValidationReports.Compliant);
             Assert.Equal("2", result.BatchSummary.ValidationReports.NonCompliant);
-            Assert.Equal("2", result.BatchSummary.ValidationReports.FailedJobs);
+            Assert.Equal("3", result.BatchSummary.ValidationReports.FailedJobs);
         }
 
         [Fact]
