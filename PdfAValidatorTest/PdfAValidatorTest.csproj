@@ -19,6 +19,7 @@
     <None Remove="TestPdfFiles\FromLibreOffice.pdf" />
     <None Remove="TestPdfFiles\FromLibreOfficeNonPdfA.pdf" />
     <None Remove="TestPdfFiles\NoPdf.pdf" />
+    <None Remove="TestPdfFiles\NoPdfWithUnicodeChars-üåäö.pdf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,6 +33,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestPdfFiles\FromLibreOfficeNonPdfA.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestPdfFiles\NoPdfWithUnicodeChars-üåäö.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestPdfFiles\NoPdf.pdf">

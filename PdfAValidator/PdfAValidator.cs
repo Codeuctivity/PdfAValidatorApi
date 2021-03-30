@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -145,7 +146,9 @@ namespace Codeuctivity
                     RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    Arguments = $"{commandLineArguments} {string.Join(" ", pathArguments)}"
+                    Arguments = $"{commandLineArguments} {string.Join(" ", pathArguments)}",
+                    StandardErrorEncoding = Encoding.UTF8,
+                    StandardOutputEncoding = Encoding.UTF8
                 }
             };
 
