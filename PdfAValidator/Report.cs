@@ -482,5 +482,10 @@ namespace Codeuctivity
         /// </summary>
         [XmlElement(ElementName = "batchSummary")]
         public BatchSummary BatchSummary { get; set; } = new BatchSummary();
+
+        /// <summary>
+        /// Raw output for specialized uses
+        /// </summary>
+        public string RawOutput { get; set; } = string.Empty;
     }
 }
