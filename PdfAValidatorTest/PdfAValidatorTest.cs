@@ -181,7 +181,7 @@ namespace CodeuctivityTest
         {
             var expectedLocalizedMessage = "The command line is too long.";
 
-            if (Thread.CurrentThread.CurrentCulture.Name.StartsWith("de"))
+            if (Thread.CurrentThread.CurrentUICulture.Name.StartsWith("de"))
             {
                 expectedLocalizedMessage = "Die Befehlszeile ist zu lang.";
             }
