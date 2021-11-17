@@ -1,6 +1,6 @@
 version: 2.1.{build}
 image:
-  - Visual Studio 2019
+  - Visual Studio 2022
   - Ubuntu
 skip_tags: true
 configuration: Release
@@ -9,7 +9,7 @@ nuget:
   project_feed: true
 before_build:
   - ps: >-
-      nuget restore
+      dotnet restore
 
 build:
   project: PdfAValidator.sln
@@ -35,4 +35,4 @@ deploy:
     api_key:
       secure: CTISdGCfnpyC7Rh5vs1pgbuISrkWF34sot0SyVgvu0HQxhNNd+V0Gc4MS+rtJttB
     on:
-      branch: master
+      branch: main

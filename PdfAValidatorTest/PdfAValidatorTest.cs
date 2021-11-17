@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -178,6 +179,13 @@ namespace CodeuctivityTest
         [Fact]
         public static async Task ShouldThrowExplainableExceptionOnTooLongCommandLineOnWindows()
         {
+            var expectedLocalizedMessage = "The command line is too long.";
+
+            if (Thread.CurrentThread.CurrentUICulture.Name.StartsWith("de"))
+            {
+                expectedLocalizedMessage = "Die Befehlszeile ist zu lang.";
+            }
+
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 return;
@@ -195,7 +203,7 @@ namespace CodeuctivityTest
 
             var actualException = await Assert.ThrowsAsync<VeraPdfException>(() => pdfAValidator.ValidateBatchWithDetailedReportAsync(tooLongFileList, string.Empty));
             Assert.Contains("Calling VeraPdf exited with 1 without any output.", actualException.Message);
-            Assert.Contains("The command line is too long.", actualException.Message);
+            Assert.Contains(expectedLocalizedMessage, actualException.Message);
         }
 
         [Fact]
@@ -277,7 +285,9 @@ namespace CodeuctivityTest
         {
             var postscriptValidator = new PdfAValidator();
             _ = await postscriptValidator.ValidateAsync("./TestPdfFiles/FromLibreOffice.pdf");
+            Assert.True(File.Exists(postscriptValidator.VeraPdfStartScript));
             postscriptValidator.Dispose();
+            Assert.False(File.Exists(postscriptValidator.VeraPdfStartScript));
 #pragma warning disable S3966 // Expecting multiple dispose calls to pass
             postscriptValidator.Dispose();
 #pragma warning restore S3966 // Expecting multiple dispose calls to pass
