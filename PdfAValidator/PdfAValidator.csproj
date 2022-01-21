@@ -30,6 +30,7 @@
 		<NeutralLanguage>en</NeutralLanguage>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<PackageId>Codeuctivity.PdfAValidator</PackageId>
+		<Deterministic>true</Deterministic>
 	</PropertyGroup>
 
 	<ItemGroup>
