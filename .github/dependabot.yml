@@ -15,3 +15,5 @@ updates:
       - dependency-name: "xunit.runner.visualstudio"
       - dependency-name: "MSTest.TestAdapter"
       - dependency-name: "MSTest.TestFramework"
+      - dependency-name: "Microsoft.AspNetCore.Identity.UI"
+      - dependency-name: "Microsoft.VisualStudio.Web.CodeGeneration.Design"
