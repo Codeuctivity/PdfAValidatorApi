@@ -31,7 +31,12 @@
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<PackageId>Codeuctivity.PdfAValidator</PackageId>
 		<Deterministic>true</Deterministic>
+		<PackageReadmeFile>nugetReadme.md</PackageReadmeFile>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="docs\nugetReadme.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Remove="VeraPdf.Windows.zip" />
