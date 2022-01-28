@@ -30,8 +30,10 @@
 		<NeutralLanguage>en</NeutralLanguage>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<PackageId>Codeuctivity.PdfAValidator</PackageId>
-		<Deterministic>true</Deterministic>
 		<PackageReadmeFile>nugetReadme.md</PackageReadmeFile>
+		<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+			<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		</PropertyGroup>
 	</PropertyGroup>
 
 	<ItemGroup>
