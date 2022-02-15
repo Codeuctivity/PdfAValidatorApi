@@ -185,12 +185,12 @@ namespace CodeuctivityTest
             {
                 expectedLocalizedMessage = "Die Befehlszeile ist zu lang.";
             }
-
+#if !NET461
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 return;
             }
-
+#endif
             using var pdfAValidator = new PdfAValidator();
             var tooLongFileList = new List<string>();
             var path = Path.GetFullPath("./TestPdfFiles/FromLibreOffice.pdf");
@@ -231,12 +231,12 @@ namespace CodeuctivityTest
         public static async Task ShouldFailGracefullWithUnrecognicedVeraPdfOutput()
         {
             var somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.bat";
-
+#if !NET461
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.sh";
             }
-
+#endif
             var veraPdfException = await Assert.ThrowsAsync<VeraPdfException>(async () =>
               {
                   using var pdfAValidator = new PdfAValidator(somethingThatReturnsExitcode0, "SomeValue");
@@ -251,12 +251,12 @@ namespace CodeuctivityTest
         public static async Task ShouldFailGracefullWithExitcode2()
         {
             var somethingThatReturnsExitcode2 = "./TestExecuteables/exitcode2.bat";
-
+#if !NET461
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 somethingThatReturnsExitcode2 = "./TestExecuteables/exitcode2.sh";
             }
-
+#endif
             var veraPdfException = await Assert.ThrowsAsync<VeraPdfException>(async () =>
             {
                 // Using default ctor to get Java bins for the test
@@ -269,14 +269,18 @@ namespace CodeuctivityTest
 
         private static void AssertVeraPdfBinCreation(string? scriptPath)
         {
+#if !NET461
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                Assert.True(scriptPath?.EndsWith(".bat"));
+#endif
+            Assert.True(scriptPath?.EndsWith(".bat"));
+#if !NET461 
             }
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 Assert.True(scriptPath?.EndsWith("verapdf"));
             }
+#endif
             Assert.True(File.Exists(scriptPath), scriptPath + " does not exist.");
         }
 

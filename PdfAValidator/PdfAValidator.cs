@@ -253,14 +253,16 @@ namespace Codeuctivity
                 }
 
                 Directory.CreateDirectory(pathVeraPdfDirectory);
-
+#if !NET461
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+#endif
                 {
                     await ExtractBinaryFromManifest("Codeuctivity.VeraPdf.Windows.zip").ConfigureAwait(false);
                     VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf", "verapdf.bat");
                     // took from https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot#x64_win
                     PathJava = Path.Combine(pathVeraPdfDirectory, "verapdf", "jdk8u202-b08-jre", "bin", "java");
                 }
+#if !NET461
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
                     await ExtractBinaryFromManifest("Codeuctivity.VeraPdf.Linux.zip").ConfigureAwait(false);
@@ -271,7 +273,7 @@ namespace Codeuctivity
                 {
                     throw new NotImplementedException(Resources.OsNotSupportedMessage);
                 }
-
+#endif
                 IsInitialized = true;
             }
             finally

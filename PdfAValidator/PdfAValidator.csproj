@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<RepositoryUrl>https://github.com/Codeuctivity/PdfAValidatorApi</RepositoryUrl>
