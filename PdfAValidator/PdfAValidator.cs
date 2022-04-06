@@ -180,7 +180,7 @@ namespace Codeuctivity
             using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
             using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
             {
-                process.OutputDataReceived += (sender, e) =>
+                process.OutputDataReceived += (_, e) =>
                 {
                     if (e.Data == null)
                     {
@@ -191,7 +191,7 @@ namespace Codeuctivity
                         outputBuilder.AppendLine(e.Data);
                     }
                 };
-                process.ErrorDataReceived += (sender, e) =>
+                process.ErrorDataReceived += (_, e) =>
                 {
                     if (e.Data == null)
                     {
