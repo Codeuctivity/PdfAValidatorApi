@@ -1,4 +1,5 @@
 ﻿using Codeuctivity;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -152,6 +153,37 @@ namespace CodeuctivityTest
             Assert.Equal("1", result.BatchSummary.ValidationReports.Compliant);
             Assert.Equal("2", result.BatchSummary.ValidationReports.NonCompliant);
             Assert.Equal("3", result.BatchSummary.ValidationReports.FailedJobs);
+        }
+
+        [Fact]
+        public static async Task ShouldNotDeadlockWhenValidatingFolderThatCausesLargeOutput()
+        {
+            // Setup folder with pdf files that causes large output streams
+            string tmpDirName = "./TestPdfFilesTmp";
+            if (Directory.Exists(tmpDirName))
+            {
+                Directory.Delete(tmpDirName, true);
+            }
+            Directory.CreateDirectory(tmpDirName);
+            var sourceDir = new DirectoryInfo("./TestPdfFiles");
+            foreach (var file in sourceDir.GetFiles())
+            {
+                for (int i = 0; i <= 9; i++)
+                {
+                    file.CopyTo(Path.Combine(tmpDirName, $"{file.Name}{i}.pdf"));
+                }
+            }
+
+            var pdfAValidator = new PdfAValidator();
+            var task = pdfAValidator.ValidateWithDetailedReportAsync(tmpDirName, "");
+
+            bool completedTask = task.Wait(TimeSpan.FromMinutes(1));
+            Assert.True(completedTask);
+            if (completedTask)
+            {
+                var result = await task;
+                Assert.Equal("60", result.BatchSummary.TotalJobs);
+            }
         }
 
         [Fact]
