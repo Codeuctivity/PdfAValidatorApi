@@ -168,7 +168,7 @@ namespace CodeuctivityTest
             var sourceDir = new DirectoryInfo("./TestPdfFiles");
             foreach (var file in sourceDir.GetFiles())
             {
-                for (int i = 0; i <= 7; i++)
+                for (int i = 0; i <= 9; i++)
                 {
                     file.CopyTo(Path.Combine(tmpDirName, $"{file.Name}{i}.pdf"));
                 }
@@ -182,7 +182,7 @@ namespace CodeuctivityTest
             if (completedTask)
             {
                 var result = await task;
-                Assert.Equal("42", result.BatchSummary.TotalJobs);
+                Assert.Equal("60", result.BatchSummary.TotalJobs);
             }
         }
 
