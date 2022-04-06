@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="TestExecuteables\exitcode0.bat" />
     <None Remove="TestExecuteables\exitcode0.sh" />
     <None Remove="TestExecuteables\exitcode2.bat" />
@@ -54,8 +60,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.35.0.42613">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.37.0.45539">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -68,10 +74,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PdfAValidator\PdfAValidator.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -43,10 +43,10 @@ Everything comes with the nuget package
 
 ### Ubuntu 20.04
 
-Current PdfAValidatorApi depends on opnejdf-8-jre and some .net (core 3.1+).
+Current PdfAValidatorApi depends on openjdk-11-jre and some .net.
 
 ```bash
-sudo apt install openjdk-8-jre
+sudo apt install openjdk-11-jre
 sudo update-alternatives --config java
 ```
 

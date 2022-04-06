@@ -157,12 +157,7 @@ namespace Codeuctivity
                 process.StartInfo.EnvironmentVariables["JAVACMD"] = PathJava;
             }
 
-            process.Start();
-
-            var outputResult = GetStreamOutput(process.StandardOutput);
-            var errorResult = GetStreamOutput(process.StandardError);
-
-            process.WaitForExit();
+            WaitAndReceiveOutput(process, out var outputResult, out var errorResult);
 
             if (VeraPdfExitCodes.CanExitCodeBeParsed(process.ExitCode))
             {
@@ -178,7 +173,51 @@ namespace Codeuctivity
             throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} caused an error: {errorResult}\nCustom JAVACMD: {PathJava}\nVeraPdfStartScript: {VeraPdfStartScript}");
         }
 
-        private bool IsSingleFolder(IEnumerable<string> pathsToPdfFiles)
+        private void WaitAndReceiveOutput(Process process, out string outputResult, out string errorResult)
+        {
+            StringBuilder outputBuilder = new StringBuilder();
+            StringBuilder errorBuilder = new StringBuilder();
+            using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
+            using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
+            {
+                process.OutputDataReceived += (_, e) =>
+                {
+                    if (e.Data == null)
+                    {
+                        outputWaitHandle.Set();
+                    }
+                    else
+                    {
+                        outputBuilder.AppendLine(e.Data);
+                    }
+                };
+                process.ErrorDataReceived += (_, e) =>
+                {
+                    if (e.Data == null)
+                    {
+                        errorWaitHandle.Set();
+                    }
+                    else
+                    {
+                        errorBuilder.AppendLine(e.Data);
+                    }
+                };
+
+                process.Start();
+
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+
+                process.WaitForExit();
+                outputWaitHandle.WaitOne();
+                errorWaitHandle.WaitOne();
+
+                outputResult = outputBuilder.ToString();
+                errorResult = errorBuilder.ToString();
+            }
+        }
+
+        private static bool IsSingleFolder(IEnumerable<string> pathsToPdfFiles)
         {
             bool isSingle = pathsToPdfFiles.Count() == 1;
             if (isSingle)
@@ -216,14 +255,6 @@ namespace Codeuctivity
             {
                 throw new VeraPdfException($"Failed to parse VeraPdf Output: {outputResult}\nCustom JAVACMD: {customJavaCmd}\nveraPdfStartScriptPath: {veraPdfStartScript}", xmlException);
             }
-        }
-
-        private static string GetStreamOutput(StreamReader stream)
-        {
-            //Read output in separate task to avoid deadlocks
-            var outputReadTask = Task.Run(() => stream.ReadToEnd());
-
-            return outputReadTask.Result;
         }
 
         private static T DeserializeXml<T>(string sourceXML) where T : class
