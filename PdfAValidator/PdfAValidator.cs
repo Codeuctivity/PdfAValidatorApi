@@ -178,7 +178,7 @@ namespace Codeuctivity
             throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} caused an error: {errorResult}\nCustom JAVACMD: {PathJava}\nVeraPdfStartScript: {VeraPdfStartScript}");
         }
 
-        private bool IsSingleFolder(IEnumerable<string> pathsToPdfFiles)
+        private static bool IsSingleFolder(IEnumerable<string> pathsToPdfFiles)
         {
             bool isSingle = pathsToPdfFiles.Count() == 1;
             if (isSingle)
