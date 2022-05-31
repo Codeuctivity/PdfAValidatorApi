@@ -7,6 +7,7 @@ using Xunit;
 
 namespace CodeuctivityWebApiTest
 {
+    // Note: not passing using wsl
     public class IntegrativeTests : IClassFixture<WebApplicationFactory<CodeuctivityWebApi.Startup>>
     {
         private readonly WebApplicationFactory<CodeuctivityWebApi.Startup> _factory;

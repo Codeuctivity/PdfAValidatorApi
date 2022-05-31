@@ -28,6 +28,11 @@
     <None Remove="TestPdfFiles\NoPdfWithUnicodeChars-üåäö.pdf" />
   </ItemGroup>
 
+	<Target Name="SetLineEndingsOnWindowsForWsl" BeforeTargets="Compile" Condition="'$(OS)' == 'Windows_NT' AND '$(TargetFramework)' != 'net48'">
+			<Exec Command="dos2unix.exe ./TestExecuteables/exitcode2.sh"/>
+		<Exec Command="dos2unix.exe ./TestExecuteables/exitcode0.sh"/>
+	</Target>
+
   <ItemGroup>
     <Content Include="TestExecuteables\exitcode2.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -60,13 +65,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.37.0.45539">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.40.0.48530">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -287,14 +287,22 @@ namespace Codeuctivity
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    await ExtractBinaryFromManifest("Codeuctivity.VeraPdf.Windows.zip").ConfigureAwait(false);
+                    var tasks = new List<Task>
+                    {
+                        ExtractBinaryFromManifest("Codeuctivity.Java.zip"),
+                        // Downloaded from https://verapdf.org/software/ - verapdf-greenfield-1.20.3 - version seems to be out of sync compared to https://github.com/veraPDF/veraPDF-library/releases/ (latest there is v1.20.2)
+                        ExtractBinaryFromManifest("Codeuctivity.VeraPdf.zip")
+                    };
+
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
+
                     VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf", "verapdf.bat");
                     // took from https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot#x64_win
                     PathJava = Path.Combine(pathVeraPdfDirectory, "verapdf", "jdk8u202-b08-jre", "bin", "java");
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    await ExtractBinaryFromManifest("Codeuctivity.VeraPdf.Linux.zip").ConfigureAwait(false);
+                    await ExtractBinaryFromManifest("Codeuctivity.VeraPdf.zip").ConfigureAwait(false);
                     VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf", "verapdf");
                     SetLinuxFileExecuteable(VeraPdfStartScript);
                 }
@@ -334,7 +342,7 @@ namespace Codeuctivity
 
         private async Task ExtractBinaryFromManifest(string resourceName)
         {
-            var pathZipVeraPdf = Path.Combine(pathVeraPdfDirectory, "VeraPdf.zip");
+            var pathZipVeraPdf = Path.Combine(pathVeraPdfDirectory, $"{Guid.NewGuid()}.zip");
             var assembly = Assembly.GetExecutingAssembly();
             using (var stream = assembly.GetManifestResourceStream(resourceName))
             using (var fileStream = File.Create(pathZipVeraPdf))

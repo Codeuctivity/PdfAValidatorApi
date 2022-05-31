@@ -266,7 +266,7 @@ namespace CodeuctivityTest
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.sh";
+                somethingThatReturnsExitcode0 = "TestExecuteables/exitcode0.sh";
             }
 
             var veraPdfException = await Assert.ThrowsAsync<VeraPdfException>(async () =>
@@ -286,7 +286,7 @@ namespace CodeuctivityTest
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                somethingThatReturnsExitcode2 = "./TestExecuteables/exitcode2.sh";
+                somethingThatReturnsExitcode2 = "TestExecuteables/exitcode2.sh";
             }
 
             var veraPdfException = await Assert.ThrowsAsync<VeraPdfException>(async () =>
@@ -334,8 +334,6 @@ namespace CodeuctivityTest
 #pragma warning disable S3966 // Expecting multiple dispose calls to pass
             postscriptValidator.Dispose();
 #pragma warning restore S3966 // Expecting multiple dispose calls to pass
-
-            Assert.True(true);
         }
     }
 }

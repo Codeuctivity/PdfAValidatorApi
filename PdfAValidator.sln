@@ -12,10 +12,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{49D9D2CB-EF79-4962-B4C3-2F1BAFD9DCC8}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		azure-pipelines.yml = azure-pipelines.yml
+		cla.md = cla.md
+		.github\workflows\cla.yml = .github\workflows\cla.yml
 		.github\dependabot.yml = .github\dependabot.yml
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 		LICENSE = LICENSE
 		README.md = README.md
+		.github\workflows\stale.yml = .github\workflows\stale.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfAValidatorWebApiTest", "PdfAValidatorWebApiTest\PdfAValidatorWebApiTest.csproj", "{92E8D03D-F39B-46BD-98BF-1F2BB0AE21BA}"
