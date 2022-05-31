@@ -39,23 +39,23 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Remove="VeraPdf.Windows.zip" />
+		<None Remove="VeraPdf.zip" />
+	</ItemGroup>	
+	
+	<ItemGroup>
+		<None Remove="Java.zip" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="VeraPdf.Windows.zip" />
+		<EmbeddedResource Include="VeraPdf.zip" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Remove="VeraPdf.Linux.zip" />
+		<EmbeddedResource Include="Java.zip" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="VeraPdf.Linux.zip" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="SonarAnalyzer.CSharp" Version="8.37.0.45539">
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="8.40.0.48530">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

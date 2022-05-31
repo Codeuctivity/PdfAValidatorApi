@@ -13,17 +13,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="wwwroot\" />
+	  <Compile Remove="wwwroot\**" />
+	  <Content Remove="wwwroot\**" />
+	  <EmbeddedResource Remove="wwwroot\**" />
+	  <None Remove="wwwroot\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.2" />
-		<PackageReference Include="SonarAnalyzer.CSharp" Version="8.37.0.45539">
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.5" />
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="8.40.0.48530">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
