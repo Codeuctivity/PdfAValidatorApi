@@ -9,7 +9,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace CodeuctivityWebApi
+namespace PdfAValidatorWebApi
 {
     /// <summary>
     /// Startup Things comes in here
@@ -33,7 +33,7 @@ namespace CodeuctivityWebApi
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v2",
-                    Title = "PdfAValidator",
+                    Title = $"PdfAValidator {typeof(Startup).Assembly.GetName().Version}",
                     Description = "A simple ASP.NET Core Web API wrapping access to VeraPdf",
                     TermsOfService = new Uri(GithubProjectAdress),
                     Contact = new OpenApiContact

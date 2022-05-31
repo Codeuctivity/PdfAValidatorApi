@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace CodeuctivityWebApi
+namespace PdfAValidatorWebApi
 {
     /// <summary>
     /// The <see cref="Program"/>

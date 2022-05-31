@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CodeuctivityWebApi.Controllers
+namespace PdfAValidatorWebApi.Controllers
 {
     /// <summary>
     /// <see cref="PdfAValidatorController"/>
