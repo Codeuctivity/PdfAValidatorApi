@@ -1,7 +1,6 @@
 ﻿using Codeuctivity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
@@ -26,7 +25,7 @@ namespace PdfAValidatorWebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IPdfAValidator, PdfAValidator>();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
+            services.AddMvc();
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
@@ -63,6 +62,8 @@ namespace PdfAValidatorWebApi
         /// <param name="env"></param>
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseStaticFiles();
+
             if (env.IsDevelopment())
 
             {
@@ -77,6 +78,7 @@ namespace PdfAValidatorWebApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "PdfAValidator V1");
                 c.RoutePrefix = string.Empty;
+                c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
             });
 
             app.UseRouting();
