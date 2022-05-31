@@ -27,7 +27,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal --configuration Release
 
   deployRelease:
-    if: github.ref == 'refs/heads/main'
+    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/AzureAppPublishUsingGithubActions'}}
     runs-on: ubuntu-latest
     needs: build 
     steps:
@@ -56,9 +56,12 @@ jobs:
         files: |
           ./PdfAValidator/bin/Release/*.nupkg
           ./PdfAValidator/bin/Release/*.snupkg
+    - uses: azure/webapps-deploy@v2
+      with:
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
 
   deployTest:
-    if: github.ref != 'refs/heads/main'
+    if: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/AzureAppPublishUsingGithubActions'}}
     runs-on: ubuntu-latest
     needs: build 
     steps:
