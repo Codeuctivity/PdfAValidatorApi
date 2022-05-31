@@ -323,6 +323,7 @@ namespace CodeuctivityTest
 #pragma warning disable S3966 // Expecting multiple dispose calls to pass
             postscriptValidator.Dispose();
 #pragma warning restore S3966 // Expecting multiple dispose calls to pass
+            Assert.NotNull("Expectation is that this code does not throw.");
         }
 
         [Fact]
@@ -334,6 +335,8 @@ namespace CodeuctivityTest
 #pragma warning disable S3966 // Expecting multiple dispose calls to pass
             postscriptValidator.Dispose();
 #pragma warning restore S3966 // Expecting multiple dispose calls to pass
+
+            Assert.NotNull("Expectation is that this code does not throw.");
         }
     }
 }
