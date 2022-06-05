@@ -16,14 +16,14 @@ namespace PdfAValidatorWebApi.Controllers
     [ApiController]
     public class PdfAValidatorController : ControllerBase
     {
-        private IPdfAValidator pdfAValidator { get; }
+        private IPdfAValidator PdfAValidator { get; }
 
         /// <summary>
         /// Inject the validator.
         /// </summary>
         public PdfAValidatorController(IPdfAValidator PdfAValidator)
         {
-            pdfAValidator = PdfAValidator;
+            this.PdfAValidator = PdfAValidator;
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace PdfAValidatorWebApi.Controllers
         /// <param name="pdfFile"></param>
         /// <returns>Compliance</returns>
         /// <response code="200">Returns the result</response>
-        /// <response code="400">If the pdf is missing.</response>
+        /// <response code="400">If the PDF is missing.</response>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -55,7 +55,7 @@ namespace PdfAValidatorWebApi.Controllers
                 using var fs = new FileStream(tempPdfFilePath, FileMode.CreateNew, FileAccess.Write);
                 await uploadedFile.CopyToAsync(fs).ConfigureAwait(false);
 
-                var result = await pdfAValidator.ValidateAsync(tempPdfFilePath).ConfigureAwait(false);
+                var result = await PdfAValidator.ValidateAsync(tempPdfFilePath).ConfigureAwait(false);
                 return Ok(result);
             }
             finally
@@ -68,12 +68,12 @@ namespace PdfAValidatorWebApi.Controllers
         }
 
         /// <summary>
-        /// Validates the compliance of a Pdf(A) and gives some validation detail.
+        /// Validates the compliance of a PDF(A) and gives some validation detail.
         /// </summary>
         /// <param name="pdfFile"></param>
         /// <returns>Compliance</returns>
-        /// <response code="200">Returns a report about the analyzed pdf, e.g. pdfa substandard and compliance violations</response>
-        /// <response code="400">If the pdf is missing.</response>
+        /// <response code="200">Returns a report about the analyzed PDF, e.g. PdfA substandard and compliance violations</response>
+        /// <response code="400">If the PDF is missing.</response>
         [HttpPost]
         [Route("DetailedReport")]
         [ProducesResponseType(200)]
@@ -87,7 +87,7 @@ namespace PdfAValidatorWebApi.Controllers
                 using var fs = new FileStream(tempPdfFilePath, FileMode.CreateNew, FileAccess.Write);
                 await uploadedFile.CopyToAsync(fs).ConfigureAwait(false);
 
-                var result = pdfAValidator.ValidateWithDetailedReportAsync(tempPdfFilePath);
+                var result = PdfAValidator.ValidateWithDetailedReportAsync(tempPdfFilePath);
                 return Ok(result);
             }
             finally

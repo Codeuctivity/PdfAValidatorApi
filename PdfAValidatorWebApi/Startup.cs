@@ -24,7 +24,12 @@ namespace PdfAValidatorWebApi
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IPdfAValidator, PdfAValidator>();
+            services.AddSingleton<IPdfAValidator, PdfAValidator>(_ =>
+            {
+                var pdfaValidator = new PdfAValidator(new ApplicationInsightsJavaAgentOutputFilter());
+                return pdfaValidator;
+            });
+
             services.AddMvc();
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
