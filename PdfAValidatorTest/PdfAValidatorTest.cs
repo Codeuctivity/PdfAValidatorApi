@@ -215,8 +215,8 @@ namespace CodeuctivityTest
             const string invalidPath = "DoesNotExist.pdf";
             var files = new[]
             {
-                invalidPath,
                 "./TestPdfFiles/FromLibreOfficeNonPdfA.pdf",
+                invalidPath
             };
             var exception = await Assert.ThrowsAsync<FileNotFoundException>(() =>
                  { return pdfAValidator.ValidateBatchWithDetailedReportAsync(files, ""); });
