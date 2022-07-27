@@ -75,8 +75,17 @@ namespace Codeuctivity
         /// </summary>
         /// <param name="pathToVeraPdfBin"></param>
         /// <param name="pathToJava"></param>
+        public PdfAValidator(string pathToVeraPdfBin, string pathToJava) : this(pathToVeraPdfBin, pathToJava, null)
+        {
+        }
+
+        /// <summary>
+        /// Use this constructor to use your own installation of VeraPdf and Java, e.g.: c:\somePath\verapdf.bat
+        /// </summary>
+        /// <param name="pathToVeraPdfBin"></param>
+        /// <param name="pathToJava"></param>
         /// <param name="veraPdfOutputFilter">Optional VerapPdf console output filter</param>
-        public PdfAValidator(string pathToVeraPdfBin, string pathToJava, IVeraPdfOutputFilter? veraPdfOutputFilter = null)
+        public PdfAValidator(string pathToVeraPdfBin, string pathToJava, IVeraPdfOutputFilter? veraPdfOutputFilter)
         {
             VeraPdfStartScript = pathToVeraPdfBin;
             PathJava = pathToJava;
@@ -88,8 +97,14 @@ namespace Codeuctivity
         /// <summary>
         /// Use this constructor to use the embedded veraPdf binaries
         /// </summary>
+        public PdfAValidator() : this(null)
+        { }
+
+        /// <summary>
+        /// Use this constructor to use the embedded veraPdf binaries
+        /// </summary>
         /// <param name="veraPdfOutputFilter">Optional VerapPdf console output filter</param>
-        public PdfAValidator(IVeraPdfOutputFilter? veraPdfOutputFilter = null)
+        public PdfAValidator(IVeraPdfOutputFilter? veraPdfOutputFilter)
         {
             VeraPdfOutputFilter = veraPdfOutputFilter;
         }
