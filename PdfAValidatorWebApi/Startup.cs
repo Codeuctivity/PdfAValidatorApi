@@ -49,7 +49,7 @@ namespace PdfAValidatorWebApi
                     License = new OpenApiLicense
                     {
                         Name = "Use under AGPL",
-                        Url = new Uri($"{GithubProjectAdress}/blob/master/LICENSE"),
+                        Url = new Uri($"{GithubProjectAdress}/blob/main/LICENSE"),
                     }
                 });
 

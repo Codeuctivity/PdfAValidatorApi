@@ -27,7 +27,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal --configuration Release
 
   deployRelease:
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/release' }}
     runs-on: ubuntu-latest
     needs: build 
     steps:
@@ -58,7 +58,7 @@ jobs:
           ./PdfAValidator/bin/Release/*.snupkg
 
   deployTest:
-    if: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/AzureAppPublishUsingGithubActions' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     needs: build 
     steps:
@@ -89,7 +89,7 @@ jobs:
           ./PdfAValidator/bin/Release/*.snupkg
 
   deployAzure:
-    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/AzureAppPublishUsingGithubActions'}}
+    if: ${{ github.ref == 'refs/heads/release' || github.ref == 'refs/heads/AzureAppPublishUsingGithubActions'}}
     runs-on: ubuntu-latest
     needs: build 
     steps:

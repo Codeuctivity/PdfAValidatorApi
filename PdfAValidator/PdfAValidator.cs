@@ -183,10 +183,10 @@ namespace Codeuctivity
 
         private static void WaitAndReceiveOutput(Process process, out string outputResult, out string errorResult)
         {
-            StringBuilder outputBuilder = new StringBuilder();
-            StringBuilder errorBuilder = new StringBuilder();
-            using AutoResetEvent outputWaitHandle = new AutoResetEvent(false);
-            using AutoResetEvent errorWaitHandle = new AutoResetEvent(false);
+            var outputBuilder = new StringBuilder();
+            var errorBuilder = new StringBuilder();
+            using var outputWaitHandle = new AutoResetEvent(false);
+            using var errorWaitHandle = new AutoResetEvent(false);
             process.OutputDataReceived += (_, e) =>
             {
                 if (e.Data == null)
@@ -225,14 +225,11 @@ namespace Codeuctivity
 
         private static bool IsSingleFolder(IEnumerable<string> pathsToPdfFiles)
         {
-            bool isSingle = pathsToPdfFiles.Count() == 1;
+            var isSingle = pathsToPdfFiles.Count() == 1;
             if (isSingle)
             {
                 var absolutePath = Path.GetFullPath(pathsToPdfFiles.First());
-                if (Directory.Exists(absolutePath))
-                {
-                    return true;
-                }
+                return Directory.Exists(absolutePath);
             }
             return false;
         }
