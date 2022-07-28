@@ -29,8 +29,8 @@
   </ItemGroup>
 
 	<Target Name="SetLineEndingsOnWindowsForWsl" BeforeTargets="Compile" Condition="'$(OS)' == 'Windows_NT' AND '$(TargetFramework)' != 'net48'">
-			<Exec Command="dos2unix.exe ./TestExecuteables/exitcode2.sh"/>
-		<Exec Command="dos2unix.exe ./TestExecuteables/exitcode0.sh"/>
+			<Exec Command="dos2unix.exe ./TestExecuteables/exitcode2.sh" />
+		<Exec Command="dos2unix.exe ./TestExecuteables/exitcode0.sh" />
 	</Target>
 
   <ItemGroup>
@@ -65,8 +65,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.40.0.48530">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.42.0.51121">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

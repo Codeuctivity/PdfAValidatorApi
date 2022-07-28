@@ -36,6 +36,7 @@ namespace Codeuctivity
         private readonly bool customVerapdfAndJavaLocations;
 
         private bool IsInitialized { get; set; }
+        private IVeraPdfOutputFilter? VeraPdfOutputFilter { get; }
 
         /// <summary>
         /// Command that is used to invoke VeraPdf
@@ -74,19 +75,38 @@ namespace Codeuctivity
         /// </summary>
         /// <param name="pathToVeraPdfBin"></param>
         /// <param name="pathToJava"></param>
-        public PdfAValidator(string pathToVeraPdfBin, string pathToJava)
+        public PdfAValidator(string pathToVeraPdfBin, string pathToJava) : this(pathToVeraPdfBin, pathToJava, null)
+        {
+        }
+
+        /// <summary>
+        /// Use this constructor to use your own installation of VeraPdf and Java, e.g.: c:\somePath\verapdf.bat
+        /// </summary>
+        /// <param name="pathToVeraPdfBin"></param>
+        /// <param name="pathToJava"></param>
+        /// <param name="veraPdfOutputFilter">Optional VerapPdf console output filter</param>
+        public PdfAValidator(string pathToVeraPdfBin, string pathToJava, IVeraPdfOutputFilter? veraPdfOutputFilter)
         {
             VeraPdfStartScript = pathToVeraPdfBin;
             PathJava = pathToJava;
             customVerapdfAndJavaLocations = true;
             IsInitialized = true;
+            VeraPdfOutputFilter = veraPdfOutputFilter;
         }
 
         /// <summary>
         /// Use this constructor to use the embedded veraPdf binaries
         /// </summary>
-        public PdfAValidator()
+        public PdfAValidator() : this(null)
+        { }
+
+        /// <summary>
+        /// Use this constructor to use the embedded veraPdf binaries
+        /// </summary>
+        /// <param name="veraPdfOutputFilter">Optional VerapPdf console output filter</param>
+        public PdfAValidator(IVeraPdfOutputFilter? veraPdfOutputFilter)
         {
+            VeraPdfOutputFilter = veraPdfOutputFilter;
         }
 
         /// <summary>
@@ -165,68 +185,66 @@ namespace Codeuctivity
                 {
                     throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} without any output. Error: {errorResult}\nCustom JAVACMD: {PathJava}\nVeraPdfStartScript: {VeraPdfStartScript}");
                 }
-                ValidateVeraPdfOutputToBeXml(outputResult, PathJava, VeraPdfStartScript);
-                var veraPdfReport = DeserializeXml<Report>(outputResult);
+
+                var filterdResult = VeraPdfOutputFilter?.Filter(outputResult) ?? outputResult;
+
+                ValidateVeraPdfOutputToBeXml(filterdResult, PathJava, VeraPdfStartScript);
+                var veraPdfReport = DeserializeXml<Report>(filterdResult);
                 veraPdfReport.RawOutput = outputResult;
                 return veraPdfReport;
             }
             throw new VeraPdfException($"Calling VeraPdf exited with {process.ExitCode} caused an error: {errorResult}\nCustom JAVACMD: {PathJava}\nVeraPdfStartScript: {VeraPdfStartScript}");
         }
 
-        private void WaitAndReceiveOutput(Process process, out string outputResult, out string errorResult)
+        private static void WaitAndReceiveOutput(Process process, out string outputResult, out string errorResult)
         {
-            StringBuilder outputBuilder = new StringBuilder();
-            StringBuilder errorBuilder = new StringBuilder();
-            using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
-            using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
+            var outputBuilder = new StringBuilder();
+            var errorBuilder = new StringBuilder();
+            using var outputWaitHandle = new AutoResetEvent(false);
+            using var errorWaitHandle = new AutoResetEvent(false);
+            process.OutputDataReceived += (_, e) =>
             {
-                process.OutputDataReceived += (_, e) =>
+                if (e.Data == null)
                 {
-                    if (e.Data == null)
-                    {
-                        outputWaitHandle.Set();
-                    }
-                    else
-                    {
-                        outputBuilder.AppendLine(e.Data);
-                    }
-                };
-                process.ErrorDataReceived += (_, e) =>
+                    outputWaitHandle.Set();
+                }
+                else
                 {
-                    if (e.Data == null)
-                    {
-                        errorWaitHandle.Set();
-                    }
-                    else
-                    {
-                        errorBuilder.AppendLine(e.Data);
-                    }
-                };
+                    outputBuilder.AppendLine(e.Data);
+                }
+            };
+            process.ErrorDataReceived += (_, e) =>
+            {
+                if (e.Data == null)
+                {
+                    errorWaitHandle.Set();
+                }
+                else
+                {
+                    errorBuilder.AppendLine(e.Data);
+                }
+            };
 
-                process.Start();
+            process.Start();
 
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
 
-                process.WaitForExit();
-                outputWaitHandle.WaitOne();
-                errorWaitHandle.WaitOne();
+            process.WaitForExit();
+            outputWaitHandle.WaitOne();
+            errorWaitHandle.WaitOne();
 
-                outputResult = outputBuilder.ToString();
-                errorResult = errorBuilder.ToString();
-            }
+            outputResult = outputBuilder.ToString();
+            errorResult = errorBuilder.ToString();
         }
 
         private static bool IsSingleFolder(IEnumerable<string> pathsToPdfFiles)
         {
-            bool isSingle = pathsToPdfFiles.Count() == 1;
+            var isSingle = pathsToPdfFiles.Count() == 1;
             if (isSingle)
             {
                 var absolutePath = Path.GetFullPath(pathsToPdfFiles.First());
-                if (Directory.Exists(absolutePath))
-                {
-                    return true;
-                }
+                return Directory.Exists(absolutePath);
             }
             return false;
         }

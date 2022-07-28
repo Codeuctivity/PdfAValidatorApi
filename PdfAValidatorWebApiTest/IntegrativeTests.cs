@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Testing;
+using PdfAValidatorWebApi;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -8,11 +9,11 @@ using Xunit;
 namespace CodeuctivityWebApiTest
 {
     // Note: not passing using wsl
-    public class IntegrativeTests : IClassFixture<WebApplicationFactory<CodeuctivityWebApi.Startup>>
+    public class IntegrativeTests : IClassFixture<WebApplicationFactory<Startup>>
     {
-        private readonly WebApplicationFactory<CodeuctivityWebApi.Startup> _factory;
+        private readonly WebApplicationFactory<Startup> _factory;
 
-        public IntegrativeTests(WebApplicationFactory<CodeuctivityWebApi.Startup> factory)
+        public IntegrativeTests(WebApplicationFactory<Startup> factory)
         {
             _factory = factory;
         }

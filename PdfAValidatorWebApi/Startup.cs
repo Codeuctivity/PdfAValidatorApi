@@ -1,7 +1,6 @@
 ﻿using Codeuctivity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
@@ -9,7 +8,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace CodeuctivityWebApi
+namespace PdfAValidatorWebApi
 {
     /// <summary>
     /// Startup Things comes in here
@@ -25,15 +24,20 @@ namespace CodeuctivityWebApi
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IPdfAValidator, PdfAValidator>();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
+            services.AddSingleton<IPdfAValidator, PdfAValidator>(_ =>
+            {
+                var pdfaValidator = new PdfAValidator(new ApplicationInsightsJavaAgentOutputFilter());
+                return pdfaValidator;
+            });
+
+            services.AddMvc();
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v2",
-                    Title = "PdfAValidator",
+                    Title = $"PdfAValidator {typeof(Startup).Assembly.GetName().Version}",
                     Description = "A simple ASP.NET Core Web API wrapping access to VeraPdf",
                     TermsOfService = new Uri(GithubProjectAdress),
                     Contact = new OpenApiContact
@@ -45,7 +49,7 @@ namespace CodeuctivityWebApi
                     License = new OpenApiLicense
                     {
                         Name = "Use under AGPL",
-                        Url = new Uri($"{GithubProjectAdress}/blob/master/LICENSE"),
+                        Url = new Uri($"{GithubProjectAdress}/blob/main/LICENSE"),
                     }
                 });
 
@@ -63,6 +67,8 @@ namespace CodeuctivityWebApi
         /// <param name="env"></param>
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseStaticFiles();
+
             if (env.IsDevelopment())
 
             {
@@ -77,6 +83,7 @@ namespace CodeuctivityWebApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "PdfAValidator V1");
                 c.RoutePrefix = string.Empty;
+                c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
             });
 
             app.UseRouting();

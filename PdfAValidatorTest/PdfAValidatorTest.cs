@@ -209,6 +209,50 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldBatchValidatePdfsAndThrowOnMissingPDFs()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            const string invalidPath = "DoesNotExist.pdf";
+            var files = new[]
+            {
+                "./TestPdfFiles/FromLibreOfficeNonPdfA.pdf",
+                invalidPath
+            };
+            var exception = await Assert.ThrowsAsync<FileNotFoundException>(() =>
+                 { return pdfAValidator.ValidateBatchWithDetailedReportAsync(files, ""); });
+
+            Assert.Contains(invalidPath, exception.Message);
+        }
+
+        [Fact]
+        public static async Task ShouldThrowPathTooLongException()
+        {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return;
+            }
+
+            var initialEnvornmentTmpValue = Environment.GetEnvironmentVariable("TMP");
+            try
+            {
+                var realyLongPath = Path.Combine(initialEnvornmentTmpValue, "RealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealy", Guid.NewGuid().ToString());
+
+                Environment.SetEnvironmentVariable("TMP", realyLongPath);
+
+                using var pdfAValidator = new PdfAValidator();
+                var files = new[] { "./TestPdfFiles/FromLibreOffice.pdf", "./TestPdfFiles/FromLibreOfficeNonPdfA.pdf" };
+                _ = await Assert.ThrowsAsync<PathTooLongException>(() =>
+                {
+                    return pdfAValidator.ValidateBatchWithDetailedReportAsync(files, "");
+                });
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("TMP", initialEnvornmentTmpValue);
+            }
+        }
+
+        [Fact]
         public static async Task ShouldThrowExplainableExceptionOnTooLongCommandLineOnWindows()
         {
             var expectedLocalizedMessage = "The command line is too long.";
@@ -323,6 +367,7 @@ namespace CodeuctivityTest
 #pragma warning disable S3966 // Expecting multiple dispose calls to pass
             postscriptValidator.Dispose();
 #pragma warning restore S3966 // Expecting multiple dispose calls to pass
+            Assert.NotNull("Expectation is that this code does not throw.");
         }
 
         [Fact]
@@ -334,6 +379,8 @@ namespace CodeuctivityTest
 #pragma warning disable S3966 // Expecting multiple dispose calls to pass
             postscriptValidator.Dispose();
 #pragma warning restore S3966 // Expecting multiple dispose calls to pass
+
+            Assert.NotNull("Expectation is that this code does not throw.");
         }
     }
 }
