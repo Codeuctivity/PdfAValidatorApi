@@ -35,6 +35,14 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldDetectNonCompliantPdfA2()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            var result = await pdfAValidator.ValidateAsync("./TestPdfFiles/PdfNonCompliant.pdf");
+            Assert.False(result);
+        }
+
+        [Fact]
         public static async Task ShouldGetDetailedReportFromPdfA()
         {
             using var pdfAValidator = new PdfAValidator();
@@ -42,6 +50,17 @@ namespace CodeuctivityTest
             var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf");
             Assert.True(result.Jobs.Job.ValidationReport.IsCompliant);
             Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1A validation profile");
+            Assert.StartsWith(@"<?xml version=""1.0"" encoding=""utf-8""?>", result.RawOutput);
+        }
+
+        [Fact]
+        public static async Task ShouldGetDetailedReportFromPdfA2()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/PdfNonCompliant.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/PdfNonCompliant.pdf");
+            Assert.False(result.Jobs.Job.ValidationReport.IsCompliant);
+            Assert.Equal("PDF/A-1B validation profile", result.Jobs.Job.ValidationReport.ProfileName);
             Assert.StartsWith(@"<?xml version=""1.0"" encoding=""utf-8""?>", result.RawOutput);
         }
 
@@ -148,10 +167,10 @@ namespace CodeuctivityTest
             using var pdfAValidator = new PdfAValidator();
             var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles", "");
 
-            Assert.Equal("6", result.BatchSummary.TotalJobs);
-            Assert.Equal(6, result.Jobs.AllJobs.Count);
+            Assert.Equal("7", result.BatchSummary.TotalJobs);
+            Assert.Equal(7, result.Jobs.AllJobs.Count);
             Assert.Equal("1", result.BatchSummary.ValidationReports.Compliant);
-            Assert.Equal("2", result.BatchSummary.ValidationReports.NonCompliant);
+            Assert.Equal("3", result.BatchSummary.ValidationReports.NonCompliant);
             Assert.Equal("3", result.BatchSummary.ValidationReports.FailedJobs);
         }
 
@@ -182,7 +201,7 @@ namespace CodeuctivityTest
             if (completedTask)
             {
                 var result = await task;
-                Assert.Equal("60", result.BatchSummary.TotalJobs);
+                Assert.Equal("70", result.BatchSummary.TotalJobs);
             }
         }
 
