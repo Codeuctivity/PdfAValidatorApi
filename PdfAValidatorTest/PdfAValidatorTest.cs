@@ -35,6 +35,14 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldDetectNonCompliantPdfA2()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            var result = await pdfAValidator.ValidateAsync("./TestPdfFiles/PdfNonCompliant.pdf");
+            Assert.False(result);
+        }
+
+        [Fact]
         public static async Task ShouldGetDetailedReportFromPdfA()
         {
             using var pdfAValidator = new PdfAValidator();
@@ -42,6 +50,17 @@ namespace CodeuctivityTest
             var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf");
             Assert.True(result.Jobs.Job.ValidationReport.IsCompliant);
             Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1A validation profile");
+            Assert.StartsWith(@"<?xml version=""1.0"" encoding=""utf-8""?>", result.RawOutput);
+        }
+
+        [Fact]
+        public static async Task ShouldGetDetailedReportFromPdfA2()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/PdfNonCompliant.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/PdfNonCompliant.pdf");
+            Assert.False(result.Jobs.Job.ValidationReport.IsCompliant);
+            Assert.Equal("PDF/A-1B validation profile", result.Jobs.Job.ValidationReport.ProfileName);
             Assert.StartsWith(@"<?xml version=""1.0"" encoding=""utf-8""?>", result.RawOutput);
         }
 
@@ -148,10 +167,10 @@ namespace CodeuctivityTest
             using var pdfAValidator = new PdfAValidator();
             var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles", "");
 
-            Assert.Equal("6", result.BatchSummary.TotalJobs);
-            Assert.Equal(6, result.Jobs.AllJobs.Count);
+            Assert.Equal("7", result.BatchSummary.TotalJobs);
+            Assert.Equal(7, result.Jobs.AllJobs.Count);
             Assert.Equal("1", result.BatchSummary.ValidationReports.Compliant);
-            Assert.Equal("2", result.BatchSummary.ValidationReports.NonCompliant);
+            Assert.Equal("3", result.BatchSummary.ValidationReports.NonCompliant);
             Assert.Equal("3", result.BatchSummary.ValidationReports.FailedJobs);
         }
 
@@ -182,7 +201,7 @@ namespace CodeuctivityTest
             if (completedTask)
             {
                 var result = await task;
-                Assert.Equal("60", result.BatchSummary.TotalJobs);
+                Assert.Equal("70", result.BatchSummary.TotalJobs);
             }
         }
 
@@ -233,9 +252,10 @@ namespace CodeuctivityTest
             }
 
             var initialEnvornmentTmpValue = Environment.GetEnvironmentVariable("TMP");
+
             try
             {
-                var realyLongPath = Path.Combine(initialEnvornmentTmpValue, "RealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealy", Guid.NewGuid().ToString());
+                var realyLongPath = Path.Combine(initialEnvornmentTmpValue!, "RealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealy", Guid.NewGuid().ToString());
 
                 Environment.SetEnvironmentVariable("TMP", realyLongPath);
 
@@ -290,6 +310,7 @@ namespace CodeuctivityTest
             using (var pdfAValidatorPrepareBins = new PdfAValidator())
             {
                 await pdfAValidatorPrepareBins.ValidateAsync("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+
                 using (var pdfAValidator = new PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStartScript!, pdfAValidatorPrepareBins.PathJava!))
                 {
                     veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
@@ -301,6 +322,40 @@ namespace CodeuctivityTest
                 Assert.True(File.Exists(veraPdfStartScript));
             }
             Assert.False(File.Exists(veraPdfStartScript));
+        }
+
+        [Fact]
+        public static async Task ShouldSafeGuardToAKnownMaxTemporaryPathLengthWhichStillWorksWithoutException()
+        {
+            string? veraPdfStartScript;
+
+            var tempPath = Path.GetTempPath();
+
+            using var pdfAValidatorMaxPath = new PdfAValidator();
+
+            Assert.True(tempPath.Length < pdfAValidatorMaxPath.MaxLengthTempdirectoryThatVeraPdfFitsIn);
+
+            while (tempPath.Length < pdfAValidatorMaxPath.MaxLengthTempdirectoryThatVeraPdfFitsIn)
+            {
+                tempPath += "X";
+            }
+
+            Directory.CreateDirectory(tempPath);
+
+            try
+            {
+                using (var pdfAValidator = new PdfAValidator(tempPath))
+                {
+                    await pdfAValidator.ValidateAsync("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                    veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
+                    Assert.True(File.Exists(veraPdfStartScript));
+                }
+                Assert.False(File.Exists(veraPdfStartScript));
+            }
+            finally
+            {
+                Directory.Delete(tempPath, true);
+            }
         }
 
         [Fact]
