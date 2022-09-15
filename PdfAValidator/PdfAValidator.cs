@@ -24,7 +24,7 @@ namespace Codeuctivity
         private const string maskedQuote = "\"";
 
         /// <summary>
-        /// Max temp path length that VeraPdf fits into without throwing System.IO.DirectoryNotFoundException on windows, value may change on new VeraPdf versions. Value does differ between .net and .net framework. See also https://github.com/Codeuctivity/PdfAValidatorApi/issues/59
+        /// Max temp path length that VeraPdf fits into without throwing System.IO.DirectoryNotFoundException, value may change on new VeraPdf versions. Value does differ between .net and .net framework and linux. See also https://github.com/Codeuctivity/PdfAValidatorApi/issues/59
         /// </summary>
         public int MaxLengthTempdirectoryThatVeraPdfFitsIn { get; private set; }
 
@@ -138,7 +138,7 @@ namespace Codeuctivity
         private void InitRuntimeSpecificMaxLengthTempdirectoryThatVeraPdfFitsIn()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                MaxLengthTempdirectoryThatVeraPdfFitsIn = 192;
+                MaxLengthTempdirectoryThatVeraPdfFitsIn = 190;
             else
             {
                 MaxLengthTempdirectoryThatVeraPdfFitsIn = 260;
