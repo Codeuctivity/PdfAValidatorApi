@@ -309,6 +309,7 @@ namespace CodeuctivityTest
             using (var pdfAValidatorPrepareBins = new PdfAValidator())
             {
                 await pdfAValidatorPrepareBins.ValidateAsync("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+
                 using (var pdfAValidator = new PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStartScript!, pdfAValidatorPrepareBins.PathJava!))
                 {
                     veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
@@ -320,6 +321,40 @@ namespace CodeuctivityTest
                 Assert.True(File.Exists(veraPdfStartScript));
             }
             Assert.False(File.Exists(veraPdfStartScript));
+        }
+
+        [Fact]
+        public static async Task ShouldSafeGuardToAKnownMaxTemporaryPathLengthWhichStillWorksWithoutException()
+        {
+            string? veraPdfStartScript;
+
+            var tempPath = Path.GetTempPath();
+
+            using var pdfAValidatorMaxPath = new PdfAValidator();
+
+            Assert.True(tempPath.Length < pdfAValidatorMaxPath.MaxLengthTempdirectoryThatVeraPdfFitsIn);
+
+            while (tempPath.Length < pdfAValidatorMaxPath.MaxLengthTempdirectoryThatVeraPdfFitsIn)
+            {
+                tempPath += "X";
+            }
+
+            Directory.CreateDirectory(tempPath);
+
+            try
+            {
+                using (var pdfAValidator = new PdfAValidator(tempPath))
+                {
+                    await pdfAValidator.ValidateAsync("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                    veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
+                    Assert.True(File.Exists(veraPdfStartScript));
+                }
+                Assert.False(File.Exists(veraPdfStartScript));
+            }
+            finally
+            {
+                Directory.Delete(tempPath, true);
+            }
         }
 
         [Fact]
