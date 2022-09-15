@@ -252,9 +252,10 @@ namespace CodeuctivityTest
             }
 
             var initialEnvornmentTmpValue = Environment.GetEnvironmentVariable("TMP");
+
             try
             {
-                var realyLongPath = Path.Combine(initialEnvornmentTmpValue, "RealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealy", Guid.NewGuid().ToString());
+                var realyLongPath = Path.Combine(initialEnvornmentTmpValue!, "RealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealy", Guid.NewGuid().ToString());
 
                 Environment.SetEnvironmentVariable("TMP", realyLongPath);
 

@@ -138,14 +138,18 @@ namespace Codeuctivity
         private void InitRuntimeSpecificMaxLengthTempdirectoryThatVeraPdfFitsIn()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
                 MaxLengthTempdirectoryThatVeraPdfFitsIn = 190;
+            }
             else
             {
                 MaxLengthTempdirectoryThatVeraPdfFitsIn = 260;
             }
 
             if (RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework"))
+            {
                 MaxLengthTempdirectoryThatVeraPdfFitsIn = 69;
+            }
         }
 
         /// <summary>
