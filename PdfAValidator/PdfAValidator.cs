@@ -139,7 +139,7 @@ namespace Codeuctivity
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                MaxLengthTempdirectoryThatVeraPdfFitsIn = 190;
+                MaxLengthTempdirectoryThatVeraPdfFitsIn = 197;
             }
             else
             {
@@ -148,7 +148,7 @@ namespace Codeuctivity
 
             if (RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework"))
             {
-                MaxLengthTempdirectoryThatVeraPdfFitsIn = 69;
+                MaxLengthTempdirectoryThatVeraPdfFitsIn = 76;
             }
         }
 
@@ -184,7 +184,7 @@ namespace Codeuctivity
         }
 
         /// <summary>
-        /// Validates a batch of pdf files and returns a detailed compliance report
+        /// Validates a batch of PDF files and returns a detailed compliance report
         /// </summary>
         /// <param name="pathsToPdfFiles"></param>
         /// <param name="commandLineArguments">Command line arguments</param>
@@ -353,20 +353,20 @@ namespace Codeuctivity
                     {
                         // took from https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot#x64_win
                         ExtractBinaryFromManifest("Codeuctivity.Java.zip"),
-                        // Downloaded from https://verapdf.org/software/ - verapdf-greenfield-1.20.3 - version seems to be out of sync compared to https://github.com/veraPDF/veraPDF-library/releases/ (latest there is v1.20.2)
+                        // Downloaded from https://verapdf.org/software/ - verapdf-greenfield-1.22.3 - version seems to be out of sync compared to https://github.com/veraPDF/veraPDF-library/releases/ (latest there is v1.22.2)
                         ExtractBinaryFromManifest("Codeuctivity.VeraPdf.zip")
                     };
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
 
-                    VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf", "verapdf.bat");
-                    PathJava = Path.Combine(pathVeraPdfDirectory, "verapdf", "jdk8u202-b08-jre", "bin", "java");
+                    VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf.bat");
+                    PathJava = Path.Combine(pathVeraPdfDirectory, "jdk8u202-b08-jre", "bin", "java");
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
                     Directory.CreateDirectory(pathVeraPdfDirectory);
                     await ExtractBinaryFromManifest("Codeuctivity.VeraPdf.zip").ConfigureAwait(false);
-                    VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf", "verapdf");
+                    VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf");
                     SetLinuxFileExecuteable(VeraPdfStartScript);
                 }
                 else
