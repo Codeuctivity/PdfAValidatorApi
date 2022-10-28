@@ -175,6 +175,25 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldGetFeaturesReportWhenAskingForIt()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/FromLibreOffice.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf", "--extract");
+            var producerEntry = result.Jobs.Job.FeaturesReport.InformationDict.Entries.Single(e => e.Key == "Producer");
+            Assert.Equal("LibreOffice 6.1", producerEntry.Value);
+        }
+
+        [Fact]
+        public static async Task ShouldNotGetFeaturesReportWhenNotAskingForIt()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/FromLibreOffice.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf");
+            Assert.Empty(result.Jobs.Job.FeaturesReport.InformationDict.Entries);
+        }
+
+        [Fact]
         public static async Task ShouldNotDeadlockWhenValidatingFolderThatCausesLargeOutput()
         {
             // Setup folder with pdf files that causes large output streams
