@@ -5,7 +5,8 @@
         "Nuget",
         "Nunit",
         "nupkg",
-        "snupkg"
+        "snupkg",
+        "stesee"
     ],
     "editor.formatOnSave": true
 }
