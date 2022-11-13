@@ -20,6 +20,7 @@
     <None Remove="TestExecuteables\exitcode0.sh" />
     <None Remove="TestExecuteables\exitcode2.bat" />
     <None Remove="TestExecuteables\exitcode2.sh" />
+    <None Remove="TestPdfFiles\adobe_supplement_iso32000.pdf" />
     <None Remove="TestPdfFiles\Encrypted.pdf" />
     <None Remove="TestPdfFiles\FontsNotEmbedded.pdf" />
     <None Remove="TestPdfFiles\FromLibreOffice.pdf" />
@@ -39,6 +40,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestExecuteables\exitcode0.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestPdfFiles\adobe_supplement_iso32000.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestPdfFiles\FromLibreOffice.pdf">

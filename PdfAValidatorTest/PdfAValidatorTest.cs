@@ -175,13 +175,26 @@ namespace CodeuctivityTest
         }
 
         [Fact]
-        public static async Task ShouldGetFeaturesReportWhenAskingForIt()
+        public static async Task ShouldGetFeaturesReportWhenAskingForItLibreOffice()
         {
             using var pdfAValidator = new PdfAValidator();
             Assert.True(File.Exists("./TestPdfFiles/FromLibreOffice.pdf"));
             var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf", "--extract");
             var producerEntry = result.Jobs.Job.FeaturesReport.InformationDict.Entries.Single(e => e.Key == "Producer");
             Assert.Equal("LibreOffice 6.1", producerEntry.Value);
+        }
+
+        [Fact]
+        public static async Task ShouldGetFeaturesReportWhenAskingForItFullyEnabledFeatureSet()
+        {
+            string configXmlAllFeaturesEnabled = "<?xmlversion=\"1.0\"encoding=\"UTF-8\"standalone=\"yes\"?><featuresConfig><enabledFeatures><feature>METADATA</feature></enabledFeatures></featuresConfig>";
+
+            using var pdfAValidator = new PdfAValidator(new NullVeraPdfOutputFilter(), configXmlAllFeaturesEnabled);
+
+            Assert.True(File.Exists("./TestPdfFiles/adobe_supplement_iso32000.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/adobe_supplement_iso32000.pdf", "--extract");
+            var producerEntry = result.Jobs.Job.FeaturesReport.InformationDict.Entries.Single(e => e.Key == "Producer");
+            Assert.Equal("Acrobat Distiller 9.0.0 (Windows)", producerEntry.Value);
         }
 
         [Fact]

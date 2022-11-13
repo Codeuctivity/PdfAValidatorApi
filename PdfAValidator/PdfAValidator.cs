@@ -44,6 +44,11 @@ namespace Codeuctivity
         private IVeraPdfOutputFilter? VeraPdfOutputFilter { get; }
 
         /// <summary>
+        /// Optional custom features.xml https://docs.verapdf.org/cli/config/
+        /// </summary>
+        public string? CustomFeaturesXml { get; }
+
+        /// <summary>
         /// Command that is used to invoke VeraPdf
         /// </summary>
         /// <value>Command with arguments</value>
@@ -109,7 +114,7 @@ namespace Codeuctivity
         /// <summary>
         /// Use this constructor to use the embedded veraPdf binaries
         /// </summary>
-        public PdfAValidator() : this(new NullVeraPdfOutputFilter())
+        public PdfAValidator() : this(new NullVeraPdfOutputFilter(), string.Empty)
         {
             InitRuntimeSpecificMaxLengthTempdirectoryThatVeraPdfFitsIn();
             TempPath = Path.GetTempPath();
@@ -118,7 +123,7 @@ namespace Codeuctivity
         /// <summary>
         /// Use this constructor to use the embedded veraPdf binaries with a custom temp path (default is %temp%)
         /// </summary>
-        public PdfAValidator(string tempPath) : this(new NullVeraPdfOutputFilter())
+        public PdfAValidator(string tempPath) : this(new NullVeraPdfOutputFilter(), string.Empty)
         {
             InitRuntimeSpecificMaxLengthTempdirectoryThatVeraPdfFitsIn();
             TempPath = tempPath;
@@ -128,11 +133,21 @@ namespace Codeuctivity
         /// Use this constructor to use the embedded veraPdf binaries
         /// </summary>
         /// <param name="veraPdfOutputFilter">Optional VerapPdf console output filter</param>
-        public PdfAValidator(IVeraPdfOutputFilter? veraPdfOutputFilter)
+        public PdfAValidator(IVeraPdfOutputFilter? veraPdfOutputFilter) : this(veraPdfOutputFilter, string.Empty)
+        {
+        }
+
+        /// <summary>
+        /// Use this constructor to use the embedded veraPdf binaries
+        /// </summary>
+        /// <param name="veraPdfOutputFilter">Optional VerapPdf console output filter</param>
+        /// <param name="customFeaturesXml">Optional custom features.xml https://docs.verapdf.org/cli/config/</param>
+        public PdfAValidator(IVeraPdfOutputFilter? veraPdfOutputFilter, string? customFeaturesXml)
         {
             InitRuntimeSpecificMaxLengthTempdirectoryThatVeraPdfFitsIn();
             TempPath = Path.GetTempPath();
             VeraPdfOutputFilter = veraPdfOutputFilter;
+            CustomFeaturesXml = customFeaturesXml;
         }
 
         private void InitRuntimeSpecificMaxLengthTempdirectoryThatVeraPdfFitsIn()
@@ -211,7 +226,8 @@ namespace Codeuctivity
                     CreateNoWindow = true,
                     Arguments = $"{commandLineArguments} {string.Join(" ", pathArguments)}",
                     StandardErrorEncoding = Encoding.UTF8,
-                    StandardOutputEncoding = Encoding.UTF8
+                    StandardOutputEncoding = Encoding.UTF8,
+                    WorkingDirectory = pathVeraPdfDirectory
                 }
             };
 
@@ -372,6 +388,16 @@ namespace Codeuctivity
                 else
                 {
                     throw new NotImplementedException(Resources.OsNotSupportedMessage);
+                }
+
+                if (!string.IsNullOrEmpty(CustomFeaturesXml))
+                {
+                    var featuresXmlDirectory = Path.Combine(pathVeraPdfDirectory, "config");
+                    if (!Directory.Exists(featuresXmlDirectory))
+                        Directory.CreateDirectory(featuresXmlDirectory);
+
+                    var featuresXmlPath = Path.Combine(pathVeraPdfDirectory, "config/features.xml");
+                    File.WriteAllText(featuresXmlPath, CustomFeaturesXml);
                 }
 
                 IsInitialized = true;
