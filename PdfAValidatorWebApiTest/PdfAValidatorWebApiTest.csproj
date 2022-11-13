@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="3.1.2">
+    <PackageReference Include="coverlet.collector" Version="3.2.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -17,7 +17,7 @@
     <PackageReference Include="AngleSharp" Version="0.17.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.10" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.47.0.55603">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.48.0.56517">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

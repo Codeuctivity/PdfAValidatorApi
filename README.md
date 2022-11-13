@@ -27,6 +27,18 @@ public static async Task ShouldGetDetailedReportFromPdfA()
 }
 ```
 
+Sample - e.g. use it in your unit test to check [PDF meta data](https://docs.verapdf.org/cli/feature-extraction/):
+
+```csharp
+ public static async Task ShouldGetFeaturesReportWhenAskingForIt()
+ {
+     using var pdfAValidator = new PdfAValidator();
+     var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf", "--extract");
+     var producerEntry = result.Jobs.Job.FeaturesReport.InformationDict.Entries.Single(e => e.Key == "Producer");
+     Assert.Equal("LibreOffice 6.1", producerEntry.Value);
+ }
+```
+
 ## Demo OpenApi - PdfAValidatorWebApi
 
 Give <https://pdfavalidator.azurewebsites.net> a try, but don't be disappointed if it is off-line. The demo azure account is running on limited budget.
@@ -73,10 +85,4 @@ sudo apt-get update
 sudo apt-get install apt-transport-https
 sudo apt-get update
 sudo apt-get install dotnet-sdk-6.0
-```
-
-### Windows specific - Add dos2unix to your dev environment
-
-```powershell
-PS C:\> choco install dos2unix
 ```
