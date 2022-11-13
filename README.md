@@ -74,9 +74,3 @@ sudo apt-get install apt-transport-https
 sudo apt-get update
 sudo apt-get install dotnet-sdk-6.0
 ```
-
-### Windows specific - Add dos2unix to your dev environment
-
-```powershell
-PS C:\> choco install dos2unix
-```

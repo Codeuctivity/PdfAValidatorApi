@@ -29,11 +29,6 @@
     <None Remove="TestPdfFiles\PdfNonCompliant.pdf" />
   </ItemGroup>
 
-	<Target Name="SetLineEndingsOnWindowsForWsl" BeforeTargets="Compile" Condition="'$(OS)' == 'Windows_NT' AND '$(TargetFramework)' != 'net48'">
-			<Exec Command="dos2unix.exe ./TestExecuteables/exitcode2.sh" />
-		<Exec Command="dos2unix.exe ./TestExecuteables/exitcode0.sh" />
-	</Target>
-
   <ItemGroup>
     <Content Include="TestExecuteables\exitcode2.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -74,7 +69,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.47.0.55603">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.48.0.56517">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
