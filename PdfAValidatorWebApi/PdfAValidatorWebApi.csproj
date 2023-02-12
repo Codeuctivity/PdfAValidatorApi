@@ -14,12 +14,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.10" />
-		<PackageReference Include="SonarAnalyzer.CSharp" Version="8.47.0.55603">
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="8.52.0.60960">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.5" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.6" />
 	</ItemGroup>
 
 	<ItemGroup>

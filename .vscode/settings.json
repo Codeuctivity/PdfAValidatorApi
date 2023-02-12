@@ -6,7 +6,8 @@
         "Nunit",
         "nupkg",
         "snupkg",
-        "stesee"
+        "stesee",
+        "Xunit"
     ],
     "editor.formatOnSave": true
 }
