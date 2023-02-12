@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/Codeuctivity/PdfAValidatorApi/actions/workflows/dotnet.yml/badge.svg)](https://github.com/Codeuctivity/PdfAValidatorApi/actions/workflows/dotnet.yml) [![Nuget](https://img.shields.io/nuget/v/Codeuctivity.PdfaValidator.svg)](https://www.nuget.org/packages/Codeuctivity.PdfAValidator/) [![Donate](https://img.shields.io/static/v1?label=Paypal&message=Donate&color=informational)](https://www.paypal.com/donate?hosted_button_id=7M7UFMMRTS7UE)
 
-PdfAValidatorApi wraps calls to [VeraPdf](http://www.preforma-project.eu/pdfa-conformance-checker.html) in a .net standard assembly and as WebApi. Access VeraPdf from your unit tests or integrate it into your micro architecture. Works on Windows and Linux.
+PdfAValidatorApi wraps calls to [VeraPdf](http://www.preforma-project.eu/pdfa-conformance-checker.html) in a .net standard assembly and as WebApi. Access VeraPdf from your unit tests or integrate it into your micro architecture. Works on Windows, Linux and MacOs.
 
 Sample - e.g. use it in your unit test to check compliance of some pdf:
 
@@ -51,7 +51,7 @@ Everything comes with the nuget package
 
 ### Ubuntu
 
-Current PdfAValidatorApi depends on openjdk-11-jre and some .net.
+Current PdfAValidatorApi depends on openjdk-11-jre and some .net version.
 
 ```bash
 sudo apt install openjdk-11-jre
@@ -63,26 +63,5 @@ sudo update-alternatives --config java
 ### Setup .net sdk ubuntu 22.04
 
 ```bash
-sudo snap remove dotnet-sdk
-sudo apt remove 'dotnet*'
-sudo apt remove 'aspnetcore*'
-sudo apt remove 'netstandard*'
-sudo rm /etc/apt/sources.list.d/microsoft-prod.list
-sudo rm /etc/apt/sources.list.d/microsoft-prod.list.save
-sudo apt update
 sudo apt install dotnet6
-```
-
-### Setup .net sdk ubuntu 20.04
-
-Based on <https://docs.microsoft.com/de-de/dotnet/core/install/linux-package-manager-ubuntu-2004>
-
-```bash
-sudo snap remove dotnet-sdk
-wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-sudo dpkg -i packages-microsoft-prod.deb
-sudo apt-get update
-sudo apt-get install apt-transport-https
-sudo apt-get update
-sudo apt-get install dotnet-sdk-6.0
 ```
