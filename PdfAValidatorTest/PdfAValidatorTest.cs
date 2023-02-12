@@ -382,7 +382,7 @@ namespace CodeuctivityTest
         {
             var somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.bat";
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)||RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 somethingThatReturnsExitcode0 = "TestExecuteables/exitcode0.sh";
             }
