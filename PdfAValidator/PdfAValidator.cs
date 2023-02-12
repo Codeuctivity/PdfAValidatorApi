@@ -26,7 +26,7 @@ namespace Codeuctivity
         /// <summary>
         /// Max temp path length that VeraPdf fits into without throwing System.IO.DirectoryNotFoundException, value may change on new VeraPdf versions. Value does differ between .net and .net framework and linux. See also https://github.com/Codeuctivity/PdfAValidatorApi/issues/59
         /// </summary>
-        public int MaxLengthTempdirectoryThatVeraPdfFitsIn { get; private set; }
+        public int MaxLengthTempDirectoryThatVeraPdfFitsIn { get; private set; }
 
         private string? pathVeraPdfDirectory;
         private bool disposed;
@@ -139,16 +139,16 @@ namespace Codeuctivity
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                MaxLengthTempdirectoryThatVeraPdfFitsIn = 197;
+                MaxLengthTempDirectoryThatVeraPdfFitsIn = 197;
             }
             else
             {
-                MaxLengthTempdirectoryThatVeraPdfFitsIn = 260;
+                MaxLengthTempDirectoryThatVeraPdfFitsIn = 260;
             }
 
             if (RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework"))
             {
-                MaxLengthTempdirectoryThatVeraPdfFitsIn = 76;
+                MaxLengthTempDirectoryThatVeraPdfFitsIn = 76;
             }
         }
 
@@ -342,7 +342,7 @@ namespace Codeuctivity
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    if (TempPath.Length > MaxLengthTempdirectoryThatVeraPdfFitsIn)
+                    if (TempPath.Length > MaxLengthTempDirectoryThatVeraPdfFitsIn)
                     {
                         throw new PathTooLongException(pathVeraPdfDirectory);
                     }
@@ -362,7 +362,7 @@ namespace Codeuctivity
                     VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf.bat");
                     PathJava = Path.Combine(pathVeraPdfDirectory, "jdk8u202-b08-jre", "bin", "java");
                 }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
                     Directory.CreateDirectory(pathVeraPdfDirectory);
                     await ExtractBinaryFromManifest("Codeuctivity.VeraPdf.zip").ConfigureAwait(false);

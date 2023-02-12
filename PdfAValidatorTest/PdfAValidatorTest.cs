@@ -352,9 +352,9 @@ namespace CodeuctivityTest
 
             using var pdfAValidatorMaxPath = new PdfAValidator();
 
-            Assert.True(tempPath.Length < pdfAValidatorMaxPath.MaxLengthTempdirectoryThatVeraPdfFitsIn);
+            Assert.True(tempPath.Length < pdfAValidatorMaxPath.MaxLengthTempDirectoryThatVeraPdfFitsIn);
 
-            while (tempPath.Length < pdfAValidatorMaxPath.MaxLengthTempdirectoryThatVeraPdfFitsIn)
+            while (tempPath.Length < pdfAValidatorMaxPath.MaxLengthTempDirectoryThatVeraPdfFitsIn)
             {
                 tempPath += "X";
             }
@@ -382,7 +382,7 @@ namespace CodeuctivityTest
         {
             var somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.bat";
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)||RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 somethingThatReturnsExitcode0 = "TestExecuteables/exitcode0.sh";
             }
@@ -402,7 +402,7 @@ namespace CodeuctivityTest
         {
             var somethingThatReturnsExitcode2 = "./TestExecuteables/exitcode2.bat";
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 somethingThatReturnsExitcode2 = "TestExecuteables/exitcode2.sh";
             }
@@ -423,7 +423,7 @@ namespace CodeuctivityTest
             {
                 Assert.True(scriptPath?.EndsWith(".bat"));
             }
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 Assert.True(scriptPath?.EndsWith("verapdf"));
             }

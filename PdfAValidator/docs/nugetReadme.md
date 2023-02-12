@@ -1,6 +1,6 @@
 # Codeuctivity.PdfAValidator
 
-PdfAValidatorApi wraps calls to [VeraPdf](http://www.preforma-project.eu/pdfa-conformance-checker.html) in a .net standard assembly and as WebApi. Access VeraPdf from your unit tests. Works on Windows and Linux.
+PdfAValidatorApi wraps calls to [VeraPdf](http://www.preforma-project.eu/pdfa-conformance-checker.html) in a .net standard assembly and as WebApi. Access VeraPdf from your unit tests. Works on Windows, Linux and MacOs.
 
 Sample - e.g. use it in your unit test to check compliance of some pdf:
 
