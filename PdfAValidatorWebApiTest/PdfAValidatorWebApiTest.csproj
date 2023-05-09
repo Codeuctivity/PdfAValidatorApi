@@ -16,7 +16,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
     <PackageReference Include="AngleSharp" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.10" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.52.0.60960">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="9.0.0.68202">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

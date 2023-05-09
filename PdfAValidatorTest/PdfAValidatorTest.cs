@@ -140,7 +140,7 @@ namespace CodeuctivityTest
         }
 
         [Fact]
-        public static async Task ShouldGetDetailedReportFromCompliantPdfExcept()
+        public static async Task ShouldGetDetailedReportFromCompliantPdfExceptPdfxConformance()
         {
             using var pdfAValidator = new PdfAValidator();
             Assert.True(File.Exists("./TestPdfFiles/PdfxConformancePdfxNone.pdf"));
@@ -150,7 +150,7 @@ namespace CodeuctivityTest
             Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1B validation profile");
             Assert.InRange(result.Jobs.Job.ValidationReport.Details.FailedRules, 1, 1);
             Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Clause == "6.7.11");
-            Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Description == "The PDF/A version and conformance level of a file ");
+            Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Description == "The PDF/A version and conformance level of a file shall be specified using the PDF/A Identification extension schema.");
         }
 
         [Fact]
@@ -181,10 +181,10 @@ namespace CodeuctivityTest
             using var pdfAValidator = new PdfAValidator();
             var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles", "");
 
-            Assert.Equal("7", result.BatchSummary.TotalJobs);
-            Assert.Equal(7, result.Jobs.AllJobs.Count);
+            Assert.Equal("8", result.BatchSummary.TotalJobs);
+            Assert.Equal(8, result.Jobs.AllJobs.Count);
             Assert.Equal("1", result.BatchSummary.ValidationReports.Compliant);
-            Assert.Equal("3", result.BatchSummary.ValidationReports.NonCompliant);
+            Assert.Equal("4", result.BatchSummary.ValidationReports.NonCompliant);
             Assert.Equal("3", result.BatchSummary.ValidationReports.FailedJobs);
         }
 
@@ -234,7 +234,7 @@ namespace CodeuctivityTest
             if (completedTask)
             {
                 var result = await task;
-                Assert.Equal("70", result.BatchSummary.TotalJobs);
+                Assert.Equal("80", result.BatchSummary.TotalJobs);
             }
         }
 
