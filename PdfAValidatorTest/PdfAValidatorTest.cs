@@ -140,6 +140,20 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldGetDetailedReportFromCompliantPdfExcept()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/PdfxConformancePdfxNone.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/PdfxConformancePdfxNone.pdf");
+            var taskResult = result.Jobs.Job.TaskResult;
+            Assert.False(taskResult.IsSuccess);
+            Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1B validation profile");
+            Assert.InRange(result.Jobs.Job.ValidationReport.Details.FailedRules, 1, 1);
+            Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Clause == "6.7.11");
+            Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Description == "The PDF/A version and conformance level of a file ");
+        }
+
+        [Fact]
         public static async Task ShouldGetCorrectFileNameWithUnicodeChars()
         {
             using var pdfAValidator = new PdfAValidator();
@@ -382,7 +396,7 @@ namespace CodeuctivityTest
         {
             var somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.bat";
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)||RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 somethingThatReturnsExitcode0 = "TestExecuteables/exitcode0.sh";
             }
