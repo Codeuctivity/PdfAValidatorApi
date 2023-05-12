@@ -1,10 +1,10 @@
 ﻿using Codeuctivity;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -140,7 +140,7 @@ namespace CodeuctivityTest
         }
 
         [Fact]
-        public static async Task ShouldGetDetailedReportFromCompliantPdfExceptPdfxConformance()
+        public static async Task ShouldGetDetailedReportFromCompliantPdfExceptPdfXConformance()
         {
             using var pdfAValidator = new PdfAValidator();
             Assert.True(File.Exists("./TestPdfFiles/PdfxConformancePdfxNone.pdf"));
@@ -310,7 +310,7 @@ namespace CodeuctivityTest
         {
             var expectedLocalizedMessage = "The command line is too long.";
 
-            if (Thread.CurrentThread.CurrentUICulture.Name.StartsWith("de"))
+            if (CultureInfo.InstalledUICulture.Name.StartsWith("de"))
             {
                 expectedLocalizedMessage = "Die Befehlszeile ist zu lang.";
             }
