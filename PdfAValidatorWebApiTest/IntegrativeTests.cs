@@ -21,7 +21,7 @@ namespace CodeuctivityWebApiTest
         [Theory]
         [InlineData("/", "text/html; charset=utf-8")]
         [InlineData("/swagger/v1/swagger.json", "application/json; charset=utf-8")]
-        public async Task ShouldAccessEndpointSuccessfull(string route, string contentType)
+        public async Task ShouldAccessEndpointSuccessful(string route, string contentType)
         {
             // Arrange
             var client = _factory.CreateClient();
@@ -43,11 +43,11 @@ namespace CodeuctivityWebApiTest
             using var request = new HttpRequestMessage(new HttpMethod("POST"), "http://localhost/api/PdfAValidator");
             using var file = new ByteArrayContent(File.ReadAllBytes("../../../FromLibreOffice.pdf"));
             file.Headers.Add("Content-Type", "application/pdf");
-            var multipartContent = new MultipartFormDataContent
+            var multiPartContent = new MultipartFormDataContent
             {
                 { file, "pdfFile", Path.GetFileName("FromLibreOffice.pdf") }
             };
-            request.Content = multipartContent;
+            request.Content = multiPartContent;
 
             // Act
             var response = await client.SendAsync(request).ConfigureAwait(false);
@@ -65,11 +65,11 @@ namespace CodeuctivityWebApiTest
             using var request = new HttpRequestMessage(new HttpMethod("POST"), "http://localhost/api/PdfAValidator/DetailedReport");
             using var file = new ByteArrayContent(File.ReadAllBytes("../../../FromLibreOffice.pdf"));
             file.Headers.Add("Content-Type", "application/pdf");
-            var multipartContent = new MultipartFormDataContent
+            var multiPartContent = new MultipartFormDataContent
             {
                 { file, "pdfFile", Path.GetFileName("FromLibreOffice.pdf") }
             };
-            request.Content = multipartContent;
+            request.Content = multiPartContent;
 
             // Act
             var response = await client.SendAsync(request).ConfigureAwait(false);
