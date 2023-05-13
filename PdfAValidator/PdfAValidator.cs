@@ -75,9 +75,27 @@ namespace Codeuctivity
 
             if (disposing && !customVerapdfAndJavaLocations && Directory.Exists(pathVeraPdfDirectory))
             {
-                Directory.Delete(pathVeraPdfDirectory, true);
+                RemoveVeraPdfBins();
             }
+
             disposed = true;
+        }
+
+        private void RemoveVeraPdfBins()
+        {
+            var maxRetries = 5;
+
+            for (int i = 0; i < maxRetries; i++)
+            {
+                try
+                {
+                    Directory.Delete(pathVeraPdfDirectory, true);
+                }
+                catch (IOException)
+                {
+                    Thread.Sleep(200);
+                }
+            }
         }
 
         /// <summary>
@@ -367,7 +385,7 @@ namespace Codeuctivity
                     Directory.CreateDirectory(pathVeraPdfDirectory);
                     await ExtractBinaryFromManifest("Codeuctivity.VeraPdf.zip").ConfigureAwait(false);
                     VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf");
-                    SetLinuxFileExecuteable(VeraPdfStartScript);
+                    SetLinuxFileExecutable(VeraPdfStartScript);
                 }
                 else
                 {
@@ -382,7 +400,7 @@ namespace Codeuctivity
             }
         }
 
-        private static void SetLinuxFileExecuteable(string filePath)
+        private static void SetLinuxFileExecutable(string filePath)
         {
             var chmodCmd = "chmod 700 " + filePath;
             var escapedArgs = chmodCmd.Replace(maskedQuote, "\\\"");
