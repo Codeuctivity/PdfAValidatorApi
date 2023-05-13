@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE = LICENSE
 		README.md = README.md
 		.github\workflows\stale.yml = .github\workflows\stale.yml
+		.vscode\updateNuget.sh = .vscode\updateNuget.sh
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfAValidatorWebApiTest", "PdfAValidatorWebApiTest\PdfAValidatorWebApiTest.csproj", "{92E8D03D-F39B-46BD-98BF-1F2BB0AE21BA}"

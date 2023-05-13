@@ -256,6 +256,48 @@ namespace Codeuctivity
     }
 
     /// <summary>
+    /// Feature entry
+    /// </summary>
+    public class FeatureEntry
+    {
+        /// <summary>
+        /// Feature key, for example "Creator"
+        /// </summary>
+        [XmlAttribute(AttributeName = "key")]
+        public string Key { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Feature value, for example "cairo 1.9.5 (http://cairographics.org)"
+        /// </summary>
+        [XmlText]
+        public string Value { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// Feature information dictionary
+    /// </summary>
+    public class InformationDict
+    {
+        /// <summary>
+        /// Feature entries
+        /// </summary>
+        [XmlElement(ElementName = "entry")]
+        public List<FeatureEntry> Entries { get; set; } = new List<FeatureEntry>();
+    }
+
+    /// <summary>
+    /// Features Report details, use argument '--extract' to activate
+    /// </summary>
+    public class FeaturesReport
+    {
+        /// <summary>
+        /// Feature information dictionary
+        /// </summary>
+        [XmlElement(ElementName = "informationDict")]
+        public InformationDict InformationDict { get; set; } = new InformationDict();
+    }
+
+    /// <summary>
     /// Job details
     /// </summary>
     [XmlRoot(ElementName = "job")]
@@ -272,6 +314,12 @@ namespace Codeuctivity
         /// </summary>
         [XmlElement(ElementName = "validationReport")]
         public ValidationReport ValidationReport { get; set; } = new ValidationReport();
+
+        /// <summary>
+        /// Feature report details
+        /// </summary>
+        [XmlElement(ElementName = "featuresReport")]
+        public FeaturesReport FeaturesReport { get; set; } = new FeaturesReport();
 
         /// <summary>
         /// Task result

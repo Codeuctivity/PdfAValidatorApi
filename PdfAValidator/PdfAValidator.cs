@@ -22,13 +22,18 @@ namespace Codeuctivity
     public class PdfAValidator : IPdfAValidator
     {
         private const string maskedQuote = "\"";
-        private const int maxLengthTempdirectoryThatVeraPdfFitsIn = 206;
+
+        /// <summary>
+        /// Max temp path length that VeraPdf fits into without throwing System.IO.DirectoryNotFoundException, value may change on new VeraPdf versions. Value does differ between .net and .net framework and linux. See also https://github.com/Codeuctivity/PdfAValidatorApi/issues/59
+        /// </summary>
+        public int MaxLengthTempDirectoryThatVeraPdfFitsIn { get; private set; }
+
         private string? pathVeraPdfDirectory;
         private bool disposed;
         private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
         /// <summary>
-        /// Path to java jre used by windows
+        /// Path to java JRE used by windows
         /// </summary>
         /// <value></value>
         public string? PathJava { private set; get; }
@@ -43,6 +48,11 @@ namespace Codeuctivity
         /// </summary>
         /// <value>Command with arguments</value>
         public string? VeraPdfStartScript { private set; get; }
+
+        /// <summary>
+        /// Path used to store Java and VeraPdf bins
+        /// </summary>
+        public string TempPath { get; }
 
         /// <summary>
         /// Disposing VeraPdf bins
@@ -65,9 +75,36 @@ namespace Codeuctivity
 
             if (disposing && !customVerapdfAndJavaLocations && Directory.Exists(pathVeraPdfDirectory))
             {
-                Directory.Delete(pathVeraPdfDirectory, true);
+                RemoveVeraPdfBins();
             }
+
             disposed = true;
+        }
+
+        private void RemoveVeraPdfBins()
+        {
+            var maxRetries = 5;
+
+            for (int i = 0; i < maxRetries; i++)
+            {
+                try
+                {
+                    Directory.Delete(pathVeraPdfDirectory, true);
+                }
+                catch (IOException)
+                {
+                    Thread.Sleep(200);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Use this constructor to use your own installation of VeraPdf and Java, e.g.: c:\somePath\verapdf.bat
+        /// </summary>
+        /// <param name="pathToVeraPdfBin"></param>
+        /// <param name="pathToJava"></param>
+        public PdfAValidator(string pathToVeraPdfBin, string pathToJava) : this(pathToVeraPdfBin, pathToJava, null)
+        {
         }
 
         /// <summary>
@@ -76,8 +113,10 @@ namespace Codeuctivity
         /// <param name="pathToVeraPdfBin"></param>
         /// <param name="pathToJava"></param>
         /// <param name="veraPdfOutputFilter">Optional VerapPdf console output filter</param>
-        public PdfAValidator(string pathToVeraPdfBin, string pathToJava, IVeraPdfOutputFilter? veraPdfOutputFilter = null)
+        public PdfAValidator(string pathToVeraPdfBin, string pathToJava, IVeraPdfOutputFilter? veraPdfOutputFilter)
         {
+            InitRuntimeSpecificMaxLengthTempdirectoryThatVeraPdfFitsIn();
+            TempPath = Path.GetTempPath();
             VeraPdfStartScript = pathToVeraPdfBin;
             PathJava = pathToJava;
             customVerapdfAndJavaLocations = true;
@@ -88,10 +127,47 @@ namespace Codeuctivity
         /// <summary>
         /// Use this constructor to use the embedded veraPdf binaries
         /// </summary>
-        /// <param name="veraPdfOutputFilter">Optional VerapPdf console output filter</param>
-        public PdfAValidator(IVeraPdfOutputFilter? veraPdfOutputFilter = null)
+        public PdfAValidator() : this(new NullVeraPdfOutputFilter())
         {
+            InitRuntimeSpecificMaxLengthTempdirectoryThatVeraPdfFitsIn();
+            TempPath = Path.GetTempPath();
+        }
+
+        /// <summary>
+        /// Use this constructor to use the embedded veraPdf binaries with a custom temp path (default is %temp%)
+        /// </summary>
+        public PdfAValidator(string tempPath) : this(new NullVeraPdfOutputFilter())
+        {
+            InitRuntimeSpecificMaxLengthTempdirectoryThatVeraPdfFitsIn();
+            TempPath = tempPath;
+        }
+
+        /// <summary>
+        /// Use this constructor to use the embedded veraPdf binaries
+        /// </summary>
+        /// <param name="veraPdfOutputFilter">Optional VerapPdf console output filter</param>
+        public PdfAValidator(IVeraPdfOutputFilter? veraPdfOutputFilter)
+        {
+            InitRuntimeSpecificMaxLengthTempdirectoryThatVeraPdfFitsIn();
+            TempPath = Path.GetTempPath();
             VeraPdfOutputFilter = veraPdfOutputFilter;
+        }
+
+        private void InitRuntimeSpecificMaxLengthTempdirectoryThatVeraPdfFitsIn()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                MaxLengthTempDirectoryThatVeraPdfFitsIn = 197;
+            }
+            else
+            {
+                MaxLengthTempDirectoryThatVeraPdfFitsIn = 260;
+            }
+
+            if (RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework"))
+            {
+                MaxLengthTempDirectoryThatVeraPdfFitsIn = 76;
+            }
         }
 
         /// <summary>
@@ -126,7 +202,7 @@ namespace Codeuctivity
         }
 
         /// <summary>
-        /// Validates a batch of pdf files and returns a detailed compliance report
+        /// Validates a batch of PDF files and returns a detailed compliance report
         /// </summary>
         /// <param name="pathsToPdfFiles"></param>
         /// <param name="commandLineArguments">Command line arguments</param>
@@ -183,10 +259,10 @@ namespace Codeuctivity
 
         private static void WaitAndReceiveOutput(Process process, out string outputResult, out string errorResult)
         {
-            StringBuilder outputBuilder = new StringBuilder();
-            StringBuilder errorBuilder = new StringBuilder();
-            using AutoResetEvent outputWaitHandle = new AutoResetEvent(false);
-            using AutoResetEvent errorWaitHandle = new AutoResetEvent(false);
+            var outputBuilder = new StringBuilder();
+            var errorBuilder = new StringBuilder();
+            using var outputWaitHandle = new AutoResetEvent(false);
+            using var errorWaitHandle = new AutoResetEvent(false);
             process.OutputDataReceived += (_, e) =>
             {
                 if (e.Data == null)
@@ -225,14 +301,11 @@ namespace Codeuctivity
 
         private static bool IsSingleFolder(IEnumerable<string> pathsToPdfFiles)
         {
-            bool isSingle = pathsToPdfFiles.Count() == 1;
+            var isSingle = pathsToPdfFiles.Count() == 1;
             if (isSingle)
             {
                 var absolutePath = Path.GetFullPath(pathsToPdfFiles.First());
-                if (Directory.Exists(absolutePath))
-                {
-                    return true;
-                }
+                return Directory.Exists(absolutePath);
             }
             return false;
         }
@@ -283,34 +356,36 @@ namespace Codeuctivity
                     return;
                 }
 
-                pathVeraPdfDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                if (pathVeraPdfDirectory.Length > maxLengthTempdirectoryThatVeraPdfFitsIn)
-                {
-                    throw new PathTooLongException(pathVeraPdfDirectory);
-                }
-
-                Directory.CreateDirectory(pathVeraPdfDirectory);
+                pathVeraPdfDirectory = Path.Combine(TempPath, Path.GetRandomFileName());
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
+                    if (TempPath.Length > MaxLengthTempDirectoryThatVeraPdfFitsIn)
+                    {
+                        throw new PathTooLongException(pathVeraPdfDirectory);
+                    }
+
+                    Directory.CreateDirectory(pathVeraPdfDirectory);
+
                     var tasks = new List<Task>
                     {
+                        // took from https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot#x64_win
                         ExtractBinaryFromManifest("Codeuctivity.Java.zip"),
-                        // Downloaded from https://verapdf.org/software/ - verapdf-greenfield-1.20.3 - version seems to be out of sync compared to https://github.com/veraPDF/veraPDF-library/releases/ (latest there is v1.20.2)
+                        // Downloaded from https://verapdf.org/software/ - verapdf-greenfield-1.22.3 - version seems to be out of sync compared to https://github.com/veraPDF/veraPDF-library/releases/ (latest there is v1.22.2)
                         ExtractBinaryFromManifest("Codeuctivity.VeraPdf.zip")
                     };
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
 
-                    VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf", "verapdf.bat");
-                    // took from https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot#x64_win
-                    PathJava = Path.Combine(pathVeraPdfDirectory, "verapdf", "jdk8u202-b08-jre", "bin", "java");
+                    VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf.bat");
+                    PathJava = Path.Combine(pathVeraPdfDirectory, "jdk8u202-b08-jre", "bin", "java");
                 }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
+                    Directory.CreateDirectory(pathVeraPdfDirectory);
                     await ExtractBinaryFromManifest("Codeuctivity.VeraPdf.zip").ConfigureAwait(false);
-                    VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf", "verapdf");
-                    SetLinuxFileExecuteable(VeraPdfStartScript);
+                    VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf");
+                    SetLinuxFileExecutable(VeraPdfStartScript);
                 }
                 else
                 {
@@ -325,7 +400,7 @@ namespace Codeuctivity
             }
         }
 
-        private static void SetLinuxFileExecuteable(string filePath)
+        private static void SetLinuxFileExecutable(string filePath)
         {
             var chmodCmd = "chmod 700 " + filePath;
             var escapedArgs = chmodCmd.Replace(maskedQuote, "\\\"");

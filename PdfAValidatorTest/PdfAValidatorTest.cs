@@ -1,10 +1,10 @@
 ﻿using Codeuctivity;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -35,6 +35,14 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldDetectNonCompliantPdfA2()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            var result = await pdfAValidator.ValidateAsync("./TestPdfFiles/PdfNonCompliant.pdf");
+            Assert.False(result);
+        }
+
+        [Fact]
         public static async Task ShouldGetDetailedReportFromPdfA()
         {
             using var pdfAValidator = new PdfAValidator();
@@ -42,6 +50,17 @@ namespace CodeuctivityTest
             var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf");
             Assert.True(result.Jobs.Job.ValidationReport.IsCompliant);
             Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1A validation profile");
+            Assert.StartsWith(@"<?xml version=""1.0"" encoding=""utf-8""?>", result.RawOutput);
+        }
+
+        [Fact]
+        public static async Task ShouldGetDetailedReportFromPdfA2()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/PdfNonCompliant.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/PdfNonCompliant.pdf");
+            Assert.False(result.Jobs.Job.ValidationReport.IsCompliant);
+            Assert.Equal("PDF/A-1B validation profile", result.Jobs.Job.ValidationReport.ProfileName);
             Assert.StartsWith(@"<?xml version=""1.0"" encoding=""utf-8""?>", result.RawOutput);
         }
 
@@ -121,6 +140,20 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldGetDetailedReportFromCompliantPdfExceptPdfXConformance()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/PdfxConformancePdfxNone.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/PdfxConformancePdfxNone.pdf");
+            var taskResult = result.Jobs.Job.TaskResult;
+            Assert.False(taskResult.IsSuccess);
+            Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1B validation profile");
+            Assert.InRange(result.Jobs.Job.ValidationReport.Details.FailedRules, 1, 1);
+            Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Clause == "6.7.11");
+            Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Description == "The PDF/A version and conformance level of a file shall be specified using the PDF/A Identification extension schema.");
+        }
+
+        [Fact]
         public static async Task ShouldGetCorrectFileNameWithUnicodeChars()
         {
             using var pdfAValidator = new PdfAValidator();
@@ -148,11 +181,30 @@ namespace CodeuctivityTest
             using var pdfAValidator = new PdfAValidator();
             var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles", "");
 
-            Assert.Equal("6", result.BatchSummary.TotalJobs);
-            Assert.Equal(6, result.Jobs.AllJobs.Count);
+            Assert.Equal("8", result.BatchSummary.TotalJobs);
+            Assert.Equal(8, result.Jobs.AllJobs.Count);
             Assert.Equal("1", result.BatchSummary.ValidationReports.Compliant);
-            Assert.Equal("2", result.BatchSummary.ValidationReports.NonCompliant);
+            Assert.Equal("4", result.BatchSummary.ValidationReports.NonCompliant);
             Assert.Equal("3", result.BatchSummary.ValidationReports.FailedJobs);
+        }
+
+        [Fact]
+        public static async Task ShouldGetFeaturesReportWhenAskingForIt()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/FromLibreOffice.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf", "--extract");
+            var producerEntry = result.Jobs.Job.FeaturesReport.InformationDict.Entries.Single(e => e.Key == "Producer");
+            Assert.Equal("LibreOffice 6.1", producerEntry.Value);
+        }
+
+        [Fact]
+        public static async Task ShouldNotGetFeaturesReportWhenNotAskingForIt()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/FromLibreOffice.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf");
+            Assert.Empty(result.Jobs.Job.FeaturesReport.InformationDict.Entries);
         }
 
         [Fact]
@@ -182,7 +234,7 @@ namespace CodeuctivityTest
             if (completedTask)
             {
                 var result = await task;
-                Assert.Equal("60", result.BatchSummary.TotalJobs);
+                Assert.Equal("80", result.BatchSummary.TotalJobs);
             }
         }
 
@@ -209,11 +261,56 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldBatchValidatePdfsAndThrowOnMissingPDFs()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            const string invalidPath = "DoesNotExist.pdf";
+            var files = new[]
+            {
+                "./TestPdfFiles/FromLibreOfficeNonPdfA.pdf",
+                invalidPath
+            };
+            var exception = await Assert.ThrowsAsync<FileNotFoundException>(() =>
+                 { return pdfAValidator.ValidateBatchWithDetailedReportAsync(files, ""); });
+
+            Assert.Contains(invalidPath, exception.Message);
+        }
+
+        [Fact]
+        public static async Task ShouldThrowPathTooLongException()
+        {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return;
+            }
+
+            var initialEnvornmentTmpValue = Environment.GetEnvironmentVariable("TMP");
+
+            try
+            {
+                var realyLongPath = Path.Combine(initialEnvornmentTmpValue!, "RealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyRealyLongRealy", Guid.NewGuid().ToString());
+
+                Environment.SetEnvironmentVariable("TMP", realyLongPath);
+
+                using var pdfAValidator = new PdfAValidator();
+                var files = new[] { "./TestPdfFiles/FromLibreOffice.pdf", "./TestPdfFiles/FromLibreOfficeNonPdfA.pdf" };
+                _ = await Assert.ThrowsAsync<PathTooLongException>(() =>
+                {
+                    return pdfAValidator.ValidateBatchWithDetailedReportAsync(files, "");
+                });
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("TMP", initialEnvornmentTmpValue);
+            }
+        }
+
+        [Fact]
         public static async Task ShouldThrowExplainableExceptionOnTooLongCommandLineOnWindows()
         {
             var expectedLocalizedMessage = "The command line is too long.";
 
-            if (Thread.CurrentThread.CurrentUICulture.Name.StartsWith("de"))
+            if (CultureInfo.InstalledUICulture.Name.StartsWith("de"))
             {
                 expectedLocalizedMessage = "Die Befehlszeile ist zu lang.";
             }
@@ -246,6 +343,7 @@ namespace CodeuctivityTest
             using (var pdfAValidatorPrepareBins = new PdfAValidator())
             {
                 await pdfAValidatorPrepareBins.ValidateAsync("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+
                 using (var pdfAValidator = new PdfAValidator(pdfAValidatorPrepareBins.VeraPdfStartScript!, pdfAValidatorPrepareBins.PathJava!))
                 {
                     veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
@@ -260,11 +358,45 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldSafeGuardToAKnownMaxTemporaryPathLengthWhichStillWorksWithoutException()
+        {
+            string? veraPdfStartScript;
+
+            var tempPath = Path.GetTempPath();
+
+            using var pdfAValidatorMaxPath = new PdfAValidator();
+
+            Assert.True(tempPath.Length < pdfAValidatorMaxPath.MaxLengthTempDirectoryThatVeraPdfFitsIn);
+
+            while (tempPath.Length < pdfAValidatorMaxPath.MaxLengthTempDirectoryThatVeraPdfFitsIn)
+            {
+                tempPath += "X";
+            }
+
+            Directory.CreateDirectory(tempPath);
+
+            try
+            {
+                using (var pdfAValidator = new PdfAValidator(tempPath))
+                {
+                    await pdfAValidator.ValidateAsync("./TestPdfFiles/FromLibreOfficeNonPdfA.pdf");
+                    veraPdfStartScript = pdfAValidator.VeraPdfStartScript;
+                    Assert.True(File.Exists(veraPdfStartScript));
+                }
+                Assert.False(File.Exists(veraPdfStartScript));
+            }
+            finally
+            {
+                Directory.Delete(tempPath, true);
+            }
+        }
+
+        [Fact]
         public static async Task ShouldFailGracefullWithUnrecognicedVeraPdfOutput()
         {
             var somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.bat";
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 somethingThatReturnsExitcode0 = "TestExecuteables/exitcode0.sh";
             }
@@ -284,7 +416,7 @@ namespace CodeuctivityTest
         {
             var somethingThatReturnsExitcode2 = "./TestExecuteables/exitcode2.bat";
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 somethingThatReturnsExitcode2 = "TestExecuteables/exitcode2.sh";
             }
@@ -305,7 +437,7 @@ namespace CodeuctivityTest
             {
                 Assert.True(scriptPath?.EndsWith(".bat"));
             }
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 Assert.True(scriptPath?.EndsWith("verapdf"));
             }
