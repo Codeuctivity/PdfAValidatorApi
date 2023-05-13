@@ -339,11 +339,11 @@ namespace Codeuctivity
         private static T DeserializeXml<T>(string sourceXML) where T : class
         {
             var settings = new XmlReaderSettings();
-            var serializer = new XmlSerializer(typeof(T));
+            var xmlSerializer = new XmlSerializer(typeof(T));
 
             using var reader = new StringReader(sourceXML);
             using var xmlReader = XmlReader.Create(reader, settings);
-            return (T)serializer.Deserialize(xmlReader);
+            return (T)xmlSerializer.Deserialize(xmlReader);
         }
 
         private async Task IntiPathToVeraPdfBinAndJava()

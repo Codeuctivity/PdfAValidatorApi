@@ -1,11 +1,10 @@
-using Codeuctivity;
+using Codeuctivity.PdfAValidatorWebApi;
 using Microsoft.AspNetCore.Mvc.Testing;
 using PdfAValidatorWebApi;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -55,8 +54,15 @@ namespace CodeuctivityWebApiTest
             // use to update reference
             // await File.WriteAllTextAsync("../../../OpenApi.json", actual);
 
-            var assembly = Assembly.LoadFrom("PdfAValidatorWebApiTest.dll");
-            var expected = File.ReadAllText("../../../OpenApi.json").Replace("PdfAValidator 0.0.1.0", $"PdfAValidator {assembly.GetName().Version}");
+            AssertOpenApiJsonEqualsExpected(actual);
+        }
+
+        private static void AssertOpenApiJsonEqualsExpected(string actual)
+        {
+            var assemblyVersion = typeof(Program).Assembly.GetName().Version;
+            var expected = File.ReadAllText("../../../OpenApi.json").Replace("PdfAValidator 0.0.1.0", $"PdfAValidator {assemblyVersion}");
+            expected = expected.ReplaceLineEndings();
+            actual = actual.ReplaceLineEndings();
             Assert.Equal(expected, actual);
         }
 
