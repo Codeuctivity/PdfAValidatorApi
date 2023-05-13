@@ -1,10 +1,10 @@
 ﻿using Codeuctivity;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -140,6 +140,20 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldGetDetailedReportFromCompliantPdfExceptPdfXConformance()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/PdfxConformancePdfxNone.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/PdfxConformancePdfxNone.pdf");
+            var taskResult = result.Jobs.Job.TaskResult;
+            Assert.False(taskResult.IsSuccess);
+            Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1B validation profile");
+            Assert.InRange(result.Jobs.Job.ValidationReport.Details.FailedRules, 1, 1);
+            Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Clause == "6.7.11");
+            Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Description == "The PDF/A version and conformance level of a file shall be specified using the PDF/A Identification extension schema.");
+        }
+
+        [Fact]
         public static async Task ShouldGetCorrectFileNameWithUnicodeChars()
         {
             using var pdfAValidator = new PdfAValidator();
@@ -167,10 +181,10 @@ namespace CodeuctivityTest
             using var pdfAValidator = new PdfAValidator();
             var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles", "");
 
-            Assert.Equal("7", result.BatchSummary.TotalJobs);
-            Assert.Equal(7, result.Jobs.AllJobs.Count);
+            Assert.Equal("8", result.BatchSummary.TotalJobs);
+            Assert.Equal(8, result.Jobs.AllJobs.Count);
             Assert.Equal("1", result.BatchSummary.ValidationReports.Compliant);
-            Assert.Equal("3", result.BatchSummary.ValidationReports.NonCompliant);
+            Assert.Equal("4", result.BatchSummary.ValidationReports.NonCompliant);
             Assert.Equal("3", result.BatchSummary.ValidationReports.FailedJobs);
         }
 
@@ -220,7 +234,7 @@ namespace CodeuctivityTest
             if (completedTask)
             {
                 var result = await task;
-                Assert.Equal("70", result.BatchSummary.TotalJobs);
+                Assert.Equal("80", result.BatchSummary.TotalJobs);
             }
         }
 
@@ -296,7 +310,7 @@ namespace CodeuctivityTest
         {
             var expectedLocalizedMessage = "The command line is too long.";
 
-            if (Thread.CurrentThread.CurrentUICulture.Name.StartsWith("de"))
+            if (CultureInfo.InstalledUICulture.Name.StartsWith("de"))
             {
                 expectedLocalizedMessage = "Die Befehlszeile ist zu lang.";
             }
@@ -382,7 +396,7 @@ namespace CodeuctivityTest
         {
             var somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.bat";
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)||RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 somethingThatReturnsExitcode0 = "TestExecuteables/exitcode0.sh";
             }
