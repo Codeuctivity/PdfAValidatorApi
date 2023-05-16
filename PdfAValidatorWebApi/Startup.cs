@@ -1,6 +1,8 @@
 ﻿using Codeuctivity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
@@ -57,6 +59,26 @@ namespace PdfAValidatorWebApi
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+            });
+            services.AddCors();
+
+            var requestLimit = 500 * 1024 * 1024;
+
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.MaxRequestBodySize = requestLimit;
+            });
+
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.Limits.MaxRequestBodySize = requestLimit;
+            });
+
+            services.Configure<FormOptions>(options =>
+            {
+                options.ValueLengthLimit = requestLimit;
+                options.MultipartBodyLengthLimit = requestLimit;
+                options.MultipartHeadersLengthLimit = requestLimit;
             });
         }
 
