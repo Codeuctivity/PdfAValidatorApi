@@ -43,7 +43,7 @@ namespace PdfAValidatorWebApi
                     Contact = new OpenApiContact
                     {
                         Name = "Codeuctivity",
-                        Email = string.Empty,
+                        Email = "codeuctivity@gmail.com",
                         Url = new Uri(GithubProjectAdress),
                     },
                     License = new OpenApiLicense
