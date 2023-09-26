@@ -1,7 +1,7 @@
 name: .NET build and test
 env:
-  CURRENT_VERSION: 2.4.${{ github.run_number }}
-  CURRENT_API_VERSION: 2.5.${{ github.run_number }}
+  CURRENT_VERSION: 3.0.${{ github.run_number }}
+  CURRENT_API_VERSION: 3.0.${{ github.run_number }}
   LAST_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
 
 on:
@@ -48,7 +48,7 @@ jobs:
         run: |
           ls ./PdfAValidator/bin/Release
           dotnet nuget push ./PdfAValidator/bin/Release/*.nupkg --skip-duplicate --api-key ${{secrets.NUGET_TOKEN}} --source https://api.nuget.org/v3/index.json
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: ${{ env.CURRENT_VERSION }}
@@ -79,7 +79,7 @@ jobs:
         run: |
           ls ./PdfAValidator/bin/Release
           dotnet nuget push ./PdfAValidator/bin/Release/*.nupkg --skip-duplicate --api-key ${{secrets.NUGET_TEST_TOKEN}} --source https://apiint.nugettest.org/v3/index.json
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest-prerelease"

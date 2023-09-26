@@ -193,7 +193,7 @@ namespace CodeuctivityTest
         {
             using var pdfAValidator = new PdfAValidator();
             Assert.True(File.Exists("./TestPdfFiles/FromLibreOffice.pdf"));
-            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf", "--extract");
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf", "--extract informationDict");
             var producerEntry = result.Jobs.Job.FeaturesReport.InformationDict.Entries.Single(e => e.Key == "Producer");
             Assert.Equal("LibreOffice 6.1", producerEntry.Value);
         }
