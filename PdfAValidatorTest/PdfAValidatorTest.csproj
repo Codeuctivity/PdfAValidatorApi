@@ -16,10 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="TestExecuteables\exitcode0.bat" />
-    <None Remove="TestExecuteables\exitcode0.sh" />
-    <None Remove="TestExecuteables\exitcode2.bat" />
-    <None Remove="TestExecuteables\exitcode2.sh" />
+    <None Remove="TestExecutables\exitcode0.bat" />
+    <None Remove="TestExecutables\exitcode0.sh" />
+    <None Remove="TestExecutables\exitcode2.bat" />
+    <None Remove="TestExecutables\exitcode2.sh" />
     <None Remove="TestPdfFiles\Encrypted.pdf" />
     <None Remove="TestPdfFiles\FontsNotEmbedded.pdf" />
     <None Remove="TestPdfFiles\FromLibreOffice.pdf" />
@@ -31,10 +31,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="TestExecuteables\exitcode2.sh">
+    <Content Include="TestExecutables\exitcode2.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestExecuteables\exitcode0.sh">
+    <Content Include="TestExecutables\exitcode0.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestPdfFiles\FromLibreOffice.pdf">
@@ -52,10 +52,10 @@
     <Content Include="TestPdfFiles\FontsNotEmbedded.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestExecuteables\exitcode2.bat">
+    <Content Include="TestExecutables\exitcode2.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestExecuteables\exitcode0.bat">
+    <Content Include="TestExecutables\exitcode0.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestPdfFiles\PdfNonCompliant.pdf">

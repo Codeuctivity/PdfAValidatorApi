@@ -284,13 +284,13 @@ namespace CodeuctivityTest
                 return;
             }
 
-            var initialEnvornmentTmpValue = Environment.GetEnvironmentVariable("TMP");
+            var initialEnvironmentTmpValue = Environment.GetEnvironmentVariable("TMP");
 
             try
             {
-                var realyLongPath = Path.Combine(initialEnvornmentTmpValue!, "RealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyRealyLongRealy", Guid.NewGuid().ToString());
+                var reallyLongPath = Path.Combine(initialEnvironmentTmpValue!, "ReallyLongReallyLongReallyLongReallyLongReallyLongReallyLongReallyLongReallyLongReallyLongReallyLongReallyLongReallyLongReallyLong", Guid.NewGuid().ToString());
 
-                Environment.SetEnvironmentVariable("TMP", realyLongPath);
+                Environment.SetEnvironmentVariable("TMP", reallyLongPath);
 
                 using var pdfAValidator = new PdfAValidator();
                 var files = new[] { "./TestPdfFiles/FromLibreOffice.pdf", "./TestPdfFiles/FromLibreOfficeNonPdfA.pdf" };
@@ -301,7 +301,7 @@ namespace CodeuctivityTest
             }
             finally
             {
-                Environment.SetEnvironmentVariable("TMP", initialEnvornmentTmpValue);
+                Environment.SetEnvironmentVariable("TMP", initialEnvironmentTmpValue);
             }
         }
 
@@ -392,13 +392,13 @@ namespace CodeuctivityTest
         }
 
         [Fact]
-        public static async Task ShouldFailGracefullWithUnrecognicedVeraPdfOutput()
+        public static async Task ShouldFailGracefulWithUnrecognizedVeraPdfOutput()
         {
-            var somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.bat";
+            var somethingThatReturnsExitcode0 = "./TestExecutables/exitcode0.bat";
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                somethingThatReturnsExitcode0 = "TestExecuteables/exitcode0.sh";
+                somethingThatReturnsExitcode0 = "TestExecutables/exitcode0.sh";
             }
 
             var veraPdfException = await Assert.ThrowsAsync<VeraPdfException>(async () =>
@@ -412,13 +412,13 @@ namespace CodeuctivityTest
         }
 
         [Fact]
-        public static async Task ShouldFailGracefullWithExitcode2()
+        public static async Task ShouldFailGracefullyWithExitcode2()
         {
-            var somethingThatReturnsExitcode2 = "./TestExecuteables/exitcode2.bat";
+            var somethingThatReturnsExitcode2 = "./TestExecutables/exitcode2.bat";
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                somethingThatReturnsExitcode2 = "TestExecuteables/exitcode2.sh";
+                somethingThatReturnsExitcode2 = "TestExecutables/exitcode2.sh";
             }
 
             var veraPdfException = await Assert.ThrowsAsync<VeraPdfException>(async () =>
