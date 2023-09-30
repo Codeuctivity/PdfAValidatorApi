@@ -398,6 +398,7 @@ namespace Codeuctivity
                     Directory.CreateDirectory(pathVeraPdfDirectory);
                     await ExtractBinaryFromManifest("Codeuctivity.VeraPdf.zip").ConfigureAwait(false);
                     VeraPdfStartScript = Path.Combine(pathVeraPdfDirectory, "verapdf");
+                    SetLinuxFileExecutable(VeraPdfStartScript);
                 }
                 else
                 {
@@ -410,6 +411,27 @@ namespace Codeuctivity
             {
                 semaphore.Release();
             }
+        }
+
+        private static void SetLinuxFileExecutable(string filePath)
+        {
+            var chmodCmd = "chmod 700 " + filePath;
+            var escapedArgs = chmodCmd.Replace(maskedQuote, "\\\"");
+
+            using var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{escapedArgs}\""
+                }
+            };
+            process.Start();
+            process.WaitForExit();
         }
 
         private async Task ExtractBinaryFromManifest(string resourceName)
