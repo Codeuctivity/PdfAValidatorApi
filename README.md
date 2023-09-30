@@ -33,7 +33,7 @@ Sample - e.g. use it in your unit test to check [PDF meta data](https://docs.ver
  public static async Task ShouldGetFeaturesReportWhenAskingForIt()
  {
      using var pdfAValidator = new PdfAValidator();
-     var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf", "--extract");
+     var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf", "--extract informationDict");
      var producerEntry = result.Jobs.Job.FeaturesReport.InformationDict.Entries.Single(e => e.Key == "Producer");
      Assert.Equal("LibreOffice 6.1", producerEntry.Value);
  }
