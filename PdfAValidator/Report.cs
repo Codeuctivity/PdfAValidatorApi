@@ -286,7 +286,7 @@ namespace Codeuctivity
     }
 
     /// <summary>
-    /// Features Report details, use argument '--extract' to activate
+    /// Features Report details, use argument '--extract informationDict' to activate
     /// </summary>
     public class FeaturesReport
     {
