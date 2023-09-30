@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -157,16 +158,16 @@ namespace Codeuctivity
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                MaxLengthTempDirectoryThatVeraPdfFitsIn = 197;
+                MaxLengthTempDirectoryThatVeraPdfFitsIn = 201;
             }
             else
             {
                 MaxLengthTempDirectoryThatVeraPdfFitsIn = 260;
             }
 
-            if (RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework"))
+            if (RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework", true, CultureInfo.InvariantCulture))
             {
-                MaxLengthTempDirectoryThatVeraPdfFitsIn = 76;
+                MaxLengthTempDirectoryThatVeraPdfFitsIn = 55;
             }
         }
 
@@ -209,6 +210,11 @@ namespace Codeuctivity
         /// <returns></returns>
         public async Task<Report> ValidateBatchWithDetailedReportAsync(IEnumerable<string> pathsToPdfFiles, string commandLineArguments)
         {
+            if (pathsToPdfFiles == null)
+            {
+                throw new ArgumentNullException(nameof(pathsToPdfFiles));
+            }
+
             await IntiPathToVeraPdfBinAndJava().ConfigureAwait(false);
 
             if (!IsSingleFolder(pathsToPdfFiles))
@@ -301,10 +307,17 @@ namespace Codeuctivity
 
         private static bool IsSingleFolder(IEnumerable<string> pathsToPdfFiles)
         {
-            var isSingle = pathsToPdfFiles.Count() == 1;
+            if (pathsToPdfFiles == null)
+            {
+                throw new ArgumentNullException(nameof(pathsToPdfFiles));
+            }
+
+            var enumeratedPathsToPdfFiles = pathsToPdfFiles.ToArray();
+
+            var isSingle = enumeratedPathsToPdfFiles.Length == 1;
             if (isSingle)
             {
-                var absolutePath = Path.GetFullPath(pathsToPdfFiles.First());
+                var absolutePath = Path.GetFullPath(enumeratedPathsToPdfFiles[0]);
                 return Directory.Exists(absolutePath);
             }
             return false;
@@ -389,7 +402,7 @@ namespace Codeuctivity
                 }
                 else
                 {
-                    throw new NotImplementedException(Resources.OsNotSupportedMessage);
+                    throw new NotSupportedException(Resources.OsNotSupportedMessage);
                 }
 
                 IsInitialized = true;
