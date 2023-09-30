@@ -1,10 +1,10 @@
 ﻿using Codeuctivity;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -140,6 +140,20 @@ namespace CodeuctivityTest
         }
 
         [Fact]
+        public static async Task ShouldGetDetailedReportFromCompliantPdfExceptPdfXConformance()
+        {
+            using var pdfAValidator = new PdfAValidator();
+            Assert.True(File.Exists("./TestPdfFiles/PdfxConformancePdfxNone.pdf"));
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/PdfxConformancePdfxNone.pdf");
+            var taskResult = result.Jobs.Job.TaskResult;
+            Assert.False(taskResult.IsSuccess);
+            Assert.True(result.Jobs.Job.ValidationReport.ProfileName == "PDF/A-1B validation profile");
+            Assert.InRange(result.Jobs.Job.ValidationReport.Details.FailedRules, 1, 1);
+            Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Clause == "6.7.11");
+            Assert.Contains(result.Jobs.Job.ValidationReport.Details.Rule, _ => _.Description == "The PDF/A version and conformance level of a file shall be specified using the PDF/A Identification extension schema.");
+        }
+
+        [Fact]
         public static async Task ShouldGetCorrectFileNameWithUnicodeChars()
         {
             using var pdfAValidator = new PdfAValidator();
@@ -167,10 +181,10 @@ namespace CodeuctivityTest
             using var pdfAValidator = new PdfAValidator();
             var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles", "");
 
-            Assert.Equal("7", result.BatchSummary.TotalJobs);
-            Assert.Equal(7, result.Jobs.AllJobs.Count);
+            Assert.Equal("8", result.BatchSummary.TotalJobs);
+            Assert.Equal(8, result.Jobs.AllJobs.Count);
             Assert.Equal("1", result.BatchSummary.ValidationReports.Compliant);
-            Assert.Equal("3", result.BatchSummary.ValidationReports.NonCompliant);
+            Assert.Equal("4", result.BatchSummary.ValidationReports.NonCompliant);
             Assert.Equal("3", result.BatchSummary.ValidationReports.FailedJobs);
         }
 
@@ -179,7 +193,7 @@ namespace CodeuctivityTest
         {
             using var pdfAValidator = new PdfAValidator();
             Assert.True(File.Exists("./TestPdfFiles/FromLibreOffice.pdf"));
-            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf", "--extract");
+            var result = await pdfAValidator.ValidateWithDetailedReportAsync("./TestPdfFiles/FromLibreOffice.pdf", "--extract informationDict");
             var producerEntry = result.Jobs.Job.FeaturesReport.InformationDict.Entries.Single(e => e.Key == "Producer");
             Assert.Equal("LibreOffice 6.1", producerEntry.Value);
         }
@@ -220,7 +234,7 @@ namespace CodeuctivityTest
             if (completedTask)
             {
                 var result = await task;
-                Assert.Equal("70", result.BatchSummary.TotalJobs);
+                Assert.Equal("80", result.BatchSummary.TotalJobs);
             }
         }
 
@@ -270,13 +284,13 @@ namespace CodeuctivityTest
                 return;
             }
 
-            var initialEnvornmentTmpValue = Environment.GetEnvironmentVariable("TMP");
+            var initialEnvironmentTmpValue = Environment.GetEnvironmentVariable("TMP");
 
             try
             {
-                var realyLongPath = Path.Combine(initialEnvornmentTmpValue!, "RealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyLongRealyRealyLongRealy", Guid.NewGuid().ToString());
+                var reallyLongPath = Path.Combine(initialEnvironmentTmpValue!, "ReallyLongReallyLongReallyLongReallyLongReallyLongReallyLongReallyLongReallyLongReallyLongReallyLongReallyLongReallyLongReallyLong", Guid.NewGuid().ToString());
 
-                Environment.SetEnvironmentVariable("TMP", realyLongPath);
+                Environment.SetEnvironmentVariable("TMP", reallyLongPath);
 
                 using var pdfAValidator = new PdfAValidator();
                 var files = new[] { "./TestPdfFiles/FromLibreOffice.pdf", "./TestPdfFiles/FromLibreOfficeNonPdfA.pdf" };
@@ -287,7 +301,7 @@ namespace CodeuctivityTest
             }
             finally
             {
-                Environment.SetEnvironmentVariable("TMP", initialEnvornmentTmpValue);
+                Environment.SetEnvironmentVariable("TMP", initialEnvironmentTmpValue);
             }
         }
 
@@ -296,7 +310,7 @@ namespace CodeuctivityTest
         {
             var expectedLocalizedMessage = "The command line is too long.";
 
-            if (Thread.CurrentThread.CurrentUICulture.Name.StartsWith("de"))
+            if (CultureInfo.InstalledUICulture.Name.StartsWith("de"))
             {
                 expectedLocalizedMessage = "Die Befehlszeile ist zu lang.";
             }
@@ -378,13 +392,13 @@ namespace CodeuctivityTest
         }
 
         [Fact]
-        public static async Task ShouldFailGracefullWithUnrecognicedVeraPdfOutput()
+        public static async Task ShouldFailGracefulWithUnrecognizedVeraPdfOutput()
         {
-            var somethingThatReturnsExitcode0 = "./TestExecuteables/exitcode0.bat";
+            var somethingThatReturnsExitcode0 = "./TestExecutables/exitcode0.bat";
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)||RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                somethingThatReturnsExitcode0 = "TestExecuteables/exitcode0.sh";
+                somethingThatReturnsExitcode0 = "TestExecutables/exitcode0.sh";
             }
 
             var veraPdfException = await Assert.ThrowsAsync<VeraPdfException>(async () =>
@@ -398,13 +412,13 @@ namespace CodeuctivityTest
         }
 
         [Fact]
-        public static async Task ShouldFailGracefullWithExitcode2()
+        public static async Task ShouldFailGracefullyWithExitcode2()
         {
-            var somethingThatReturnsExitcode2 = "./TestExecuteables/exitcode2.bat";
+            var somethingThatReturnsExitcode2 = "./TestExecutables/exitcode2.bat";
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                somethingThatReturnsExitcode2 = "TestExecuteables/exitcode2.sh";
+                somethingThatReturnsExitcode2 = "TestExecutables/exitcode2.sh";
             }
 
             var veraPdfException = await Assert.ThrowsAsync<VeraPdfException>(async () =>

@@ -12,10 +12,10 @@ namespace CodeuctivityWebApiTest
         [Fact]
         public void ShouldFilterApplicationInsightConsolePrefix()
         {
-            var filterdAzureConsoleOutputSample = new ApplicationInsightsJavaAgentOutputFilter().Filter(azureConsoleOutputSample);
+            var filteredAzureConsoleOutputSample = new ApplicationInsightsJavaAgentOutputFilter().Filter(azureConsoleOutputSample);
 
             var xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(filterdAzureConsoleOutputSample);
+            xmlDocument.LoadXml(filteredAzureConsoleOutputSample);
             Assert.True(xmlDocument.HasChildNodes);
         }
     }

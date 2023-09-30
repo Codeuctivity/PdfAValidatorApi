@@ -1,0 +1,483 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "PdfAValidator 0.0.1.0",
+    "description": "A simple ASP.NET Core Web API wrapping access to VeraPdf",
+    "termsOfService": "https://github.com/Codeuctivity/PdfAValidatorApi",
+    "contact": {
+      "name": "Codeuctivity",
+      "url": "https://github.com/Codeuctivity/PdfAValidatorApi",
+      "email": ""
+    },
+    "license": {
+      "name": "Use under AGPL",
+      "url": "https://github.com/Codeuctivity/PdfAValidatorApi/blob/main/LICENSE"
+    },
+    "version": "v2"
+  },
+  "paths": {
+    "/api/PdfAValidator": {
+      "post": {
+        "tags": [
+          "PdfAValidator"
+        ],
+        "summary": "Validates the compliance of a PdfA.",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "pdfFile"
+                ],
+                "type": "object",
+                "properties": {
+                  "pdfFile": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "pdfFile": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/PdfAValidator/DetailedReport": {
+      "post": {
+        "tags": [
+          "PdfAValidator"
+        ],
+        "summary": "Validates the compliance of a PDF(A) and gives some validation detail.",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "pdfFile"
+                ],
+                "type": "object",
+                "properties": {
+                  "pdfFile": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "pdfFile": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns a report about the analyzed PDF, e.g. PdfA substandard and compliance violations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Report"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BatchSummary": {
+        "type": "object",
+        "properties": {
+          "validationReports": {
+            "$ref": "#/components/schemas/ValidationReports"
+          },
+          "featureReports": {
+            "$ref": "#/components/schemas/FeatureReports"
+          },
+          "repairReports": {
+            "$ref": "#/components/schemas/RepairReports"
+          },
+          "duration": {
+            "$ref": "#/components/schemas/Duration"
+          },
+          "totalJobs": {
+            "type": "string",
+            "nullable": true
+          },
+          "failedToParse": {
+            "type": "string",
+            "nullable": true
+          },
+          "encrypted": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BuildInformation": {
+        "type": "object",
+        "properties": {
+          "releaseDetails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReleaseDetails"
+            },
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Check": {
+        "type": "object",
+        "properties": {
+          "context": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Details": {
+        "type": "object",
+        "properties": {
+          "rule": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Rule"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "passedRules": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "failedRules": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "passedChecks": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "failedChecks": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Duration": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "nullable": true
+          },
+          "finish": {
+            "type": "string",
+            "nullable": true
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FeatureEntry": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FeatureReports": {
+        "type": "object",
+        "properties": {
+          "failedJobs": {
+            "type": "string",
+            "nullable": true
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FeaturesReport": {
+        "type": "object",
+        "properties": {
+          "informationDict": {
+            "$ref": "#/components/schemas/InformationDict"
+          }
+        },
+        "additionalProperties": false
+      },
+      "InformationDict": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeatureEntry"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Item": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "size": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Job": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/Item"
+          },
+          "validationReport": {
+            "$ref": "#/components/schemas/ValidationReport"
+          },
+          "featuresReport": {
+            "$ref": "#/components/schemas/FeaturesReport"
+          },
+          "taskResult": {
+            "$ref": "#/components/schemas/TaskResult"
+          },
+          "duration": {
+            "$ref": "#/components/schemas/Duration"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Jobs": {
+        "type": "object",
+        "properties": {
+          "allJobs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Job"
+            },
+            "nullable": true
+          },
+          "job": {
+            "$ref": "#/components/schemas/Job"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReleaseDetails": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "buildDate": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RepairReports": {
+        "type": "object",
+        "properties": {
+          "failedJobs": {
+            "type": "string",
+            "nullable": true
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Report": {
+        "type": "object",
+        "properties": {
+          "buildInformation": {
+            "$ref": "#/components/schemas/BuildInformation"
+          },
+          "jobs": {
+            "$ref": "#/components/schemas/Jobs"
+          },
+          "batchSummary": {
+            "$ref": "#/components/schemas/BatchSummary"
+          },
+          "rawOutput": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Rule": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "pdfObject": {
+            "type": "string",
+            "nullable": true
+          },
+          "test": {
+            "type": "string",
+            "nullable": true
+          },
+          "check": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Check"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "specification": {
+            "type": "string",
+            "nullable": true
+          },
+          "clause": {
+            "type": "string",
+            "nullable": true
+          },
+          "testNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "passedChecks": {
+            "type": "string",
+            "nullable": true
+          },
+          "failedChecks": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TaskResult": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "isExecuted": {
+            "type": "boolean"
+          },
+          "isSuccess": {
+            "type": "boolean"
+          },
+          "duration": {
+            "$ref": "#/components/schemas/Duration"
+          },
+          "exceptionMessage": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ValidationReport": {
+        "type": "object",
+        "properties": {
+          "details": {
+            "$ref": "#/components/schemas/Details"
+          },
+          "profileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "statement": {
+            "type": "string",
+            "nullable": true
+          },
+          "isCompliant": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ValidationReports": {
+        "type": "object",
+        "properties": {
+          "compliant": {
+            "type": "string",
+            "nullable": true
+          },
+          "nonCompliant": {
+            "type": "string",
+            "nullable": true
+          },
+          "failedJobs": {
+            "type": "string",
+            "nullable": true
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

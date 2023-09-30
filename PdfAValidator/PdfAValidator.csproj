@@ -29,7 +29,8 @@
 		<RootNamespace>Codeuctivity</RootNamespace>
 		<NeutralLanguage>en</NeutralLanguage>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
-		<PackageId>Codeuctivity.PdfAValidator</PackageId>
+		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
+		<AnalysisLevel>latest</AnalysisLevel>		<PackageId>Codeuctivity.PdfAValidator</PackageId>
 		<PackageReadmeFile>nugetReadme.md</PackageReadmeFile>
 		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
 	</PropertyGroup>
@@ -55,7 +56,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SonarAnalyzer.CSharp" Version="8.52.0.60960">
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.11.0.78383">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
