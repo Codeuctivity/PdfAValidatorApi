@@ -25,7 +25,7 @@ namespace Codeuctivity
         private const string maskedQuote = "\"";
 
         /// <summary>
-        /// Max temp path length that VeraPdf fits into without throwing System.IO.DirectoryNotFoundException, value may change on new VeraPdf versions. Value does differ between .net and .net framework and linux. See also https://github.com/Codeuctivity/PdfAValidatorApi/issues/59
+        /// Max temp path length that VeraPdf fits into without throwing System.IO.DirectoryNotFoundException, value may change on new VeraPdf versions. Value does differ between .net and .net framework and Linux. See also https://github.com/Codeuctivity/PdfAValidatorApi/issues/59
         /// </summary>
         public int MaxLengthTempDirectoryThatVeraPdfFitsIn { get; private set; }
 
@@ -113,7 +113,7 @@ namespace Codeuctivity
         /// </summary>
         /// <param name="pathToVeraPdfBin"></param>
         /// <param name="pathToJava"></param>
-        /// <param name="veraPdfOutputFilter">Optional VerapPdf console output filter</param>
+        /// <param name="veraPdfOutputFilter">Optional VeraPdf console output filter</param>
         public PdfAValidator(string pathToVeraPdfBin, string pathToJava, IVeraPdfOutputFilter? veraPdfOutputFilter)
         {
             InitRuntimeSpecificMaxLengthTempdirectoryThatVeraPdfFitsIn();
@@ -126,7 +126,7 @@ namespace Codeuctivity
         }
 
         /// <summary>
-        /// Use this constructor to use the embedded veraPdf binaries
+        /// Use this constructor to use the embedded VeraPdf binaries
         /// </summary>
         public PdfAValidator() : this(new NullVeraPdfOutputFilter())
         {
@@ -135,7 +135,7 @@ namespace Codeuctivity
         }
 
         /// <summary>
-        /// Use this constructor to use the embedded veraPdf binaries with a custom temp path (default is %temp%)
+        /// Use this constructor to use the embedded VeraPdf binaries with a custom temp path (default is %temp%)
         /// </summary>
         public PdfAValidator(string tempPath) : this(new NullVeraPdfOutputFilter())
         {
@@ -144,9 +144,9 @@ namespace Codeuctivity
         }
 
         /// <summary>
-        /// Use this constructor to use the embedded veraPdf binaries
+        /// Use this constructor to use the embedded VeraPdf binaries
         /// </summary>
-        /// <param name="veraPdfOutputFilter">Optional VerapPdf console output filter</param>
+        /// <param name="veraPdfOutputFilter">Optional VeraPdf console output filter</param>
         public PdfAValidator(IVeraPdfOutputFilter? veraPdfOutputFilter)
         {
             InitRuntimeSpecificMaxLengthTempdirectoryThatVeraPdfFitsIn();
@@ -210,10 +210,7 @@ namespace Codeuctivity
         /// <returns></returns>
         public async Task<Report> ValidateBatchWithDetailedReportAsync(IEnumerable<string> pathsToPdfFiles, string commandLineArguments)
         {
-            if (pathsToPdfFiles == null)
-            {
-                throw new ArgumentNullException(nameof(pathsToPdfFiles));
-            }
+            ArgumentNullException.ThrowIfNull(pathsToPdfFiles);
 
             await IntiPathToVeraPdfBinAndJava().ConfigureAwait(false);
 
@@ -307,10 +304,7 @@ namespace Codeuctivity
 
         private static bool IsSingleFolder(IEnumerable<string> pathsToPdfFiles)
         {
-            if (pathsToPdfFiles == null)
-            {
-                throw new ArgumentNullException(nameof(pathsToPdfFiles));
-            }
+            ArgumentNullException.ThrowIfNull(pathsToPdfFiles);
 
             var enumeratedPathsToPdfFiles = pathsToPdfFiles.ToArray();
 
@@ -416,7 +410,7 @@ namespace Codeuctivity
         private static void SetLinuxFileExecutable(string filePath)
         {
             var chmodCmd = "chmod 700 " + filePath;
-            var escapedArgs = chmodCmd.Replace(maskedQuote, "\\\"");
+            var escapedArgs = chmodCmd.Replace(maskedQuote, "\\\"", StringComparison.InvariantCulture);
 
             using var process = new Process
             {
