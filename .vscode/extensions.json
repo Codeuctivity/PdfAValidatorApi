@@ -4,6 +4,7 @@
         "davidanson.vscode-markdownlint",
         "redhat.vscode-yaml",
         "mhutchie.git-graph",
-        "ms-dotnettools.csharp"
+        "ms-dotnettools.csharp",
+        "github.vscode-github-actions"
     ]
 }
