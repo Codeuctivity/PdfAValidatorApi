@@ -19,7 +19,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 8.0.x
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
@@ -36,7 +36,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 8.0.x
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
@@ -48,15 +48,13 @@ jobs:
         run: |
           ls ./PdfAValidator/bin/Release
           dotnet nuget push ./PdfAValidator/bin/Release/*.nupkg --skip-duplicate --api-key ${{secrets.NUGET_TOKEN}} --source https://api.nuget.org/v3/index.json
-      - uses: marvinpinto/action-automatic-releases@v1.2.1
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: ${{ env.CURRENT_VERSION }}
-          prerelease: false
-          title: "Release Build"
-          files: |
-            ./PdfAValidator/bin/Release/*.nupkg
-            ./PdfAValidator/bin/Release/*.snupkg
+      - name: Github Release
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+        if:  env.GITHUB_TOKEN != ''
+        run: |
+            gh release create ${{env.CURRENT_VERSION}} ./PdfAValidator/bin/Release/*.*nupkg  --generate-notes
 
   deployTest:
     if: ${{ github.ref == 'refs/heads/main' }}
@@ -67,7 +65,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 8.0.x
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
@@ -79,15 +77,13 @@ jobs:
         run: |
           ls ./PdfAValidator/bin/Release
           dotnet nuget push ./PdfAValidator/bin/Release/*.nupkg --skip-duplicate --api-key ${{secrets.NUGET_TEST_TOKEN}} --source https://apiint.nugettest.org/v3/index.json
-      - uses: marvinpinto/action-automatic-releases@v1.2.1
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest-prerelease"
-          prerelease: true
-          title: "Prerelease Build"
-          files: |
-            ./PdfAValidator/bin/Release/*.nupkg
-            ./PdfAValidator/bin/Release/*.snupkg
+      - name: Github Prerelease
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+        if:  env.GITHUB_TOKEN != ''
+        run: |
+            gh release create ${{env.CURRENT_VERSION}} ./PdfAValidator/bin/Release/*.*nupkg  --prerelease --generate-notes
 
   deployAzure:
     if: ${{ github.ref == 'refs/heads/release' || github.ref == 'refs/heads/AzureAppPublishUsingGithubActions'}}
@@ -98,14 +94,14 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 8.0.x
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
       - name: Publish
         run: dotnet publish ./PdfAValidatorWebApi/PdfAValidatorWebApi.csproj --configuration Release -o ./Publish
-      - uses: azure/webapps-deploy@v2
+      - uses: azure/webapps-deploy@v3
         with:
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: "./Publish"
