@@ -54,8 +54,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         if:  env.GITHUB_TOKEN != ''
         run: |
-            gh release create ${{env.CURRENT_VERSION}} ./PdfAValidator/bin/Release/*.*nupkg  --prerelease --generate-notes
-  
+            gh release create ${{env.CURRENT_VERSION}} ./PdfAValidator/bin/Release/*.*nupkg  --generate-notes
+
   deployTest:
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
@@ -77,14 +77,13 @@ jobs:
         run: |
           ls ./PdfAValidator/bin/Release
           dotnet nuget push ./PdfAValidator/bin/Release/*.nupkg --skip-duplicate --api-key ${{secrets.NUGET_TEST_TOKEN}} --source https://apiint.nugettest.org/v3/index.json
-      - name: Github prerelease
+      - name: Github Prerelease
         shell: bash
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         if:  env.GITHUB_TOKEN != ''
         run: |
             gh release create ${{env.CURRENT_VERSION}} ./PdfAValidator/bin/Release/*.*nupkg  --prerelease --generate-notes
-
 
   deployAzure:
     if: ${{ github.ref == 'refs/heads/release' || github.ref == 'refs/heads/AzureAppPublishUsingGithubActions'}}

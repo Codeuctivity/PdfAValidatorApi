@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-	<TargetFramework>net8.0</TargetFramework>
+	<TargetFrameworks>net8.0</TargetFrameworks>
 	<IsPackable>false</IsPackable>
 	<Nullable>enable</Nullable>
-	<LangVersion>8.0</LangVersion>
 	<EnableNETAnalyzers>true</EnableNETAnalyzers>
 	<Version Condition="'$(CURRENT_API_VERSION)' != ''">$(CURRENT_VERSION)</Version>
 	<Version Condition="'$(CURRENT_API_VERSION)' == ''">0.0.1</Version>
@@ -15,15 +14,15 @@
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
-	<PackageReference Include="AngleSharp" Version="1.0.4" />
-	<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.10" />
-	<PackageReference Include="SonarAnalyzer.CSharp" Version="9.10.0.77988">
+	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+	<PackageReference Include="AngleSharp" Version="1.0.6" />
+	<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
+	<PackageReference Include="SonarAnalyzer.CSharp" Version="9.12.0.78982">
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-	<PackageReference Include="xunit" Version="2.5.1" />
-	<PackageReference Include="xunit.runner.visualstudio" Version="2.5.1">
+	<PackageReference Include="xunit" Version="2.6.1" />
+	<PackageReference Include="xunit.runner.visualstudio" Version="2.5.3">
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  <PrivateAssets>all</PrivateAssets>
 	</PackageReference>
