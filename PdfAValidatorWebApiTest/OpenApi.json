@@ -23,6 +23,7 @@
         ],
         "summary": "Validates the compliance of a PdfA.",
         "requestBody": {
+          "description": "",
           "content": {
             "multipart/form-data": {
               "schema": {
@@ -66,6 +67,7 @@
         ],
         "summary": "Validates the compliance of a PDF(A) and gives some validation detail.",
         "requestBody": {
+          "description": "",
           "content": {
             "multipart/form-data": {
               "schema": {

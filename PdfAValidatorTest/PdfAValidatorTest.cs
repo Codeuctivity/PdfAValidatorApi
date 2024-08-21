@@ -1,7 +1,6 @@
 ﻿using Codeuctivity;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -229,8 +228,9 @@ namespace CodeuctivityTest
             var pdfAValidator = new PdfAValidator();
             var task = pdfAValidator.ValidateWithDetailedReportAsync(tmpDirName, "");
 
-            bool completedTask = task.Wait(TimeSpan.FromMinutes(1));
+            var completedTask = task.Wait(TimeSpan.FromMinutes(1));
             Assert.True(completedTask);
+
             if (completedTask)
             {
                 var result = await task;
@@ -308,12 +308,7 @@ namespace CodeuctivityTest
         [Fact]
         public static async Task ShouldThrowExplainableExceptionOnTooLongCommandLineOnWindows()
         {
-            var expectedLocalizedMessage = "The command line is too long.";
-
-            if (CultureInfo.InstalledUICulture.Name.StartsWith("de"))
-            {
-                expectedLocalizedMessage = "Die Befehlszeile ist zu lang.";
-            }
+            var expectedLocalizedMessages = new[] { "The command line is too long.", "Die Befehlszeile ist zu lang." };
 
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -332,7 +327,8 @@ namespace CodeuctivityTest
 
             var actualException = await Assert.ThrowsAsync<VeraPdfException>(() => pdfAValidator.ValidateBatchWithDetailedReportAsync(tooLongFileList, string.Empty));
             Assert.Contains("Calling VeraPdf exited with 1 without any output.", actualException.Message);
-            Assert.Contains(expectedLocalizedMessage, actualException.Message);
+            var containsExpectedMessage = expectedLocalizedMessages.Any(actualException.Message.Contains);
+            Assert.True(containsExpectedMessage, "The exception message does not contain any of the expected localized messages.");
         }
 
         [Fact]
