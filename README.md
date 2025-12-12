@@ -51,7 +51,7 @@ Everything comes with the nuget package
 
 ### Ubuntu
 
-Current PdfAValidatorApi depends on openjdk-11-jre and some .net version.
+Current PdfAValidatorApi depends on openjdk-11-jre and .NET 10.
 
 ```bash
 sudo apt install openjdk-11-jre
@@ -63,5 +63,5 @@ sudo update-alternatives --config java
 ### Setup .net sdk ubuntu 22.04
 
 ```bash
-sudo apt install dotnet6
+sudo apt install dotnet-sdk-10.0
 ```
