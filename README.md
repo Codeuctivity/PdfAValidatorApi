@@ -63,5 +63,5 @@ sudo update-alternatives --config java
 ### Setup .net sdk ubuntu 22.04
 
 ```bash
-sudo apt install dotnet6
+sudo apt install dotnet10
 ```
